@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Class ProductsController
  * @author Nicolás Marulanda P.
  */
-class ProductsController implements ControllerCRUDInterface {
+class ProductsController extends ControllerAbstract implements ControllerCRUDInterface {
     
     /**
      * ProductsController constructor.
@@ -19,18 +19,18 @@ class ProductsController implements ControllerCRUDInterface {
     }
     
     public static function init() {
-        return new ProductsController();
+        parent::method(new ProductsController());
     }
     
-    public function insert($object) {
+    public function insert() {
         // TODO: Implement insert() method.
     }
     
-    public function update($object) {
+    public function update() {
         // TODO: Implement update() method.
     }
     
-    public function delete($id) {
+    public function delete() {
         // TODO: Implement delete() method.
     }
     

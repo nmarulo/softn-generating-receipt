@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Class ReceiptsController
  * @author Nicolás Marulanda P.
  */
-class ReceiptsController implements ControllerCRUDInterface {
+class ReceiptsController extends ControllerAbstract implements ControllerCRUDInterface {
     
     /**
      * ReceiptsController constructor.
@@ -19,18 +19,18 @@ class ReceiptsController implements ControllerCRUDInterface {
     }
     
     public static function init() {
-        return new ReceiptsController();
+        parent::method(new ReceiptsController());
     }
     
-    public function insert($object) {
+    public function insert() {
         // TODO: Implement insert() method.
     }
     
-    public function update($object) {
+    public function update() {
         // TODO: Implement update() method.
     }
     
-    public function delete($id) {
+    public function delete() {
         // TODO: Implement delete() method.
     }
     

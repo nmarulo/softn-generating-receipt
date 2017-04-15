@@ -5,5 +5,4 @@
 require 'common.php';
 use Softn\controllers\ProductsController;
 
-ProductsController::init()
-                  ->index();
+ProductsController::init();

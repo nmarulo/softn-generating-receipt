@@ -3,7 +3,7 @@
  * ReceiptsManager.php
  */
 
-namespace models;
+namespace Softn\models;
 
 /**
  * Class ReceiptsManager

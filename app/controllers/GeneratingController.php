@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Class GeneratingController
  * @author Nicolás Marulanda P.
  */
-class GeneratingController implements ControllerInterfaces {
+class GeneratingController extends ControllerAbstract implements ControllerInterfaces {
     
     /**
      * GeneratingController constructor.
@@ -19,7 +19,7 @@ class GeneratingController implements ControllerInterfaces {
     }
     
     public static function init() {
-        return new GeneratingController();
+        parent::method(new GeneratingController());
     }
     
     public function generate() {

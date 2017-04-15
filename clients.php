@@ -5,5 +5,4 @@
 require 'common.php';
 use Softn\controllers\ClientsController;
 
-ClientsController::init()
-                 ->index();
+ClientsController::init();

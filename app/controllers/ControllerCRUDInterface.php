@@ -11,9 +11,9 @@ namespace Softn\controllers;
  */
 interface ControllerCRUDInterface extends ControllerInterfaces {
     
-    public function insert($object);
+    public function insert();
     
-    public function update($object);
+    public function update();
     
-    public function delete($id);
+    public function delete();
 }

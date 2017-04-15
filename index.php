@@ -5,5 +5,4 @@
 require 'common.php';
 use Softn\controllers\IndexController;
 
-IndexController::init()
-               ->index();
+IndexController::init();

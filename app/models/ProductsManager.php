@@ -3,7 +3,7 @@
  * ProductsManager.php
  */
 
-namespace models;
+namespace Softn\models;
 
 /**
  * Class ProductsManager

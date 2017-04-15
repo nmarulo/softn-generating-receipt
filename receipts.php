@@ -5,5 +5,4 @@
 require 'common.php';
 use Softn\controllers\ReceiptsController;
 
-ReceiptsController::init()
-                  ->index();
+ReceiptsController::init();

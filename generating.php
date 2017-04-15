@@ -5,4 +5,4 @@
 require 'common.php';
 use Softn\controllers\GeneratingController;
 
-GeneratingController::init()->index();
+GeneratingController::init();

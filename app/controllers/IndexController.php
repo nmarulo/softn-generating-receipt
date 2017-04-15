@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Class IndexController
  * @author Nicolás Marulanda P.
  */
-class IndexController implements ControllerInterfaces {
+class IndexController extends ControllerAbstract implements ControllerInterfaces {
     
     /**
      * IndexController constructor.
@@ -19,7 +19,7 @@ class IndexController implements ControllerInterfaces {
     }
     
     public static function init() {
-        return new IndexController();
+        parent::method(new IndexController());
     }
     
     public function index() {
