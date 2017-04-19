@@ -1,15 +1,15 @@
 <?php
 /**
- * Url.php
+ * Httpp.php
  */
 
 namespace Softn\util;
 
 /**
- * Class Url
+ * Class Http
  * @author Nicolás Marulanda P.
  */
-class Url {
+class Http {
     
     public static function redirect($route) {
         header('Location: http://localhost/softn-generating-receipt/' . $route);
