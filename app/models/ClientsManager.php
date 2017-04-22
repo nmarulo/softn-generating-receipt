@@ -34,51 +34,45 @@ class ClientsManager extends ManagerAbstract {
      * @return array
      */
     public function getAll() {
-        $clients = [];
-        $mysql   = new MySql();
-        $select  = $mysql->select(self::TABLE, MySql::FETCH_ALL);
-        
-        foreach ($select as $value) {
-            $client = new Client();
-            $client->setId($value[self::ID]);
-            $client->setClientIdentificationDocument($value[self::CLIENT_IDENTIFICATION_DOCUMENT]);
-            $client->setClientCity($value[self::CLIENT_CITY]);
-            $client->setClientAddress($value[self::CLIENT_ADDRESS]);
-            $client->setClientName($value[self::CLIENT_NAME]);
-            $clients[] = $client;
-        }
-        
-        $mysql->close();
-        
-        return $clients;
+        return parent::selectAll(self::TABLE);
     }
     
     /**
      * @param int $id
      *
-     * @return null|Client
+     * @return Client
      */
     public function getByID($id) {
         $clientSelect = NULL;
-        $mysql        = new MySql();
-        $where        = self::ID . ' = :' . self::ID;
-        $prepare      = [];
-        $prepare[]    = $mysql->prepareStatement(':' . self::ID, $id, \PDO::PARAM_INT);
-        $select       = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
+        $select       = parent::selectByID($id, self::TABLE);
         
         foreach ($select as $value) {
-            $client = new Client();
-            $client->setId($value['id']);
-            $client->setClientIdentificationDocument($value['client_identification_document']);
-            $client->setClientCity($value['client_city']);
-            $client->setClientAddress($value['client_address']);
-            $client->setClientName($value['client_name']);
-            $clientSelect = $client;
+            $clientSelect = $this->create($value);
         }
         
-        $mysql->close();
+        if ($clientSelect === NULL) {
+            $clientSelect = new Client();
+        }
         
         return $clientSelect;
+    }
+    
+    /**
+     * Método que obtiene una instancia con los datos.
+     *
+     * @param array $data Datos de la consulta 'SELECT'.
+     *
+     * @return Client
+     */
+    protected function create($data) {
+        $client = new Client();
+        $client->setId($data[self::ID]);
+        $client->setClientIdentificationDocument($data[self::CLIENT_IDENTIFICATION_DOCUMENT]);
+        $client->setClientCity($data[self::CLIENT_CITY]);
+        $client->setClientAddress($data[self::CLIENT_ADDRESS]);
+        $client->setClientName($data[self::CLIENT_NAME]);
+        
+        return $client;
     }
     
     /**
@@ -89,30 +83,7 @@ class ClientsManager extends ManagerAbstract {
         $this->addValueAndColumnForInsert(self::CLIENT_ADDRESS);
         $this->addValueAndColumnForInsert(self::CLIENT_IDENTIFICATION_DOCUMENT);
         $this->addValueAndColumnForInsert(self::CLIENT_CITY);
-        $mysql   = new MySql();
-        $values  = $this->getValuesForInsert();
-        $columns = $this->getColumnsForInsert();
-        
-        $prepare = $this->prepare($object, $mysql);
-        
-        $mysql->insert(self::TABLE, $columns, $values, $prepare);
-        $mysql->close();
-    }
-    
-    /**
-     * @param Client $object
-     * @param MySql  $mysql
-     *
-     * @return array
-     */
-    protected function prepare($object, $mysql) {
-        $prepare   = [];
-        $prepare[] = $mysql->prepareStatement(':' . self::CLIENT_NAME, $object->getClientName(), \PDO::PARAM_STR);
-        $prepare[] = $mysql->prepareStatement(':' . self::CLIENT_IDENTIFICATION_DOCUMENT, $object->getClientIdentificationDocument(), \PDO::PARAM_STR);
-        $prepare[] = $mysql->prepareStatement(':' . self::CLIENT_ADDRESS, $object->getClientAddress(), \PDO::PARAM_STR);
-        $prepare[] = $mysql->prepareStatement(':' . self::CLIENT_CITY, $object->getClientCity(), \PDO::PARAM_STR);
-        
-        return $prepare;
+        parent::insertData($object, self::TABLE);
     }
     
     /**
@@ -123,25 +94,29 @@ class ClientsManager extends ManagerAbstract {
         $this->addSetForUpdate(self::CLIENT_ADDRESS);
         $this->addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
         $this->addSetForUpdate(self::CLIENT_CITY);
-        $mysql     = new MySql();
-        $id        = $object->getId();
-        $columns   = $this->getSetForUpdate();
-        $where     = self::ID . ' = :' . self::ID;
-        $prepare   = $this->prepare($object, $mysql);
-        $prepare[] = $mysql->prepareStatement(':' . self::ID, $id, \PDO::PARAM_INT);
-        $mysql->update(self::TABLE, $columns, $where, $prepare);
-        $mysql->close();
+        $id = $object->getId();
+        parent::updateData($object, self::TABLE, $id);
     }
     
     /**
      * @param int $id
      */
     public function delete($id) {
-        $mysql     = new MySql();
-        $where     = self::ID . ' = :' . self::ID;
+        parent::deleteByID($id, self::TABLE);
+    }
+    
+    /**
+     * @param Client $object
+     *
+     * @return array
+     */
+    protected function prepare($object) {
         $prepare   = [];
-        $prepare[] = $mysql->prepareStatement(':' . self::ID, $id, \PDO::PARAM_INT);
-        $mysql->delete(self::TABLE, $where, $prepare);
-        $mysql->close();
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_NAME, $object->getClientName(), \PDO::PARAM_STR);
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_IDENTIFICATION_DOCUMENT, $object->getClientIdentificationDocument(), \PDO::PARAM_STR);
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_ADDRESS, $object->getClientAddress(), \PDO::PARAM_STR);
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_CITY, $object->getClientCity(), \PDO::PARAM_STR);
+        
+        return $prepare;
     }
 }

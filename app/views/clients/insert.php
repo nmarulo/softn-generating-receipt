@@ -1,8 +1,26 @@
 <?php
-$client = $viewData['client'];
+use Softn\controllers\ViewController;
+
+$client   = ViewController::getViewData('client');
+$method   = ViewController::getViewData('method');
+$title    = 'Nuevo';
+$button   = 'Agregar';
+$isUpdate = $method == 'update';
+
+if ($isUpdate) {
+    $title  = 'Actualizar';
+    $button = $title;
+}
 ?>
 <div>
-    <h1>Nuevo cliente</h1>
+    <h1>
+        <?php echo $title; ?> cliente
+        <?php if ($isUpdate) { ?>
+            <a class="btn btn-success" href="clients.php?method=insert" title="Agregar">
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+        <?php } ?>
+    </h1>
 </div>
 <div>
     <form method="get">
@@ -24,6 +42,6 @@ $client = $viewData['client'];
         </div>
         <input type="hidden" value="<?php echo $client->getId(); ?>" name="id">
         <input type="hidden" value="update" name="method">
-        <button class="btn btn-primary" type="submit">Agregar</button>
+        <button class="btn btn-primary" type="submit"><?php echo $button; ?></button>
     </form>
 </div>

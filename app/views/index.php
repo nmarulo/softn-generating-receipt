@@ -1,14 +1,18 @@
-<?php require VIEWS . 'header.php'; ?>
-<div class="container-fluid">
+<?php
+use Softn\controllers\ViewController;
+
+ViewController::header();
+?>
+    <div class="container-fluid">
     <div class="row clearfix">
         <div class="col-sm-3">
-            <?php require VIEWS . 'sidebar.php'; ?>
+            <?php ViewController::sidebar(); ?>
         </div>
         <div class="col-sm-9">
             <main>
-                <?php require $contentView; ?>
+                <?php ViewController::content(); ?>
             </main>
         </div>
     </div>
 </div>
-<?php require VIEWS . 'footer.php';
+<?php ViewController::footer();

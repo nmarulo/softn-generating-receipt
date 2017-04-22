@@ -5,6 +5,8 @@
 
 namespace Softn\models;
 
+use Softn\util\MySql;
+
 /**
  * Class ManagerAbstract
  * @author Nicolás Marulanda P.
@@ -30,12 +32,32 @@ abstract class ManagerAbstract implements ManagerInterfaces {
     }
     
     /**
-     * @return string
+     * @param int    $id
+     * @param string $table
      */
-    public function getSetForUpdate() {
-        return $this->setForUpdate;
+    public function deleteByID($id, $table) {
+        $mysql = new MySql();
+        $mysql->deleteByColumn($id, $table, self::ID);
+        $mysql->close();
     }
     
+    /**
+     * @param int    $id
+     * @param string $table
+     *
+     * @return array|bool|\PDOStatement
+     */
+    public function selectByID($id, $table) {
+        $mysql  = new MySql();
+        $select = $mysql->selectByColumn($id, $table, self::ID);
+        $mysql->close();
+        
+        return $select;
+    }
+    
+    /**
+     * @param string $name
+     */
     protected function addValueAndColumnForInsert($name) {
         $this->valuesForInsert  .= empty($this->valuesForInsert) ? '' : ', ';
         $this->valuesForInsert  .= ':' . $name;
@@ -43,16 +65,50 @@ abstract class ManagerAbstract implements ManagerInterfaces {
         $this->columnsForInsert .= $name;
     }
     
+    /**
+     * @param string $table
+     *
+     * @return array
+     */
+    protected function selectAll($table) {
+        $objects = [];
+        $mysql   = new MySql();
+        $select  = $mysql->select($table, MySql::FETCH_ALL);
+        $mysql->close();
+        
+        foreach ($select as $value) {
+            $objects[] = $this->create($value);
+        }
+        
+        return $objects;
+    }
+    
+    /**
+     * @param array $data
+     *
+     * @return object
+     */
+    protected abstract function create($data);
+    
+    /**
+     * @param string $name
+     */
     protected function addSetForUpdate($name) {
         $this->setForUpdate .= empty($this->setForUpdate) ? '' : ', ';
         $this->setForUpdate .= $name . ' = :' . $name;
     }
     
     /**
-     * @return string
+     * @param object $object
+     * @param string $table
      */
-    protected function getColumnsForInsert() {
-        return $this->columnsForInsert;
+    protected function insertData($object, $table) {
+        $mysql   = new MySql();
+        $values  = $this->getValuesForInsert();
+        $columns = $this->getColumnsForInsert();
+        $prepare = $this->prepare($object);
+        $mysql->insert($table, $columns, $values, $prepare);
+        $mysql->close();
     }
     
     /**
@@ -62,6 +118,35 @@ abstract class ManagerAbstract implements ManagerInterfaces {
         return $this->valuesForInsert;
     }
     
-    protected abstract function prepare($object, $mysql);
+    /**
+     * @return string
+     */
+    protected function getColumnsForInsert() {
+        return $this->columnsForInsert;
+    }
+    
+    protected abstract function prepare($object);
+    
+    /**
+     * @param object $object
+     * @param string $table
+     * @param int    $id
+     */
+    protected function updateData($object, $table, $id) {
+        $mysql     = new MySql();
+        $columns   = $this->getSetForUpdate();
+        $where     = self::ID . ' = :' . self::ID;
+        $prepare   = $this->prepare($object);
+        $prepare[] = $mysql->prepareStatement(':' . self::ID, $id, \PDO::PARAM_INT);
+        $mysql->update($table, $columns, $where, $prepare);
+        $mysql->close();
+    }
+    
+    /**
+     * @return string
+     */
+    public function getSetForUpdate() {
+        return $this->setForUpdate;
+    }
     
 }

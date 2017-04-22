@@ -1,3 +1,8 @@
+<?php
+use Softn\controllers\ViewController;
+
+$clients = ViewController::getViewData('clients');
+?>
 <div>
     <h1>
         Clientes
@@ -9,7 +14,7 @@
 <div id="content-index">
     <h3>Lista de clientes</h3>
     <ul>
-        <?php foreach($viewData['clients'] as $client){ ?>
+        <?php foreach ($clients as $client) { ?>
             <li>
                 <?php echo $client->getClientName(); ?>
                 <a href="clients.php?method=update&update=<?php echo $client->getId(); ?>">

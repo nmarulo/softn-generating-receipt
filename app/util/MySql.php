@@ -42,6 +42,52 @@ class MySql {
     }
     
     /**
+     * @param int    $id
+     * @param string $table
+     * @param string $column
+     * @param int    $dataType
+     *
+     * @return array|bool|\PDOStatement
+     */
+    public function selectByColumn($id, $table, $column, $dataType = \PDO::PARAM_INT) {
+        $where     = $column . ' = :' . $column;
+        $prepare   = [];
+        $prepare[] = $this->prepareStatement(':' . $column, $id, $dataType);
+        $select    = $this->select($table, MySql::FETCH_ALL, $where, $prepare);
+        
+        return $select;
+    }
+    
+    /**
+     * Método que obtiene los indices a reemplazar en la consulta.
+     * EJ: [
+     *   [
+     *      'parameter' => ':id',
+     *      'value'     => 1,
+     *      'dataType'  => PDO::PARAM_INT,
+     *   ],
+     *   [
+     *      'parameter' => ':nombre',
+     *      'value'     => 'nicolas',
+     *      'dataType'  => PDO::PARAM_STR,
+     *   ],
+     * ]
+     *
+     * @param string $parameter Indice a buscar. EJ: ":ID"
+     * @param string $value     Valor del indice.
+     * @param int    $dataType  Tipo de dato. EJ: \PDO::PARAM_*
+     *
+     * @return array
+     */
+    public static function prepareStatement($parameter, $value, $dataType) {
+        return [
+            'parameter' => $parameter,
+            'value'     => $value,
+            'dataType'  => $dataType,
+        ];
+    }
+    
+    /**
      * Método que ejecuta una consulta "SELECT" simple.
      *
      * @param string $table   Nombre de la tabla.
@@ -200,6 +246,19 @@ class MySql {
     }
     
     /**
+     * @param mixed  $value
+     * @param string $table
+     * @param string $column
+     * @param int    $dataType
+     */
+    public function deleteByColumn($value, $table, $column, $dataType = \PDO::PARAM_INT) {
+        $where     = $column . ' = :' . $column;
+        $prepare   = [];
+        $prepare[] = $this->prepareStatement(':' . $column, $value, $dataType);
+        $this->delete($table, $where, $prepare);
+    }
+    
+    /**
      * Método que ejecuta una consulta "DELETE".
      *
      * @param string $table   Nombre de la tabla.
@@ -249,35 +308,6 @@ class MySql {
      */
     public function getQuery() {
         return $this->query;
-    }
-    
-    /**
-     * Método que obtiene los indices a reemplazar en la consulta.
-     * EJ: [
-     *   [
-     *      'parameter' => ':id',
-     *      'value'     => 1,
-     *      'dataType'  => PDO::PARAM_INT,
-     *   ],
-     *   [
-     *      'parameter' => ':nombre',
-     *      'value'     => 'nicolas',
-     *      'dataType'  => PDO::PARAM_STR,
-     *   ],
-     * ]
-     *
-     * @param string $parameter Indice a buscar. EJ: ":ID"
-     * @param string $value     Valor del indice.
-     * @param int    $dataType  Tipo de dato. EJ: \PDO::PARAM_*
-     *
-     * @return array
-     */
-    public function prepareStatement($parameter, $value, $dataType) {
-        return [
-            'parameter' => $parameter,
-            'value'     => $value,
-            'dataType'  => $dataType,
-        ];
     }
     
 }
