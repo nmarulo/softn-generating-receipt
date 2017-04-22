@@ -9,7 +9,7 @@ namespace Softn\models;
  * Class ManagerInterfaces
  * @author Nicolás Marulanda P.
  */
-interface ManagerInterfaces {
+interface ManagerInterface {
     
     const ID = 'id';
     

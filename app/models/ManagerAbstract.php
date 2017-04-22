@@ -11,7 +11,7 @@ use Softn\util\MySql;
  * Class ManagerAbstract
  * @author Nicolás Marulanda P.
  */
-abstract class ManagerAbstract implements ManagerInterfaces {
+abstract class ManagerAbstract implements ManagerInterface {
     
     /** @var string */
     private $columnsForInsert;
