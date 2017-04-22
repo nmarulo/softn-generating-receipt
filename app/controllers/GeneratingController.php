@@ -5,11 +5,13 @@
 
 namespace Softn\controllers;
 
+use Softn\models\Generating;
+
 /**
  * Class GeneratingController
  * @author Nicolás Marulanda P.
  */
-class GeneratingController extends ControllerAbstract implements ControllerInterfaces {
+class GeneratingController extends ControllerAbstract implements ControllerInterface {
     
     /**
      * GeneratingController constructor.
@@ -23,10 +25,17 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
     }
     
     public function generate() {
+        
+        $this->index();
     }
     
     public function index() {
-        
+        ViewController::sendViewData('generating', new Generating());
         ViewController::view('index');
     }
+    
+    protected function getViewForm() {
+        // TODO: Implement getViewForm() method.
+    }
+    
 }

@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Interface ControllerInterfaces
  * @author Nicolás Marulanda P.
  */
-interface ControllerInterfaces {
+interface ControllerInterface {
     
     public function index();
     

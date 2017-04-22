@@ -5,6 +5,7 @@
 
 namespace Softn\models;
 
+use Softn\util\Arrays;
 use Softn\util\MySql;
 
 /**
@@ -43,18 +44,18 @@ class ClientsManager extends ManagerAbstract {
      * @return Client
      */
     public function getByID($id) {
-        $clientSelect = NULL;
+        $object = NULL;
         $select       = parent::selectByID($id, self::TABLE);
         
         foreach ($select as $value) {
-            $clientSelect = $this->create($value);
+            $object = $this->create($value);
         }
         
-        if ($clientSelect === NULL) {
-            $clientSelect = new Client();
+        if ($object === NULL) {
+            $object = new Client();
         }
         
-        return $clientSelect;
+        return $object;
     }
     
     /**
@@ -65,24 +66,24 @@ class ClientsManager extends ManagerAbstract {
      * @return Client
      */
     protected function create($data) {
-        $client = new Client();
-        $client->setId($data[self::ID]);
-        $client->setClientIdentificationDocument($data[self::CLIENT_IDENTIFICATION_DOCUMENT]);
-        $client->setClientCity($data[self::CLIENT_CITY]);
-        $client->setClientAddress($data[self::CLIENT_ADDRESS]);
-        $client->setClientName($data[self::CLIENT_NAME]);
+        $object = new Client();
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setClientIdentificationDocument(Arrays::get($data, self::CLIENT_IDENTIFICATION_DOCUMENT));
+        $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
+        $object->setClientAddress(Arrays::get($data, self::CLIENT_ADDRESS));
+        $object->setClientName(Arrays::get($data, self::CLIENT_NAME));
         
-        return $client;
+        return $object;
     }
     
     /**
      * @param Client $object
      */
     public function insert($object) {
-        $this->addValueAndColumnForInsert(self::CLIENT_NAME);
-        $this->addValueAndColumnForInsert(self::CLIENT_ADDRESS);
-        $this->addValueAndColumnForInsert(self::CLIENT_IDENTIFICATION_DOCUMENT);
-        $this->addValueAndColumnForInsert(self::CLIENT_CITY);
+        parent::addValueAndColumnForInsert(self::CLIENT_NAME);
+        parent::addValueAndColumnForInsert(self::CLIENT_ADDRESS);
+        parent::addValueAndColumnForInsert(self::CLIENT_IDENTIFICATION_DOCUMENT);
+        parent::addValueAndColumnForInsert(self::CLIENT_CITY);
         parent::insertData($object, self::TABLE);
     }
     
@@ -90,10 +91,10 @@ class ClientsManager extends ManagerAbstract {
      * @param Client $object
      */
     public function update($object) {
-        $this->addSetForUpdate(self::CLIENT_NAME);
-        $this->addSetForUpdate(self::CLIENT_ADDRESS);
-        $this->addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
-        $this->addSetForUpdate(self::CLIENT_CITY);
+        parent::addSetForUpdate(self::CLIENT_NAME);
+        parent::addSetForUpdate(self::CLIENT_ADDRESS);
+        parent::addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
+        parent::addSetForUpdate(self::CLIENT_CITY);
         $id = $object->getId();
         parent::updateData($object, self::TABLE, $id);
     }

@@ -5,6 +5,10 @@
 
 namespace Softn\controllers;
 
+use Softn\models\Product;
+use Softn\models\ProductsManager;
+use Softn\util\Arrays;
+
 /**
  * Class ProductsController
  * @author Nicolás Marulanda P.
@@ -23,19 +27,54 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function insert() {
-        // TODO: Implement insert() method.
+        ViewController::sendViewData('product', new Product());
+        ViewController::view('insert');
     }
     
     public function update() {
-        // TODO: Implement update() method.
+        $objectManager = new ProductsManager();
+        $object        = $this->getViewForm();
+        $id            = Arrays::get($_GET, 'update');
+        
+        if ($object->getId() == 0) {
+            if ($id !== FALSE) {
+                $object = $objectManager->getByID($id);
+            } else {
+                $objectManager->insert($object);
+            }
+        } else {
+            $objectManager->update($object);
+        }
+        
+        ViewController::sendViewData('product', $object);
+        ViewController::view('insert');
+    }
+    
+    protected function getViewForm() {
+        $product = new Product();
+        $product->setId(Arrays::get($_GET, ProductsManager::ID));
+        $product->setProductPriceUnit(Arrays::get($_GET, ProductsManager::PRODUCT_PRICE_UNIT));
+        $product->setProductReference(Arrays::get($_GET, ProductsManager::PRODUCT_REFERENCE));
+        $product->setProductName(Arrays::get($_GET, ProductsManager::PRODUCT_NAME));
+        
+        return $product;
     }
     
     public function delete() {
-        // TODO: Implement delete() method.
+        $id = Arrays::get($_GET, 'delete');
+        
+        if ($id !== FALSE) {
+            $objectManager = new ProductsManager();
+            $objectManager->delete($id);
+        }
+        
+        $this->index();
     }
     
     public function index() {
+        $objectManager = new ProductsManager();
         
+        ViewController::sendViewData('products', $objectManager->getAll());
         ViewController::view('index');
     }
 }

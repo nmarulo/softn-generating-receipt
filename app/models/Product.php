@@ -21,7 +21,17 @@ class Product {
     private $productPriceUnit;
     
     /** @var string */
-    private $reference;
+    private $productReference;
+    
+    /**
+     * Product constructor.
+     */
+    public function __construct() {
+        $this->id               = 0;
+        $this->productName      = '';
+        $this->productPriceUnit = 0;
+        $this->productReference = '';
+    }
     
     /**
      * @return int
@@ -68,15 +78,15 @@ class Product {
     /**
      * @return string
      */
-    public function getReference() {
-        return $this->reference;
+    public function getProductReference() {
+        return $this->productReference;
     }
     
     /**
-     * @param string $reference
+     * @param string $productReference
      */
-    public function setReference($reference) {
-        $this->reference = $reference;
+    public function setProductReference($productReference) {
+        $this->productReference = $productReference;
     }
     
 }

@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Class ControllerCRUDInterface
  * @author Nicolás Marulanda P.
  */
-interface ControllerCRUDInterface extends ControllerInterfaces {
+interface ControllerCRUDInterface extends ControllerInterface {
     
     public function insert();
     

@@ -5,6 +5,9 @@
 
 namespace Softn\controllers;
 
+use Softn\models\ReceiptsManager;
+use Softn\util\Arrays;
+
 /**
  * Class ReceiptsController
  * @author Nicolás Marulanda P.
@@ -31,11 +34,23 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function delete() {
-        // TODO: Implement delete() method.
+        $id = Arrays::get($_GET, 'delete');
+        
+        if ($id !== FALSE) {
+            $objectManager = new ReceiptsManager();
+            $objectManager->delete($id);
+        }
+        
+        $this->index();
     }
     
     public function index() {
-        
+        $objectManager = new ReceiptsManager();
+        ViewController::sendViewData('receipts', $objectManager->getAll());
         ViewController::view('index');
+    }
+    
+    protected function getViewForm() {
+        // TODO: Implement getViewForm() method.
     }
 }

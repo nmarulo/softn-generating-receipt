@@ -28,4 +28,6 @@ abstract class ControllerAbstract {
             $method,
         ], ['']);
     }
+    
+    protected abstract function getViewForm();
 }

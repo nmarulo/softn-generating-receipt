@@ -23,6 +23,33 @@ class Receipt {
     /** @var string */
     private $receiptDate;
     
+    /** @var int */
+    private $clientId;
+    
+    /**
+     * Receipt constructor.
+     */
+    public function __construct() {
+        $this->id            = 0;
+        $this->receiptType   = '';
+        $this->receiptNumber = '';
+        $this->receiptDate   = '';
+    }
+    
+    /**
+     * @return int
+     */
+    public function getClientId() {
+        return $this->clientId;
+    }
+    
+    /**
+     * @param int $clientId
+     */
+    public function setClientId($clientId) {
+        $this->clientId = $clientId;
+    }
+    
     /**
      * @return int
      */

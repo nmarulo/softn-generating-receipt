@@ -32,34 +32,34 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
     }
     
     public function update() {
-        $clientsManager = new ClientsManager();
-        $client         = $this->getViewForm();
-        $id             = Arrays::get($_GET, 'update');
+        $objectManager = new ClientsManager();
+        $object        = $this->getViewForm();
+        $id            = Arrays::get($_GET, 'update');
         
-        if ($client->getId() == 0) {
+        if ($object->getId() == 0) {
             if ($id !== FALSE) {
-                $client = $clientsManager->getByID($id);
+                $object = $objectManager->getByID($id);
             } else {
-                $clientsManager->insert($client);
+                $objectManager->insert($object);
             }
         } else {
-            $clientsManager->update($client);
+            $objectManager->update($object);
         }
         
-        ViewController::sendViewData('client', $client);
+        ViewController::sendViewData('client', $object);
         ViewController::view('insert');
     }
     
     /**
      * @return Client
      */
-    private function getViewForm() {
+    protected function getViewForm() {
         $client = new Client();
-        $client->setId(Arrays::get($_GET, 'id'));
-        $client->setClientName(Arrays::get($_GET, 'clientName'));
-        $client->setClientAddress(Arrays::get($_GET, 'clientAddress'));
-        $client->setClientCity(Arrays::get($_GET, 'clientCity'));
-        $client->setClientIdentificationDocument(Arrays::get($_GET, 'clientIdentificationDocument'));
+        $client->setId(Arrays::get($_GET, ClientsManager::ID));
+        $client->setClientName(Arrays::get($_GET, ClientsManager::CLIENT_NAME));
+        $client->setClientAddress(Arrays::get($_GET, ClientsManager::CLIENT_ADDRESS));
+        $client->setClientCity(Arrays::get($_GET, ClientsManager::CLIENT_CITY));
+        $client->setClientIdentificationDocument(Arrays::get($_GET, ClientsManager::CLIENT_IDENTIFICATION_DOCUMENT));
         
         return $client;
     }
@@ -68,17 +68,17 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         $id = Arrays::get($_GET, 'delete');
         
         if ($id !== FALSE) {
-            $clientManager = new ClientsManager();
-            $clientManager->delete($id);
+            $objectManager = new ClientsManager();
+            $objectManager->delete($id);
         }
         
         $this->index();
     }
     
     public function index() {
-        $clientsManager = new ClientsManager();
+        $objectManager = new ClientsManager();
         
-        ViewController::sendViewData('clients', $clientsManager->getAll());
+        ViewController::sendViewData('clients', $objectManager->getAll());
         ViewController::view('index');
     }
 }
