@@ -9,7 +9,7 @@ namespace Softn\models;
  * Class Client
  * @author Nicolás Marulanda P.
  */
-class Client {
+class Client implements \JsonSerializable {
     
     /** @var int */
     private $id;
@@ -35,6 +35,16 @@ class Client {
         $this->clientAddress                = '';
         $this->clientIdentificationDocument = '';
         $this->clientCity                   = '';
+    }
+    
+    function jsonSerialize() {
+        return [
+            ClientsManager::ID                             => $this->id,
+            ClientsManager::CLIENT_NAME                    => $this->clientName,
+            ClientsManager::CLIENT_CITY                    => $this->clientCity,
+            ClientsManager::CLIENT_IDENTIFICATION_DOCUMENT => $this->clientIdentificationDocument,
+            ClientsManager::CLIENT_ADDRESS                 => $this->clientAddress,
+        ];
     }
     
     /**

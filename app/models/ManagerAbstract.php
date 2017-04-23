@@ -31,6 +31,8 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->setForUpdate     = '';
     }
     
+    public abstract function getLast();
+    
     /**
      * @param int    $id
      * @param string $table
@@ -53,6 +55,14 @@ abstract class ManagerAbstract implements ManagerInterface {
         $mysql->close();
         
         return $select;
+    }
+    
+    protected function getLastData($table) {
+        $mysql  = new MySql();
+        $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
+        $mysql->close();
+        
+        return $this->create($select);
     }
     
     /**

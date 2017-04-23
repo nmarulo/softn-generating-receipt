@@ -35,10 +35,17 @@ class ViewController {
      *
      * @param string $file Nombre de la vista.
      */
-    public static function view($file) {
-        self::$VIEW_CONTENT = VIEWS . self::$DIRECTORY . DIRECTORY_SEPARATOR . $file . '.php';
+    public static function view($fileName) {
+        self::setViewContent($fileName);
         self::includeView(VIEWS . 'index.php');
         self::$VIEW_DATA = [];
+    }
+    
+    /**
+     * @param string $fileName
+     */
+    public static function setViewContent($fileName) {
+        self::$VIEW_CONTENT = VIEWS . self::$DIRECTORY . DIRECTORY_SEPARATOR . $fileName . '.php';
     }
     
     private static function includeView($path) {
@@ -73,5 +80,13 @@ class ViewController {
     
     public static function getViewData($key) {
         return Arrays::get(self::$VIEW_DATA, $key);
+    }
+    
+    public static function scriptView($fileName) {
+        echo "<script src='app/resources/js/$fileName.js' type='text/javascript'></script>";
+    }
+    
+    public static function styleView($fileName) {
+        echo "<link href='app/resources/css/$fileName.css' rel='stylesheet' type='text/css'/>";
     }
 }

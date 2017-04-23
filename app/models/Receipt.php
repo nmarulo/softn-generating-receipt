@@ -31,9 +31,9 @@ class Receipt {
      */
     public function __construct() {
         $this->id            = 0;
-        $this->receiptType   = '';
-        $this->receiptNumber = '';
-        $this->receiptDate   = '';
+        $this->receiptType   = 'Factura';
+        $this->receiptNumber = 0;
+        $this->receiptDate   = '00/00/000';
     }
     
     /**

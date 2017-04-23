@@ -1,3 +1,4 @@
+<?php use Softn\controllers\ViewController; ?>
         <footer>
             <div class="container-fluid">
                 <hr/>
@@ -5,8 +6,8 @@
                 <p class="pull-right">Versión <?php echo VERSION; ?></p>
             </div>
         </footer>
-        <script src="jquery-1.12.0.js" type="text/javascript"></script>
-        <script src="bootstrap.js" type="text/javascript"></script>
-        <script src="script.js" type="text/javascript"></script>
+        <?php ViewController::scriptView('jquery-3.2.1') ?>
+<!--        <script src="bootstrap.js" type="text/javascript"></script>-->
+        <?php ViewController::scriptView('script') ?>
     </body>
 </html>

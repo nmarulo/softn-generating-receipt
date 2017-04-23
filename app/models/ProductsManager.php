@@ -29,6 +29,10 @@ class ProductsManager extends ManagerAbstract {
         parent::__construct();
     }
     
+    public function getLast() {
+        return parent::getLastData(self::TABLE);
+    }
+    
     public function getAll() {
         return parent::selectAll(self::TABLE);
     }
@@ -50,6 +54,11 @@ class ProductsManager extends ManagerAbstract {
     
     protected function create($data) {
         $object = new Product();
+        
+        if ($data === FALSE) {
+            return $object;
+        }
+        
         $object->setId(Arrays::get($data, self::ID));
         $object->setProductName(Arrays::get($data, self::PRODUCT_NAME));
         $object->setProductReference(Arrays::get($data, self::PRODUCT_REFERENCE));

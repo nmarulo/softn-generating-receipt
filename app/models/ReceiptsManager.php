@@ -32,6 +32,13 @@ class ReceiptsManager extends ManagerAbstract {
     }
     
     /**
+     * @return Receipt
+     */
+    public function getLast() {
+        return parent::getLastData(self::TABLE);
+    }
+    
+    /**
      * @return array
      */
     public function getAll() {
@@ -65,6 +72,11 @@ class ReceiptsManager extends ManagerAbstract {
      */
     protected function create($data) {
         $object = new Receipt();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
         $object->setId(Arrays::get($data, self::ID));
         $object->setReceiptDate(Arrays::get($data, self::RECEIPT_DATE));
         $object->setReceiptNumber(Arrays::get($data, self::RECEIPT_NUMBER));

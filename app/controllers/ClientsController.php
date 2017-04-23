@@ -81,4 +81,12 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         ViewController::sendViewData('clients', $objectManager->getAll());
         ViewController::view('index');
     }
+    
+    public function getClientsJSON() {
+        $objectManager = new ClientsManager();
+        $objects       = $objectManager->getAll();
+        $objectsJSON   = json_encode($objects);
+    
+        echo $objectsJSON;
+    }
 }

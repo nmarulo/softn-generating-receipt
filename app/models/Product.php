@@ -9,7 +9,7 @@ namespace Softn\models;
  * Class Product
  * @author Nicolás Marulanda P.
  */
-class Product {
+class Product implements \JsonSerializable {
     
     /** @var int */
     private $id;
@@ -31,6 +31,15 @@ class Product {
         $this->productName      = '';
         $this->productPriceUnit = 0;
         $this->productReference = '';
+    }
+    
+    function jsonSerialize() {
+        return [
+            ProductsManager::ID                 => $this->id,
+            ProductsManager::PRODUCT_NAME       => $this->productName,
+            ProductsManager::PRODUCT_PRICE_UNIT => $this->productPriceUnit,
+            ProductsManager::PRODUCT_PRICE_UNIT => $this->productReference,
+        ];
     }
     
     /**

@@ -45,7 +45,7 @@ class ClientsManager extends ManagerAbstract {
      */
     public function getByID($id) {
         $object = NULL;
-        $select       = parent::selectByID($id, self::TABLE);
+        $select = parent::selectByID($id, self::TABLE);
         
         foreach ($select as $value) {
             $object = $this->create($value);
@@ -67,6 +67,11 @@ class ClientsManager extends ManagerAbstract {
      */
     protected function create($data) {
         $object = new Client();
+        
+        if ($data === FALSE) {
+            return $object;
+        }
+        
         $object->setId(Arrays::get($data, self::ID));
         $object->setClientIdentificationDocument(Arrays::get($data, self::CLIENT_IDENTIFICATION_DOCUMENT));
         $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
@@ -97,6 +102,10 @@ class ClientsManager extends ManagerAbstract {
         parent::addSetForUpdate(self::CLIENT_CITY);
         $id = $object->getId();
         parent::updateData($object, self::TABLE, $id);
+    }
+    
+    public function getLast() {
+        return parent::getLastData(self::TABLE);
     }
     
     /**

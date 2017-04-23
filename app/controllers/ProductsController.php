@@ -77,4 +77,12 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
         ViewController::sendViewData('products', $objectManager->getAll());
         ViewController::view('index');
     }
+    
+    public function getProductsJSON() {
+        $objectManager = new ProductsManager();
+        $objects       = $objectManager->getAll();
+        $objectsJSON   = json_encode($objects);
+        
+        echo $objectsJSON;
+    }
 }

@@ -6,6 +6,7 @@
 namespace Softn\controllers;
 
 use Softn\models\Generating;
+use Softn\models\GeneratingManager;
 
 /**
  * Class GeneratingController
@@ -30,7 +31,8 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
     }
     
     public function index() {
-        ViewController::sendViewData('generating', new Generating());
+        $objectManager = new GeneratingManager();
+        ViewController::sendViewData('generating', $objectManager->defaultData());
         ViewController::view('index');
     }
     
