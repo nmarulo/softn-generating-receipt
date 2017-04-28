@@ -38,7 +38,7 @@ class Product implements \JsonSerializable {
             ProductsManager::ID                 => $this->id,
             ProductsManager::PRODUCT_NAME       => $this->productName,
             ProductsManager::PRODUCT_PRICE_UNIT => $this->productPriceUnit,
-            ProductsManager::PRODUCT_PRICE_UNIT => $this->productReference,
+            ProductsManager::PRODUCT_REFERENCE => $this->productReference,
         ];
     }
     

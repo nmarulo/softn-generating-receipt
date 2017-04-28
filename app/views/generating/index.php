@@ -1,8 +1,8 @@
 <?php
 use Softn\controllers\ViewController;
 use Softn\models\ReceiptsManager;
-use Softn\models\GeneratingManager;
-
+use Softn\models\ReceiptsHasProductsManager;
+var_dump($_GET);
 $generating = ViewController::getViewData('generating');
 $receipt    = $generating->getReceipt();
 ?>
@@ -45,10 +45,11 @@ $receipt    = $generating->getReceipt();
             <input id="receipt-product-unit" class="form-control" type="number" value="1">
         </div>
         <div class="form-group">
-            <button class="btn btn-primary" type="submit">Agregar producto</button>
+            <button id="btn-add-product" class="btn btn-primary" type="button">Agregar producto</button>
         </div>
-        <input id="receipt-products" type="hidden" name="<?php echo GeneratingManager::RECEIPT_PRODUCTS; ?>">
-        <input id="receipt-client-id" type="hidden" name="<?php echo GeneratingManager::RECEIPT_CLIENT_ID; ?>">
+        <input id="receipt-products" type="hidden" name="<?php echo ReceiptsHasProductsManager::RECEIPT_PRODUCTS; ?>">
+        <input id="receipt-client-id" type="hidden" name="<?php echo ReceiptsManager::CLIENT_ID; ?>">
+        <input type="hidden" name="method" value="generate">
         <div class="form-group">
             <button class="btn btn-primary" type="submit">Generar</button>
         </div>
@@ -58,10 +59,7 @@ $receipt    = $generating->getReceipt();
                     Lista de servicios/productos agregados
                 </div>
             </div>
-            <ul id="receipt-products"></ul>
+            <ul id="list-selected-products" class="list-group"></ul>
         </div>
     </form>
 </div>
-<script>
-    initGenerating();
-</script>

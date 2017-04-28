@@ -22,6 +22,8 @@ abstract class ManagerAbstract implements ManagerInterface {
     /** @var string */
     private $setForUpdate;
     
+    private $lastInsertId;
+    
     /**
      * ManagerAbstract constructor.
      */
@@ -29,6 +31,11 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->columnsForInsert = '';
         $this->valuesForInsert  = '';
         $this->setForUpdate     = '';
+        $this->lastInsertId = 0;
+    }
+    
+    public function getLastInsertId(){
+        return $this->lastInsertId;
     }
     
     public abstract function getLast();
@@ -118,6 +125,7 @@ abstract class ManagerAbstract implements ManagerInterface {
         $columns = $this->getColumnsForInsert();
         $prepare = $this->prepare($object);
         $mysql->insert($table, $columns, $values, $prepare);
+        $this->lastInsertId = $mysql->lastInsertId();
         $mysql->close();
     }
     
