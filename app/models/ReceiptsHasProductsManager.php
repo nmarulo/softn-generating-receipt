@@ -30,6 +30,9 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         parent::__construct();
     }
     
+    /**
+     * @return ReceiptHasProduct
+     */
     public function getLast() {
         return parent::getLastData(self::TABLE);
     }
@@ -38,8 +41,41 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         return parent::selectAll(self::TABLE);
     }
     
+    /**
+     * @param $id
+     *
+     * @return array
+     */
     public function getByID($id) {
-        // TODO: Implement getByID() method.
+        $objects = [];
+        $mysql   = new MySql();
+        $select  = $mysql->selectByColumn($id, self::TABLE, self::RECEIPT_ID);
+        $mysql->close();
+        
+        foreach ($select as $value) {
+            $objects[] = $this->create($value);
+        }
+        
+        return $objects;
+    }
+    
+    /**
+     * @param array $data
+     *
+     * @return ReceiptHasProduct
+     */
+    protected function create($data) {
+        $object = new ReceiptHasProduct();
+        
+        if ($data === FALSE) {
+            return $object;
+        }
+        
+        $object->setReceiptId($data[self::RECEIPT_ID]);
+        $object->setProductId($data[self::PRODUCT_ID]);
+        $object->setReceiptProductUnit($data[self::RECEIPT_PRODUCT_UNIT]);
+        
+        return $object;
     }
     
     public function insert($object) {
@@ -54,18 +90,14 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
     }
     
     public function delete($id) {
-        $mysql = new MySql();
+        $mysql        = new MySql();
         $paramReceipt = ':' . self::RECEIPT_ID;
-        $where = self::RECEIPT_ID . ' = ' . $paramReceipt;
-        $prepare = [];
-        $prepare[] = MySql::prepareStatement($paramReceipt, $id, \PDO::PARAM_INT);
+        $where        = self::RECEIPT_ID . ' = ' . $paramReceipt;
+        $prepare      = [];
+        $prepare[]    = MySql::prepareStatement($paramReceipt, $id, \PDO::PARAM_INT);
         
         $mysql->delete(self::TABLE, $where, $prepare);
         $mysql->close();
-    }
-    
-    protected function create($data) {
-        // TODO: Implement create() method.
     }
     
     /**
@@ -74,7 +106,7 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
      * @return array
      */
     protected function prepare($object) {
-        $prepare = [];
+        $prepare   = [];
         $prepare[] = MySql::prepareStatement(':' . self::PRODUCT_ID, $object->getProductId(), \PDO::PARAM_INT);
         $prepare[] = MySql::prepareStatement(':' . self::RECEIPT_ID, $object->getReceiptId(), \PDO::PARAM_INT);
         $prepare[] = MySql::prepareStatement(':' . self::RECEIPT_PRODUCT_UNIT, $object->getReceiptProductUnit(), \PDO::PARAM_INT);

@@ -48,42 +48,10 @@ class ReceiptsManager extends ManagerAbstract {
     /**
      * @param $id
      *
-     * @return null|Receipt
-     */
-    public function getByID($id) {
-        $object = NULL;
-        $select = parent::selectByID($id, self::TABLE);
-        
-        foreach ($select as $value) {
-            $object = $this->create($value);
-        }
-        
-        if ($object === NULL) {
-            $object = new Receipt();
-        }
-        
-        return $object;
-    }
-    
-    /**
-     * @param array $data
-     *
      * @return Receipt
      */
-    protected function create($data) {
-        $object = new Receipt();
-        
-        if (empty($data)) {
-            return $object;
-        }
-        
-        $object->setId(Arrays::get($data, self::ID));
-        $object->setReceiptDate(Arrays::get($data, self::RECEIPT_DATE));
-        $object->setReceiptNumber(Arrays::get($data, self::RECEIPT_NUMBER));
-        $object->setReceiptType(Arrays::get($data, self::RECEIPT_TYPE));
-        $object->setClientId(Arrays::get($data, self::CLIENT_ID));
-        
-        return $object;
+    public function getByID($id) {
+        return parent::selectByID($id, self::TABLE);;
     }
     
     /**
@@ -114,6 +82,27 @@ class ReceiptsManager extends ManagerAbstract {
      */
     public function delete($id) {
         parent::deleteByID($id, self::TABLE);
+    }
+    
+    /**
+     * @param array $data
+     *
+     * @return Receipt
+     */
+    protected function create($data) {
+        $object = new Receipt();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setReceiptDate(Arrays::get($data, self::RECEIPT_DATE));
+        $object->setReceiptNumber(Arrays::get($data, self::RECEIPT_NUMBER));
+        $object->setReceiptType(Arrays::get($data, self::RECEIPT_TYPE));
+        $object->setClientId(Arrays::get($data, self::CLIENT_ID));
+        
+        return $object;
     }
     
     /**

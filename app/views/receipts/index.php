@@ -23,7 +23,7 @@ $receipts = ViewController::getViewData('receipts');
                 <a href="receipts.php?method=delete&delete=<?php echo $receipt->getId(); ?>">
                     <span class="glyphicon glyphicon-remove"></span>
                 </a>
-                <a id="btn-generate-pdf" href="#"><span class="glyphicon glyphicon-open-file"></span></a>
+                <a class="btn-generate-pdf" data-receipt-id="<?php echo $receipt->getId(); ?>" href="#"><span class="glyphicon glyphicon-open-file"></span></a>
             </li>
         <?php } ?>
     </ul>

@@ -44,8 +44,8 @@ function setVars() {
 		var productId = element.data('product-id');
 		inputReceiptProduct.val(element.text());
 		
-		for(var i = 0; i < productsJSON.length && !exit; ++i){
-			if(productsJSON[i]['id'] == productId){
+		for (var i = 0; i < productsJSON.length && !exit; ++i) {
+			if (productsJSON[i]['id'] == productId) {
 				selectedProductJSON = productsJSON[i];
 				exit = true;
 			}
@@ -70,8 +70,8 @@ function setVars() {
  * Método que establece la lista de clientes y productos.
  */
 function setProductsAndClients() {
-	callAjax('clients.php', 'getClientsJSON', setClientsJSON);
-	callAjax('products.php', 'getProductsJSON', setProductsJSON);
+	callAjax('clients.php', {method: 'getClientsJSON'}, setClientsJSON);
+	callAjax('products.php', {method: 'getProductsJSON'}, setProductsJSON);
 }
 
 function registerEvents() {
@@ -100,7 +100,20 @@ function registerEvents() {
 		//se cierre el "div" del "Content Autocomplete".
 		isEventInput = false;
 	});
-	$('#btn-add-product').on('click', function(){
+	$('#btn-add-product').on('click', function () {
+		var exit = false;
+		var ulLiElements = ulListSelectedProducts.find('li');
+		
+		for (var i = 0; i < ulLiElements.length && !exit; ++i) {
+			var ulLiElementSelect = $(ulLiElements[i]);
+			
+			if (ulLiElementSelect.data('product-id') == selectedProductJSON['id']) {
+				console.log(ulLiElementSelect.find('#btn-remove-product'));
+				
+				ulLiElementSelect.find('#btn-remove-product').click()
+			}
+		}
+		
 		selectedProductJSON['receipt_product_unit'] = inputReceiptProductUnit.val();
 		setListSelectedProducts(selectedProductJSON);
 		selectedProductsJSON.push(selectedProductJSON);
@@ -108,13 +121,13 @@ function registerEvents() {
 		inputReceiptProduct.val('');
 		inputReceiptProductUnit.val(1);
 	});
-	$(document).on('click', '#btn-remove-product', function(){
+	$(document).on('click', '#btn-remove-product', function () {
 		var exit = false;
 		var elementLi = $(this).closest('li');
 		var productId = elementLi.data('product-id');
 		
-		for(var i = 0; i < selectedProductsJSON.length && !exit; ++i){
-			if(selectedProductsJSON[i]['id'] == productId){
+		for (var i = 0; i < selectedProductsJSON.length && !exit; ++i) {
+			if (selectedProductsJSON[i]['id'] == productId) {
 				selectedProductsJSON.splice(i, 1);
 				exit = true;
 			}
@@ -123,8 +136,20 @@ function registerEvents() {
 		elementLi.remove();
 	});
 	
-	$('#btn-generate-pdf').on('click', function(){
-		createPDF('','','');
+	$('.btn-generate-pdf').on('click', function (event) {
+		event.preventDefault();
+		
+		var dataPDF = function (data) {
+			var client = data['client'];
+			var products = data['products'];
+			var receipt = data['receipt'];
+			createPDF(client, products, receipt);
+		};
+		var data = {
+			method: 'dataPDF',
+			id: $(this).data('receipt-id')
+		};
+		callAjax('receipts.php', data, dataPDF);
 	});
 }
 
@@ -178,11 +203,11 @@ function setProductsContentAutocomplete() {
 	}
 }
 
-function setInputHiddenReceiptProducts(productsJSON){
+function setInputHiddenReceiptProducts(productsJSON) {
 	inputHiddenReceiptProducts.val(JSON.stringify(productsJSON));
 }
 
-function setListSelectedProducts(productJSON){
+function setListSelectedProducts(productJSON) {
 	var productId = productJSON['id'];
 	var productPriceUnit = productJSON['product_price_unit'];
 	var productName = productJSON['product_name'];
@@ -194,13 +219,13 @@ function setListSelectedProducts(productJSON){
 	ulListSelectedProducts.append('<li class="list-group-item" data-product-id="' + productId + '">' + badgeProductUnit + badgeProductPrice + productName + btnRemoveProduct + '</li>');
 }
 
-function callAjax(url, method, callback) {
+function callAjax(url, data, callback) {
 	$.ajax({
 		url: url,
-		data: {
-			method: method
-		}
+		data: data
 	}).done(function (data, textStatus, jqXHR) {
 		callback(JSON.parse(data));
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		console.log('ERROR: ' + textStatus);
 	});
 }

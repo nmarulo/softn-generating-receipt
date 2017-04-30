@@ -37,7 +37,7 @@ class Client implements \JsonSerializable {
         $this->clientCity                   = '';
     }
     
-    function jsonSerialize() {
+    public function jsonSerialize() {
         return [
             ClientsManager::ID                             => $this->id,
             ClientsManager::CLIENT_NAME                    => $this->clientName,

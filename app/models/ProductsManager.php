@@ -37,34 +37,13 @@ class ProductsManager extends ManagerAbstract {
         return parent::selectAll(self::TABLE);
     }
     
+    /**
+     * @param $id
+     *
+     * @return Product
+     */
     public function getByID($id) {
-        $object = NULL;
-        $select = parent::selectByID($id, self::TABLE);
-        
-        foreach ($select as $value) {
-            $object = $this->create($value);
-        }
-        
-        if ($object === NULL) {
-            $object = new Product();
-        }
-        
-        return $object;
-    }
-    
-    protected function create($data) {
-        $object = new Product();
-        
-        if ($data === FALSE) {
-            return $object;
-        }
-        
-        $object->setId(Arrays::get($data, self::ID));
-        $object->setProductName(Arrays::get($data, self::PRODUCT_NAME));
-        $object->setProductReference(Arrays::get($data, self::PRODUCT_REFERENCE));
-        $object->setProductPriceUnit(Arrays::get($data, self::PRODUCT_PRICE_UNIT));
-        
-        return $object;
+        return parent::selectByID($id, self::TABLE);
     }
     
     public function insert($object) {
@@ -87,6 +66,21 @@ class ProductsManager extends ManagerAbstract {
     
     public function delete($id) {
         parent::deleteByID($id, self::TABLE);
+    }
+    
+    protected function create($data) {
+        $object = new Product();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setProductName(Arrays::get($data, self::PRODUCT_NAME));
+        $object->setProductReference(Arrays::get($data, self::PRODUCT_REFERENCE));
+        $object->setProductPriceUnit(Arrays::get($data, self::PRODUCT_PRICE_UNIT));
+        
+        return $object;
     }
     
     /**

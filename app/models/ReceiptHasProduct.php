@@ -9,7 +9,7 @@ namespace Softn\models;
  * Class ReceiptHasProduct
  * @author Nicolás Marulanda P.
  */
-class ReceiptHasProduct {
+class ReceiptHasProduct implements \JsonSerializable {
     
     /** @var int */
     private $receiptId;
@@ -27,6 +27,14 @@ class ReceiptHasProduct {
         $this->receiptId          = 0;
         $this->productId          = 0;
         $this->receiptProductUnit = 0;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            ReceiptsHasProductsManager::RECEIPT_ID           => $this->receiptId,
+            ReceiptsHasProductsManager::PRODUCT_ID           => $this->productId,
+            ReceiptsHasProductsManager::RECEIPT_PRODUCT_UNIT => $this->receiptProductUnit,
+        ];
     }
     
     /**

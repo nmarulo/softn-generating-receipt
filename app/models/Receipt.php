@@ -9,7 +9,7 @@ namespace Softn\models;
  * Class Receipt
  * @author Nicolás Marulanda P.
  */
-class Receipt {
+class Receipt implements \JsonSerializable {
     
     /** @var int */
     private $id;
@@ -34,6 +34,16 @@ class Receipt {
         $this->receiptType   = 'Factura';
         $this->receiptNumber = 0;
         $this->receiptDate   = '00/00/000';
+    }
+    
+    public function jsonSerialize() {
+        return [
+            ReceiptsManager::ID             => $this->id,
+            ReceiptsManager::CLIENT_ID      => $this->clientId,
+            ReceiptsManager::RECEIPT_TYPE   => $this->receiptType,
+            ReceiptsManager::RECEIPT_NUMBER => $this->receiptNumber,
+            ReceiptsManager::RECEIPT_DATE   => $this->receiptDate,
+        ];
     }
     
     /**

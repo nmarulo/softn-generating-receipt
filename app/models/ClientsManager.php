@@ -44,41 +44,7 @@ class ClientsManager extends ManagerAbstract {
      * @return Client
      */
     public function getByID($id) {
-        $object = NULL;
-        $select = parent::selectByID($id, self::TABLE);
-        
-        foreach ($select as $value) {
-            $object = $this->create($value);
-        }
-        
-        if ($object === NULL) {
-            $object = new Client();
-        }
-        
-        return $object;
-    }
-    
-    /**
-     * Método que obtiene una instancia con los datos.
-     *
-     * @param array $data Datos de la consulta 'SELECT'.
-     *
-     * @return Client
-     */
-    protected function create($data) {
-        $object = new Client();
-        
-        if ($data === FALSE) {
-            return $object;
-        }
-        
-        $object->setId(Arrays::get($data, self::ID));
-        $object->setClientIdentificationDocument(Arrays::get($data, self::CLIENT_IDENTIFICATION_DOCUMENT));
-        $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
-        $object->setClientAddress(Arrays::get($data, self::CLIENT_ADDRESS));
-        $object->setClientName(Arrays::get($data, self::CLIENT_NAME));
-        
-        return $object;
+        return parent::selectByID($id, self::TABLE);;
     }
     
     /**
@@ -113,6 +79,29 @@ class ClientsManager extends ManagerAbstract {
      */
     public function delete($id) {
         parent::deleteByID($id, self::TABLE);
+    }
+    
+    /**
+     * Método que obtiene una instancia con los datos.
+     *
+     * @param array $data Datos de la consulta 'SELECT'.
+     *
+     * @return Client
+     */
+    protected function create($data) {
+        $object = new Client();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setClientIdentificationDocument(Arrays::get($data, self::CLIENT_IDENTIFICATION_DOCUMENT));
+        $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
+        $object->setClientAddress(Arrays::get($data, self::CLIENT_ADDRESS));
+        $object->setClientName(Arrays::get($data, self::CLIENT_NAME));
+        
+        return $object;
     }
     
     /**

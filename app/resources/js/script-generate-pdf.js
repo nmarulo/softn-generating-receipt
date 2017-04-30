@@ -37,34 +37,15 @@ function getBase64Image(img) {
 	return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 	
 }
-var img = new Image();
-img.onload = function () {
-	var dataURI = getBase64Image(img);
-	return dataURI;
-};
-img.src = "app/resources/img/softn.png";
+// var img = new Image();
+// img.onload = function () {
+// 	var dataURI = getBase64Image(img);
+// 	return dataURI;
+// };
+// img.src = "app/resources/img/softn.png";
 
 function createPDF(client, products, receipt) {
 	var doc = new jsPDF();
-	client = {
-		'client_name': 'nicolas',
-		'client_address': 'client address',
-		'client_identification_document': '123456',
-		'client_city': 'client city'
-	};
-	products = [
-		{
-			'product_name': 'prod 1',
-			'product_price_unit': 123,
-			'product_reference': 'abc',
-			'receipt_product_unit': 6
-		}
-	];
-	receipt = {
-		'receipt_type': 'receipt type',
-		'receipt_number': '1234',
-		'receipt_date': 'receipt date'
-	};
 	var marginX = 18;//Margen inicial izquierdo
 	var marginXMax = 192;//Margen final derecho
 	var marginY = 30;//Margen iniciar superior
@@ -99,7 +80,7 @@ function createPDF(client, products, receipt) {
 	}
 	
 	for (var i = 0; i < products.length; i = i + 1) {
-		subtotal = subtotal + (products[i]['product_price_unit'] * products[i]['receipt_product_unit']);
+		subtotal = subtotal + (products[i]['product']['product_price_unit'] * products[i]['receipt_product_unit']);
 	}
 	
 	ivaTotal = (subtotal * ivaPercentage) / 100;
@@ -108,7 +89,7 @@ function createPDF(client, products, receipt) {
 	total = Math.round(total * 100) / 100;
 	
 	//Imágenes -------------------------------------
-	doc.addImage(img.onload(), 'jpeg', marginX, marginY + 70, sizeTableWidth, 80);//facturaFondo
+	// doc.addImage(img.onload(), 'jpeg', marginX, marginY + 70, sizeTableWidth, 80);//facturaFondo
 	doc.setTextColor(220, 0, 0);
 	doc.setFontSize(fontSize);
 	doc.setFontType('bold');
@@ -212,17 +193,17 @@ function createPDF(client, products, receipt) {
 	
 	for (var i = 0; i < products.length; i = i + 1) {
 		marginYBase = marginYBase + rowSize;
-		doc.text(marginX + 1, marginYBase, products[i]['product_reference']);
-		doc.text(marginX + 19, marginYBase, products[i]['product_name']);
+		doc.text(marginX + 1, marginYBase, products[i]['product']['product_reference']);
+		doc.text(marginX + 19, marginYBase, products[i]['product']['product_name']);
 		
 		unit = number_format(products[i]['receipt_product_unit'], 0, ',', '.').toString();
 		doc.textAlingRight(MarginXAlignRightUnit, marginYBase, unit);
 		
-		priceUnit = parseFloat(products[i]['product_price_unit']).toFixed(2);
+		priceUnit = parseFloat(products[i]['product']['product_price_unit']).toFixed(2);
 		priceUnit = number_format(priceUnit, 2, ',', '.').toString();
 		doc.textAlingRight(MarginXAlignRightPriceUnit, marginYBase, priceUnit + ' €');
 		
-		productSubtotal = products[i]['receipt_product_unit'] * products[i]['product_price_unit'];
+		productSubtotal = products[i]['receipt_product_unit'] * products[i]['product']['product_price_unit'];
 		productSubtotal = number_format(productSubtotal, 2, ',', '.').toString();
 		doc.textAlingRight(MarginXAlignRightSubtotal, marginYBase, productSubtotal + ' €');
 	}

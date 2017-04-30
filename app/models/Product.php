@@ -33,12 +33,12 @@ class Product implements \JsonSerializable {
         $this->productReference = '';
     }
     
-    function jsonSerialize() {
+    public function jsonSerialize() {
         return [
             ProductsManager::ID                 => $this->id,
             ProductsManager::PRODUCT_NAME       => $this->productName,
             ProductsManager::PRODUCT_PRICE_UNIT => $this->productPriceUnit,
-            ProductsManager::PRODUCT_REFERENCE => $this->productReference,
+            ProductsManager::PRODUCT_REFERENCE  => $this->productReference,
         ];
     }
     

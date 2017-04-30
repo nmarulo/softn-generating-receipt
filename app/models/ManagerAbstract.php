@@ -5,6 +5,7 @@
 
 namespace Softn\models;
 
+use Softn\util\Arrays;
 use Softn\util\MySql;
 
 /**
@@ -31,10 +32,10 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->columnsForInsert = '';
         $this->valuesForInsert  = '';
         $this->setForUpdate     = '';
-        $this->lastInsertId = 0;
+        $this->lastInsertId     = 0;
     }
     
-    public function getLastInsertId(){
+    public function getLastInsertId() {
         return $this->lastInsertId;
     }
     
@@ -44,24 +45,24 @@ abstract class ManagerAbstract implements ManagerInterface {
      * @param int    $id
      * @param string $table
      */
-    public function deleteByID($id, $table) {
+    protected function deleteByID($id, $table) {
         $mysql = new MySql();
         $mysql->deleteByColumn($id, $table, self::ID);
         $mysql->close();
     }
     
     /**
-     * @param int    $id
-     * @param string $table
+     * @param $id
+     * @param $table
      *
-     * @return array|bool|\PDOStatement
+     * @return object
      */
-    public function selectByID($id, $table) {
+    protected function selectByID($id, $table) {
         $mysql  = new MySql();
         $select = $mysql->selectByColumn($id, $table, self::ID);
         $mysql->close();
         
-        return $select;
+        return $this->create(Arrays::get($select, 0));
     }
     
     protected function getLastData($table) {
@@ -69,8 +70,15 @@ abstract class ManagerAbstract implements ManagerInterface {
         $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
         $mysql->close();
         
-        return $this->create($select);
+        return $this->create(Arrays::get($select, 0));
     }
+    
+    /**
+     * @param array $data
+     *
+     * @return object
+     */
+    protected abstract function create($data);
     
     /**
      * @param string $name
@@ -101,13 +109,6 @@ abstract class ManagerAbstract implements ManagerInterface {
     }
     
     /**
-     * @param array $data
-     *
-     * @return object
-     */
-    protected abstract function create($data);
-    
-    /**
      * @param string $name
      */
     protected function addSetForUpdate($name) {
@@ -133,6 +134,15 @@ abstract class ManagerAbstract implements ManagerInterface {
     protected abstract function prepare($object);
     
     /**
+     *
+     */
+    private function clear() {
+        $this->columnsForInsert = '';
+        $this->valuesForInsert  = '';
+        $this->setForUpdate     = '';
+    }
+    
+    /**
      * @param object $object
      * @param string $table
      * @param int    $id
@@ -146,14 +156,5 @@ abstract class ManagerAbstract implements ManagerInterface {
         $mysql->update($table, $columns, $where, $prepare);
         $mysql->close();
         $this->clear();
-    }
-    
-    /**
-     *
-     */
-    private function clear(){
-        $this->columnsForInsert = '';
-        $this->valuesForInsert  = '';
-        $this->setForUpdate     = '';
     }
 }
