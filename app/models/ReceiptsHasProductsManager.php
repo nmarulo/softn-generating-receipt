@@ -54,7 +54,14 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
     }
     
     public function delete($id) {
-        // TODO: Implement delete() method.
+        $mysql = new MySql();
+        $paramReceipt = ':' . self::RECEIPT_ID;
+        $where = self::RECEIPT_ID . ' = ' . $paramReceipt;
+        $prepare = [];
+        $prepare[] = MySql::prepareStatement($paramReceipt, $id, \PDO::PARAM_INT);
+        
+        $mysql->delete(self::TABLE, $where, $prepare);
+        $mysql->close();
     }
     
     protected function create($data) {

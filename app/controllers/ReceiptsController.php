@@ -5,6 +5,7 @@
 
 namespace Softn\controllers;
 
+use Softn\models\ReceiptsHasProductsManager;
 use Softn\models\ReceiptsManager;
 use Softn\util\Arrays;
 
@@ -39,6 +40,8 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         if ($id !== FALSE) {
             $objectManager = new ReceiptsManager();
             $objectManager->delete($id);
+            $receiptHasProductManager = new ReceiptsHasProductsManager();
+            $receiptHasProductManager->delete($id);
         }
         
         $this->index();

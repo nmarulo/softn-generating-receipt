@@ -121,26 +121,13 @@ abstract class ManagerAbstract implements ManagerInterface {
      */
     protected function insertData($object, $table) {
         $mysql   = new MySql();
-        $values  = $this->getValuesForInsert();
-        $columns = $this->getColumnsForInsert();
+        $values  = $this->valuesForInsert;
+        $columns = $this->columnsForInsert;
         $prepare = $this->prepare($object);
         $mysql->insert($table, $columns, $values, $prepare);
         $this->lastInsertId = $mysql->lastInsertId();
         $mysql->close();
-    }
-    
-    /**
-     * @return string
-     */
-    protected function getValuesForInsert() {
-        return $this->valuesForInsert;
-    }
-    
-    /**
-     * @return string
-     */
-    protected function getColumnsForInsert() {
-        return $this->columnsForInsert;
+        $this->clear();
     }
     
     protected abstract function prepare($object);
@@ -152,19 +139,21 @@ abstract class ManagerAbstract implements ManagerInterface {
      */
     protected function updateData($object, $table, $id) {
         $mysql     = new MySql();
-        $columns   = $this->getSetForUpdate();
+        $columns   = $this->setForUpdate;
         $where     = self::ID . ' = :' . self::ID;
         $prepare   = $this->prepare($object);
         $prepare[] = $mysql->prepareStatement(':' . self::ID, $id, \PDO::PARAM_INT);
         $mysql->update($table, $columns, $where, $prepare);
         $mysql->close();
+        $this->clear();
     }
     
     /**
-     * @return string
+     *
      */
-    public function getSetForUpdate() {
-        return $this->setForUpdate;
+    private function clear(){
+        $this->columnsForInsert = '';
+        $this->valuesForInsert  = '';
+        $this->setForUpdate     = '';
     }
-    
 }

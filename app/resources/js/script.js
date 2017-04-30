@@ -47,7 +47,6 @@ function setVars() {
 		for(var i = 0; i < productsJSON.length && !exit; ++i){
 			if(productsJSON[i]['id'] == productId){
 				selectedProductJSON = productsJSON[i];
-				selectedProductJSON['receipt_product_unit'] = inputReceiptProductUnit.val();
 				exit = true;
 			}
 		}
@@ -102,7 +101,8 @@ function registerEvents() {
 		isEventInput = false;
 	});
 	$('#btn-add-product').on('click', function(){
-		setListSelectedProducts(selectedProductJSON, inputReceiptProductUnit.val());
+		selectedProductJSON['receipt_product_unit'] = inputReceiptProductUnit.val();
+		setListSelectedProducts(selectedProductJSON);
 		selectedProductsJSON.push(selectedProductJSON);
 		setInputHiddenReceiptProducts(selectedProductsJSON);
 		inputReceiptProduct.val('');
@@ -121,6 +121,10 @@ function registerEvents() {
 		}
 		setInputHiddenReceiptProducts(selectedProductsJSON);
 		elementLi.remove();
+	});
+	
+	$('#btn-generate-pdf').on('click', function(){
+		createPDF('','','');
 	});
 }
 
@@ -178,10 +182,11 @@ function setInputHiddenReceiptProducts(productsJSON){
 	inputHiddenReceiptProducts.val(JSON.stringify(productsJSON));
 }
 
-function setListSelectedProducts(productJSON, productUnit){
+function setListSelectedProducts(productJSON){
 	var productId = productJSON['id'];
 	var productPriceUnit = productJSON['product_price_unit'];
 	var productName = productJSON['product_name'];
+	var productUnit = productJSON['receipt_product_unit'];
 	var badgeProductUnit = '<span class="badge">Unidades: ' + productUnit + '</span>';
 	var badgeProductPrice = '<span class="badge">Precio U.: ' + productPriceUnit + '</span>';
 	var btnRemoveProduct = '<button id="btn-remove-product" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-remove"></span></button>';

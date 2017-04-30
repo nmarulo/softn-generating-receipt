@@ -2,7 +2,7 @@
 use Softn\controllers\ViewController;
 use Softn\models\ReceiptsManager;
 use Softn\models\ReceiptsHasProductsManager;
-var_dump($_GET);
+
 $generating = ViewController::getViewData('generating');
 $receipt    = $generating->getReceipt();
 ?>

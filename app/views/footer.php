@@ -7,7 +7,8 @@
             </div>
         </footer>
         <?php ViewController::scriptView('jquery-3.2.1') ?>
-<!--        <script src="bootstrap.js" type="text/javascript"></script>-->
+        <?php ViewController::scriptView('jspdf.min') ?>
+        <?php ViewController::scriptView('script-generate-pdf') ?>
         <?php ViewController::scriptView('script') ?>
     </body>
 </html>

@@ -63,6 +63,7 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     public function delete() {
         $id = Arrays::get($_GET, 'delete');
         
+        //TODO: no se puede borrar un producto si fue agregado en una factura.
         if ($id !== FALSE) {
             $objectManager = new ProductsManager();
             $objectManager->delete($id);
