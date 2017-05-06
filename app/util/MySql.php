@@ -250,12 +250,15 @@ class MySql {
      * @param string $table
      * @param string $column
      * @param int    $dataType
+     *
+     * @return bool
      */
     public function deleteByColumn($value, $table, $column, $dataType = \PDO::PARAM_INT) {
-        $where     = $column . ' = :' . $column;
+        $param = ":$column";
+        $where     = "$column = $param";
         $prepare   = [];
-        $prepare[] = $this->prepareStatement(':' . $column, $value, $dataType);
-        $this->delete($table, $where, $prepare);
+        $prepare[] = $this->prepareStatement($param, $value, $dataType);
+        return $this->delete($table, $where, $prepare);
     }
     
     /**

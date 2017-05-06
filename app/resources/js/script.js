@@ -143,7 +143,8 @@ function registerEvents() {
 			var client = data['client'];
 			var products = data['products'];
 			var receipt = data['receipt'];
-			createPDF(client, products, receipt);
+			var options = data['options'];
+			createPDF(client, products, receipt, options);
 		};
 		var data = {
 			method: 'dataPDF',

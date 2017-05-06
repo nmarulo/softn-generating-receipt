@@ -5,5 +5,6 @@
         <li><a href="clients.php">Clientes</a></li>
         <li><a href="products.php">Productos/Servicios</a></li>
         <li><a href="receipts.php">Facturas</a></li>
+        <li><a href="options.php">Opciones</a></li>
     </ul>
 </aside>

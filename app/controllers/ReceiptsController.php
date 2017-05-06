@@ -7,6 +7,7 @@ namespace Softn\controllers;
 
 use Softn\models\Client;
 use Softn\models\ClientsManager;
+use Softn\models\OptionsManager;
 use Softn\models\Product;
 use Softn\models\ProductsManager;
 use Softn\models\Receipt;
@@ -64,6 +65,7 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
             'client'   => NULL,
             'products' => [],
             'receipt'  => NULL,
+            'options'  => NULL,
         ];
         
         if ($id !== FALSE) {
@@ -76,6 +78,7 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
             $receiptHasProducts  = $receiptsHasProducts->getByID($id);
             $dataJSON['client']  = $client;
             $dataJSON['receipt'] = $receipt;
+            $dataJSON['options'] = $this->getOptions();
             
             foreach ($receiptHasProducts as $receiptHasProduct) {
                 $dataJSON['products'][] = [
@@ -86,6 +89,25 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         }
         
         echo json_encode($dataJSON);
+    }
+    
+    private function getOptions() {
+        $optionsManager = new OptionsManager();
+        
+        return [
+            OptionsManager::OPTION_KEY_NAME                    => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_NAME)
+                                                                                 ->getOptionValue(),
+            OptionsManager::OPTION_KEY_ADDRESS                 => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_ADDRESS)
+                                                                                 ->getOptionValue(),
+            OptionsManager::OPTION_KEY_WEB_SITE                => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_WEB_SITE)
+                                                                                 ->getOptionValue(),
+            OptionsManager::OPTION_KEY_IVA                     => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_IVA)
+                                                                                 ->getOptionValue(),
+            OptionsManager::OPTION_KEY_PHONE_NUMBER            => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_PHONE_NUMBER)
+                                                                                 ->getOptionValue(),
+            OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT)
+                                                                                 ->getOptionValue(),
+        ];
     }
     
     protected function getViewForm() {

@@ -23,6 +23,7 @@ abstract class ManagerAbstract implements ManagerInterface {
     /** @var string */
     private $setForUpdate;
     
+    /** @var int */
     private $lastInsertId;
     
     /**
@@ -35,6 +36,9 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->lastInsertId     = 0;
     }
     
+    /**
+     * @return int
+     */
     public function getLastInsertId() {
         return $this->lastInsertId;
     }
@@ -44,11 +48,15 @@ abstract class ManagerAbstract implements ManagerInterface {
     /**
      * @param int    $id
      * @param string $table
+     *
+     * @return bool
      */
     protected function deleteByID($id, $table) {
-        $mysql = new MySql();
-        $mysql->deleteByColumn($id, $table, self::ID);
+        $mysql     = new MySql();
+        $isExecute = $mysql->deleteByColumn($id, $table, self::ID);
         $mysql->close();
+        
+        return $isExecute;
     }
     
     /**
@@ -58,16 +66,19 @@ abstract class ManagerAbstract implements ManagerInterface {
      * @return object
      */
     protected function selectByID($id, $table) {
-        $mysql  = new MySql();
-        $select = $mysql->selectByColumn($id, $table, self::ID);
-        $mysql->close();
-        
-        return $this->create(Arrays::get($select, 0));
+        return $this->selectByColumn($id, $table, self::ID);
     }
     
-    protected function getLastData($table) {
+    /**
+     * @param string $value
+     * @param string $table
+     * @param string $column
+     *
+     * @return object
+     */
+    protected function selectByColumn($value, $table, $column) {
         $mysql  = new MySql();
-        $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
+        $select = $mysql->selectByColumn($value, $table, $column);
         $mysql->close();
         
         return $this->create(Arrays::get($select, 0));
@@ -79,6 +90,19 @@ abstract class ManagerAbstract implements ManagerInterface {
      * @return object
      */
     protected abstract function create($data);
+    
+    /**
+     * @param string $table
+     *
+     * @return object
+     */
+    protected function getLastData($table) {
+        $mysql  = new MySql();
+        $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
+        $mysql->close();
+        
+        return $this->create(Arrays::get($select, 0));
+    }
     
     /**
      * @param string $name
@@ -119,16 +143,20 @@ abstract class ManagerAbstract implements ManagerInterface {
     /**
      * @param object $object
      * @param string $table
+     *
+     * @return bool
      */
     protected function insertData($object, $table) {
-        $mysql   = new MySql();
-        $values  = $this->valuesForInsert;
-        $columns = $this->columnsForInsert;
-        $prepare = $this->prepare($object);
-        $mysql->insert($table, $columns, $values, $prepare);
+        $mysql              = new MySql();
+        $values             = $this->valuesForInsert;
+        $columns            = $this->columnsForInsert;
+        $prepare            = $this->prepare($object);
+        $isExecute          = $mysql->insert($table, $columns, $values, $prepare);
         $this->lastInsertId = $mysql->lastInsertId();
         $mysql->close();
         $this->clear();
+        
+        return $isExecute;
     }
     
     protected abstract function prepare($object);
@@ -145,16 +173,22 @@ abstract class ManagerAbstract implements ManagerInterface {
     /**
      * @param object $object
      * @param string $table
-     * @param int    $id
+     * @param int    $value
+     * @param string $column [Opcional]
+     *
+     * @return bool
      */
-    protected function updateData($object, $table, $id) {
+    protected function updateData($object, $table, $value, $column = self::ID) {
         $mysql     = new MySql();
         $columns   = $this->setForUpdate;
-        $where     = self::ID . ' = :' . self::ID;
+        $param     = ":$column";
+        $where     = "$column = $param";
         $prepare   = $this->prepare($object);
-        $prepare[] = $mysql->prepareStatement(':' . self::ID, $id, \PDO::PARAM_INT);
-        $mysql->update($table, $columns, $where, $prepare);
+        $prepare[] = $mysql->prepareStatement($param, $value, \PDO::PARAM_INT);
+        $isExecute = $mysql->update($table, $columns, $where, $prepare);
         $mysql->close();
         $this->clear();
+        
+        return $isExecute;
     }
 }

@@ -44,7 +44,7 @@ function getBase64Image(img) {
 // };
 // img.src = "app/resources/img/softn.png";
 
-function createPDF(client, products, receipt) {
+function createPDF(client, products, receipt, options) {
 	var doc = new jsPDF();
 	var marginX = 18;//Margen inicial izquierdo
 	var marginXMax = 192;//Margen final derecho
@@ -59,16 +59,16 @@ function createPDF(client, products, receipt) {
 	var lineBaseX = 0;
 	var lineBaseY = 0;
 	var subtotal = 0.00;
-	var ivaPercentage = 21.00;
+	var ivaPercentage = parseInt(options['option_iva']);
 	var ivaTotal = 0.00;
 	var total = 0.00;
 	var receiptNumber = '';
 	var productSubtotal = 0.00;
-	var textNumero = 'Número:';
+	var strNumber = 'Número:';
 	
 	if (receipt['receipt_type'] == 'Presupuesto') {
 		receiptNumber = '';
-		textNumero = '';
+		strNumber = '';
 	} else {
 		if (receipt['receipt_number'] < 10) {
 			receiptNumber = '000' + receipt['receipt_number'];
@@ -93,7 +93,7 @@ function createPDF(client, products, receipt) {
 	doc.setTextColor(220, 0, 0);
 	doc.setFontSize(fontSize);
 	doc.setFontType('bold');
-	doc.text(marginXMax - 58, marginY + 40, 'WWW.SOFTN.RED');
+	doc.text(marginXMax - 58, marginY + 40, options['option_web_site'].toUpperCase());
 	
 	//Datos del encabezado -------------------------
 	doc.setTextColor(102, 102, 102);
@@ -103,13 +103,13 @@ function createPDF(client, products, receipt) {
 	
 	doc.setFontType('normal');
 	doc.setFontSize(fontSize);
-	doc.text(marginXMax - 50, marginY - 6, 'nombre autor');
-	doc.text(marginXMax - 22, marginY + 1, 'id autor');
-	doc.text(marginXMax - 96, marginY + 7, 'direccion autor');
-	doc.text(marginXMax - 21, marginY + 14, 'tel autor');
+	doc.text(marginXMax - 96, marginY - 6, options['option_name']);
+	doc.text(marginXMax - 96, marginY + 1, options['option_identification_document']);
+	doc.text(marginXMax - 96, marginY + 7, options['option_address']);
+	doc.text(marginXMax - 96, marginY + 14, options['option_phone_number']);
 	
 	doc.setFontSize(fontSize);
-	doc.text(marginX, marginY + 10, textNumero);
+	doc.text(marginX, marginY + 10, strNumber);
 	doc.setTextColor(0, 0, 0);
 	doc.text(marginX + 17, marginY + 10, receiptNumber);
 	

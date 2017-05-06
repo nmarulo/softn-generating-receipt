@@ -44,7 +44,7 @@ class ClientsManager extends ManagerAbstract {
      * @return Client
      */
     public function getByID($id) {
-        return parent::selectByID($id, self::TABLE);;
+        return parent::selectByID($id, self::TABLE);
     }
     
     /**
