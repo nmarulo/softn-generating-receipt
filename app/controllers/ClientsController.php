@@ -83,10 +83,15 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
     }
     
     public function getClientsJSON() {
+        $search        = Arrays::get($_GET, 'search');
         $objectManager = new ClientsManager();
-        $objects       = $objectManager->getAll();
-        $objectsJSON   = json_encode($objects);
-    
-        echo $objectsJSON;
+        
+        if ($search === FALSE) {
+            $objects = $objectManager->getAll();
+        } else {
+            $objects = $objectManager->filter($search);
+        }
+        
+        echo json_encode($objects);
     }
 }

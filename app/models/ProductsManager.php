@@ -29,6 +29,33 @@ class ProductsManager extends ManagerAbstract {
         parent::__construct();
     }
     
+    /**
+     * @param string $search
+     *
+     * @return array
+     */
+    public function filter($search){
+        $products = [];
+        $mysql = new MySql();
+        $value = "%$search%";
+        $product = new Product();
+        $product->setProductName($value);
+        $product->setProductReference($value);
+        $product->setProductPriceUnit(intval($search));
+        $where = self::PRODUCT_REFERENCE . ' LIKE :' . self::PRODUCT_REFERENCE . ' OR ';
+        $where .= self::PRODUCT_NAME . ' LIKE :' . self::PRODUCT_NAME . ' OR ';
+        $where .= self::PRODUCT_PRICE_UNIT . ' = :' . self::PRODUCT_PRICE_UNIT;
+        $prepare = $this->prepare($product);
+        $select = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
+        $mysql->close();
+        
+        foreach ($select as $selectValue){
+            $products[] = $this->create($selectValue);
+        }
+        
+        return $products;
+    }
+    
     public function getLast() {
         return parent::getLastData(self::TABLE);
     }

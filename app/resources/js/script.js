@@ -1,6 +1,10 @@
+var inputSearchData = '';
+var formGenerateReceipt = '';
+var btnGenerateReceipt = '';
+var divContentAutocompleteModal = '';
+var divContentListGroup = '';
+var divModalGenerateReceipt = '';
 var inputReceiptClient = '';
-var divContentAutocomplete = '';
-var divDropdownAutocomplete = '';
 var inputHiddenReceiptClientId = '';
 var inputHiddenReceiptProducts = '';
 var inputReceiptProduct = '';
@@ -32,6 +36,10 @@ var isEventInput = false;
 })();
 
 function setVars() {
+	formGenerateReceipt = $('#form-generate-receipt');
+	btnGenerateReceipt = $('#btn-generate-receipt');
+	divModalGenerateReceipt = $('#modal-generate-receipt');
+	divContentAutocompleteModal = $('.content-autocomplete-modal');
 	inputReceiptClient = $('#receipt-client');
 	inputHiddenReceiptClientId = $('#receipt-client-id');
 	inputHiddenReceiptProducts = $('#receipt-products');
@@ -70,46 +78,40 @@ function setVars() {
  * Método que establece la lista de clientes y productos.
  */
 function setProductsAndClients() {
-	callAjax('clients.php', {method: 'getClientsJSON'}, setClientsJSON);
-	callAjax('products.php', {method: 'getProductsJSON'}, setProductsJSON);
+	callAjaxParseJSON('clients.php', {method: 'getClientsJSON'}, setClientsJSON);
+	callAjaxParseJSON('products.php', {method: 'getProductsJSON'}, setProductsJSON);
 }
 
 function registerEvents() {
 	inputReceiptClient.on('click', function () {
-		//Si esta visible uno de los "div" del "Content Autocomplete" se oculta.
-		hiddenContentAutocomplete();
-		isEventInput = true;
-		getDivAutocomplete($(this));
-		setClientsContentAutocomplete();
-		showOrHiddenContentAutocomplete();
-		registerEventContentAutocomplete(setClientInput);
+		setContentAutocompleteModalElements($(this));
+		divContentAutocompleteModal.modal('show');
+		setDataContentListGroup(clientsJSON, 'id', 'client_name', 'client');
+		registerEventContentListGroup(setClientInput, 'clients.php', 'getClientsJSON', function (data) {
+			clientsJSON = data;
+			setDataContentListGroup(clientsJSON, 'id', 'client_name', 'client');
+		});
 	});
+	
 	inputReceiptProduct.on('click', function () {
-		//Si esta visible uno de los "div" del "Content Autocomplete" se oculta.
-		hiddenContentAutocomplete();
-		isEventInput = true;
-		getDivAutocomplete($(this));
-		setProductsContentAutocomplete();
-		showOrHiddenContentAutocomplete();
-		registerEventContentAutocomplete(setProductInput);
+		setContentAutocompleteModalElements($(this));
+		divContentAutocompleteModal.modal('show');
+		setDataContentListGroup(productsJSON, 'id', 'product_name', 'product');
+		registerEventContentListGroup(setProductInput, 'products.php', 'getProductsJSON', function (data) {
+			productsJSON = data;
+			setDataContentListGroup(productsJSON, 'id', 'product_name', 'product');
+		});
 	});
-	$('body').on('click', function () {
-		hiddenContentAutocomplete();
-		//Ya que este evento sera llamado siempre, se establece a false
-		//para que al pulsar en cualquier lugar
-		//se cierre el "div" del "Content Autocomplete".
-		isEventInput = false;
-	});
+	
 	$('#btn-add-product').on('click', function () {
 		var exit = false;
 		var ulLiElements = ulListSelectedProducts.find('li');
 		
+		//En caso de agregar el mismo producto.
 		for (var i = 0; i < ulLiElements.length && !exit; ++i) {
 			var ulLiElementSelect = $(ulLiElements[i]);
 			
 			if (ulLiElementSelect.data('product-id') == selectedProductJSON['id']) {
-				console.log(ulLiElementSelect.find('#btn-remove-product'));
-				
 				ulLiElementSelect.find('#btn-remove-product').click()
 			}
 		}
@@ -121,6 +123,7 @@ function registerEvents() {
 		inputReceiptProduct.val('');
 		inputReceiptProductUnit.val(1);
 	});
+	
 	$(document).on('click', '#btn-remove-product', function () {
 		var exit = false;
 		var elementLi = $(this).closest('li');
@@ -138,69 +141,89 @@ function registerEvents() {
 	
 	$('.btn-generate-pdf').on('click', function (event) {
 		event.preventDefault();
+		generatePDF($(this).data('receipt-id'));
+	});
+	
+	btnGenerateReceipt.on('click', function (event) {
+		event.preventDefault();
+		generatingReceipt();
+	});
+	
+	divModalGenerateReceipt.on('hide.bs.modal', function () {
+		location.reload();
+	});
+}
+
+/**
+ *
+ * @param receiptID
+ * @param isPageGenerating bool True si estoy en la pagina generating.php
+ */
+function generatePDF(receiptID, isPageGenerating) {
+	var dataPDF = function (data) {
+		var client = data['client'];
+		var products = data['products'];
+		var receipt = data['receipt'];
+		var options = data['options'];
+		var dataUrlString = createPDF(client, products, receipt, options, isPageGenerating);
 		
-		var dataPDF = function (data) {
-			var client = data['client'];
-			var products = data['products'];
-			var receipt = data['receipt'];
-			var options = data['options'];
-			createPDF(client, products, receipt, options);
-		};
+		if (isPageGenerating) {
+			divModalGenerateReceipt.modal('show');
+			$('#btn-generate-pdf').on('click', function (event) {
+				event.preventDefault();
+				window.open(dataUrlString, '_blank');
+				divModalGenerateReceipt.modal('hide');
+			});
+		}
+	};
+	var data = {
+		method: 'dataPDF',
+		id: receiptID
+	};
+	callAjaxParseJSON('receipts.php', data, dataPDF);
+}
+
+function registerEventContentListGroup(callbackSetDataInput, url, method, callbackSetDataJSON) {
+	divContentListGroup.on('click', 'button', function () {
+		callbackSetDataInput($(this));
+		divContentAutocompleteModal.modal('hide');
+	});
+	
+	inputSearchData.on('keyup', function () {
+		var element = $(this);
+		var inputText = element.val();
 		var data = {
-			method: 'dataPDF',
-			id: $(this).data('receipt-id')
+			method: method
 		};
-		callAjax('receipts.php', data, dataPDF);
+		
+		if (inputText.length >= 3 || (!isNaN(inputText) && inputText.length > 0)) {
+			data['search'] = inputText;
+			divContentListGroup.text('');
+			callAjaxParseJSON(url, data, callbackSetDataJSON);
+			
+		} else {
+			callAjaxParseJSON(url, data, callbackSetDataJSON);
+		}
 	});
 }
 
-function getDivAutocomplete(element) {
-	divContentAutocomplete = element.closest('.form-group').find('.content-autocomplete');
-	divDropdownAutocomplete = divContentAutocomplete.find('.dropdown-autocomplete');
+function setContentAutocompleteModalElements(element) {
+	divContentAutocompleteModal = element.closest('.form-group').find('.content-autocomplete-modal');
+	divContentListGroup = divContentAutocompleteModal.find('.list-group');
+	inputSearchData = divContentAutocompleteModal.find('.search-data');
 }
 
-function showOrHiddenContentAutocomplete() {
-	divContentAutocomplete.toggleClass('hidden');
-}
-
-function hiddenContentAutocomplete() {
-	if (divContentAutocomplete !== '' && !divContentAutocomplete.hasClass('hidden') && !isEventInput) {
-		divContentAutocomplete.addClass('hidden');
-	}
-}
-
-function registerEventContentAutocomplete(callback) {
-	divContentAutocomplete.on('click', 'li', function () {
-		callback($(this));
-		showOrHiddenContentAutocomplete();
-	});
-}
-
-function setClientsContentAutocomplete() {
-	//Evita que se rellene el desplegable si ya tiene contenido.
-	if (divDropdownAutocomplete.text() !== '') {
-		return;
+function setDataContentListGroup(dataJSON, keyId, keyName, type) {
+	//Evita que se rellene la lista si ya tiene contenido.
+	if (divContentListGroup.text() !== '' && dataJSON.length > 0) {
+		divContentListGroup.text('');
 	}
 	
-	for (var i in clientsJSON) {
-		var clientName = clientsJSON[i]['client_name'];
-		var clientId = clientsJSON[i]['id'];
+	for (var i in dataJSON) {
+		var name = dataJSON[i][keyName];
+		var id = dataJSON[i][keyId];
 		
-		divDropdownAutocomplete.append('<li data-client-id="' + clientId + '">' + clientName + '</li>');
-	}
-}
-
-function setProductsContentAutocomplete() {
-	//Evita que se rellene el desplegable si ya tiene contenido.
-	if (divDropdownAutocomplete.text() !== '') {
-		return;
-	}
-	
-	for (var i in productsJSON) {
-		var productName = productsJSON[i]['product_name'];
-		var productId = productsJSON[i]['id'];
-		
-		divDropdownAutocomplete.append('<li data-product-id="' + productId + '">' + productName + '</li>');
+		divContentListGroup.append('<button class="list-group-item" type="button" data-' + type + '-id="' + id + '">' + name + '</button>');
 	}
 }
 
@@ -220,12 +243,38 @@ function setListSelectedProducts(productJSON) {
 	ulListSelectedProducts.append('<li class="list-group-item" data-product-id="' + productId + '">' + badgeProductUnit + badgeProductPrice + productName + btnRemoveProduct + '</li>');
 }
 
-function callAjax(url, data, callback) {
+function generatingReceipt() {
+	var data = formGenerateReceipt.serialize();
+	
+	var showPDF = function (data) {
+		generatePDF(data['id'], true);
+	};
+	
+	var getReceiptId = function (data) {
+		callAjaxParseJSON('receipts.php', {method: 'lastInsert'}, showPDF);
+	};
+	
+	callAjax('generating.php', data, getReceiptId);
+}
+
+function callAjaxParseJSON(url, data, callback) {
+	callAjax(url, data, callback, true);
+}
+
+function callAjax(url, data, callback, parseJSON) {
 	$.ajax({
 		url: url,
 		data: data
 	}).done(function (data, textStatus, jqXHR) {
-		callback(JSON.parse(data));
+		if (callback !== undefined) {
+			var parseData = data;
+			
+			if (parseJSON) {
+				parseData = JSON.parse(data);
+			}
+			
+			callback(parseData);
+		}
 	}).fail(function (jqXHR, textStatus, errorThrown) {
 		console.log('ERROR: ' + textStatus);
 	});

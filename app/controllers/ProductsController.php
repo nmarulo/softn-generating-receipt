@@ -80,10 +80,15 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function getProductsJSON() {
+        $search        = Arrays::get($_GET, 'search');
         $objectManager = new ProductsManager();
-        $objects       = $objectManager->getAll();
-        $objectsJSON   = json_encode($objects);
         
-        echo $objectsJSON;
+        if ($search === FALSE) {
+            $objects = $objectManager->getAll();
+        } else {
+            $objects = $objectManager->filter($search);
+        }
+        
+        echo json_encode($objects);
     }
 }

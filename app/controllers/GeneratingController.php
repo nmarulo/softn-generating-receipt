@@ -31,7 +31,6 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
     
     public function generate() {
         $this->getViewForm();
-        $this->index();
     }
     
     protected function getViewForm() {

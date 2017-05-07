@@ -32,6 +32,73 @@ class ClientsManager extends ManagerAbstract {
     }
     
     /**
+     * @param string $search
+     *
+     * @return array
+     */
+    public function filter($search) {
+        $clients = [];
+        $mysql   = new MySql();
+        $value   = "%$search%";
+        $client  = new Client();
+        $client->setClientName($value);
+        $client->setClientAddress($value);
+        $client->setClientCity($value);
+        $client->setClientIdentificationDocument($value);
+        $where   = self::CLIENT_ADDRESS . ' LIKE :' . self::CLIENT_ADDRESS . ' OR ';
+        $where   .= self::CLIENT_CITY . ' LIKE :' . self::CLIENT_CITY . ' OR ';
+        $where   .= self::CLIENT_NAME . ' LIKE :' . self::CLIENT_NAME . ' OR ';
+        $where   .= self::CLIENT_IDENTIFICATION_DOCUMENT . ' LIKE :' . self::CLIENT_IDENTIFICATION_DOCUMENT;
+        $prepare = $this->prepare($client);
+        $select  = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
+        $mysql->close();
+        
+        foreach ($select as $selectValue) {
+            $clients[] = $this->create($selectValue);
+        }
+        
+        return $clients;
+    }
+    
+    /**
+     * @param Client $object
+     *
+     * @return array
+     */
+    protected function prepare($object) {
+        $prepare   = [];
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_NAME, $object->getClientName(), \PDO::PARAM_STR);
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_IDENTIFICATION_DOCUMENT, $object->getClientIdentificationDocument(), \PDO::PARAM_STR);
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_ADDRESS, $object->getClientAddress(), \PDO::PARAM_STR);
+        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_CITY, $object->getClientCity(), \PDO::PARAM_STR);
+        
+        return $prepare;
+    }
+    
+    /**
+     * Método que obtiene una instancia con los datos.
+     *
+     * @param array $data Datos de la consulta 'SELECT'.
+     *
+     * @return Client
+     */
+    protected function create($data) {
+        $object = new Client();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setClientIdentificationDocument(Arrays::get($data, self::CLIENT_IDENTIFICATION_DOCUMENT));
+        $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
+        $object->setClientAddress(Arrays::get($data, self::CLIENT_ADDRESS));
+        $object->setClientName(Arrays::get($data, self::CLIENT_NAME));
+        
+        return $object;
+    }
+    
+    /**
      * @return array
      */
     public function getAll() {
@@ -79,43 +146,5 @@ class ClientsManager extends ManagerAbstract {
      */
     public function delete($id) {
         parent::deleteByID($id, self::TABLE);
-    }
-    
-    /**
-     * Método que obtiene una instancia con los datos.
-     *
-     * @param array $data Datos de la consulta 'SELECT'.
-     *
-     * @return Client
-     */
-    protected function create($data) {
-        $object = new Client();
-        
-        if (empty($data)) {
-            return $object;
-        }
-        
-        $object->setId(Arrays::get($data, self::ID));
-        $object->setClientIdentificationDocument(Arrays::get($data, self::CLIENT_IDENTIFICATION_DOCUMENT));
-        $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
-        $object->setClientAddress(Arrays::get($data, self::CLIENT_ADDRESS));
-        $object->setClientName(Arrays::get($data, self::CLIENT_NAME));
-        
-        return $object;
-    }
-    
-    /**
-     * @param Client $object
-     *
-     * @return array
-     */
-    protected function prepare($object) {
-        $prepare   = [];
-        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_NAME, $object->getClientName(), \PDO::PARAM_STR);
-        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_IDENTIFICATION_DOCUMENT, $object->getClientIdentificationDocument(), \PDO::PARAM_STR);
-        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_ADDRESS, $object->getClientAddress(), \PDO::PARAM_STR);
-        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_CITY, $object->getClientCity(), \PDO::PARAM_STR);
-        
-        return $prepare;
     }
 }

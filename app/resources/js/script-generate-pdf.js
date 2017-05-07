@@ -44,7 +44,7 @@ function getBase64Image(img) {
 // };
 // img.src = "app/resources/img/softn.png";
 
-function createPDF(client, products, receipt, options) {
+function createPDF(client, products, receipt, options, dataUrlString) {
 	var doc = new jsPDF();
 	var marginX = 18;//Margen inicial izquierdo
 	var marginXMax = 192;//Margen final derecho
@@ -266,7 +266,11 @@ function createPDF(client, products, receipt, options) {
 	total = number_format(total, 2, ',', '.').toString();
 	doc.textAlingRight(marginXBase, marginYBase + (rowSize * 3), total + ' €');
 	
-	doc.output('dataurlnewwindow');
+	if(dataUrlString){
+		return doc.output('dataurlstring');
+	}else{
+		doc.output('dataurlnewwindow');
+	}
 }
 
 /**

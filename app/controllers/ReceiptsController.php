@@ -59,6 +59,12 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         ViewController::view('index');
     }
     
+    public function lastInsert() {
+        $receiptsManager = new ReceiptsManager();
+        
+        echo json_encode($receiptsManager->getLast());
+    }
+    
     public function dataPDF() {
         $id       = Arrays::get($_GET, 'id');
         $dataJSON = [
