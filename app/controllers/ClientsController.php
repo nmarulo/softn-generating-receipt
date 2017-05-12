@@ -76,22 +76,24 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
     }
     
     public function index() {
-        $objectManager = new ClientsManager();
-        
-        ViewController::sendViewData('clients', $objectManager->getAll());
+        ViewController::sendViewData('clients', $this->getClients());
         ViewController::view('index');
     }
     
     public function getClientsJSON() {
+        echo json_encode($this->getClients());
+    }
+    
+    private function getClients(){
         $search        = Arrays::get($_GET, 'search');
         $objectManager = new ClientsManager();
-        
+    
         if ($search === FALSE) {
             $objects = $objectManager->getAll();
         } else {
             $objects = $objectManager->filter($search);
         }
         
-        echo json_encode($objects);
+        return $objects;
     }
 }

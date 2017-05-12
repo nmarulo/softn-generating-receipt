@@ -26,6 +26,9 @@ abstract class ManagerAbstract implements ManagerInterface {
     /** @var int */
     private $lastInsertId;
     
+    /** @var array */
+    private $prepare;
+    
     /**
      * ManagerAbstract constructor.
      */
@@ -34,6 +37,7 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->valuesForInsert  = '';
         $this->setForUpdate     = '';
         $this->lastInsertId     = 0;
+        $this->prepare          = [];
     }
     
     /**
@@ -168,6 +172,19 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->columnsForInsert = '';
         $this->valuesForInsert  = '';
         $this->setForUpdate     = '';
+    }
+    
+    protected function prepareStatement($parameter, $value, $dataType) {
+        if (!empty($value)) {
+            $this->prepare[] = MySql::prepareStatement($parameter, $value, $dataType);
+        }
+    }
+    
+    protected function getPrepareAndClear() {
+        $prepare       = $this->prepare;
+        $this->prepare = [];
+        
+        return $prepare;
     }
     
     /**

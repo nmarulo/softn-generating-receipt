@@ -54,8 +54,7 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function index() {
-        $objectManager = new ReceiptsManager();
-        ViewController::sendViewData('receipts', $objectManager->getAll());
+        ViewController::sendViewData('receipts', $this->getReceipts());
         ViewController::view('index');
     }
     
@@ -118,5 +117,18 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
     
     protected function getViewForm() {
         // TODO: Implement getViewForm() method.
+    }
+    
+    private function getReceipts(){
+        $search = Arrays::get($_GET, 'search');
+        $objectManager = new ReceiptsManager();
+        
+        if($search === FALSE){
+            $object = $objectManager->getAll();
+        }else{
+            $object = $objectManager->filter($search);
+        }
+        
+        return $object;
     }
 }

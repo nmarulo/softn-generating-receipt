@@ -31,9 +31,10 @@ class Receipt implements \JsonSerializable {
      */
     public function __construct() {
         $this->id            = 0;
-        $this->receiptType   = 'Factura';
+        $this->receiptType   = '';
         $this->receiptNumber = 0;
-        $this->receiptDate   = '00/00/000';
+        $this->receiptDate   = '';
+        $this->clientId      = 0;
     }
     
     public function jsonSerialize() {

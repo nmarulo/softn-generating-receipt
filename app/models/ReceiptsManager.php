@@ -32,6 +32,73 @@ class ReceiptsManager extends ManagerAbstract {
     }
     
     /**
+     * @param string $search
+     *
+     * @return array
+     */
+    public function filter($search) {
+        $receipts = [];
+        $mysql    = new MySql();
+        $value    = "%$search%";
+        $receipt  = new Receipt();
+        
+        if (is_numeric($search)) {
+            $receipt->setReceiptNumber(intval($search));
+            $where = self::RECEIPT_NUMBER . ' = :' . self::RECEIPT_NUMBER;
+        } else {
+            $receipt->setReceiptType($value);
+            $receipt->setReceiptDate($value);
+            $where = self::RECEIPT_DATE . ' LIKE :' . self::RECEIPT_DATE . ' OR ';
+            $where .= self::RECEIPT_TYPE . ' LIKE :' . self::RECEIPT_TYPE;
+        }
+        
+        $prepare = $this->prepare($receipt);
+        $select  = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
+        $mysql->close();
+        
+        foreach ($select as $selectValue) {
+            $receipts[] = $this->create($selectValue);
+        }
+        
+        return $receipts;
+    }
+    
+    /**
+     * @param Receipt $object
+     *
+     * @return array
+     */
+    protected function prepare($object) {
+        parent::prepareStatement(':' . self::RECEIPT_TYPE, $object->getReceiptType(), \PDO::PARAM_STR);
+        parent::prepareStatement(':' . self::RECEIPT_NUMBER, $object->getReceiptNumber(), \PDO::PARAM_INT);
+        parent::prepareStatement(':' . self::RECEIPT_DATE, $object->getReceiptDate(), \PDO::PARAM_STR);
+        parent::prepareStatement(':' . self::CLIENT_ID, $object->getClientId(), \PDO::PARAM_INT);
+        
+        return $this->getPrepareAndClear();
+    }
+    
+    /**
+     * @param array $data
+     *
+     * @return Receipt
+     */
+    protected function create($data) {
+        $object = new Receipt();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setReceiptDate(Arrays::get($data, self::RECEIPT_DATE));
+        $object->setReceiptNumber(Arrays::get($data, self::RECEIPT_NUMBER));
+        $object->setReceiptType(Arrays::get($data, self::RECEIPT_TYPE));
+        $object->setClientId(Arrays::get($data, self::CLIENT_ID));
+        
+        return $object;
+    }
+    
+    /**
      * @return Receipt
      */
     public function getLast() {
@@ -82,42 +149,6 @@ class ReceiptsManager extends ManagerAbstract {
      */
     public function delete($id) {
         parent::deleteByID($id, self::TABLE);
-    }
-    
-    /**
-     * @param array $data
-     *
-     * @return Receipt
-     */
-    protected function create($data) {
-        $object = new Receipt();
-        
-        if (empty($data)) {
-            return $object;
-        }
-        
-        $object->setId(Arrays::get($data, self::ID));
-        $object->setReceiptDate(Arrays::get($data, self::RECEIPT_DATE));
-        $object->setReceiptNumber(Arrays::get($data, self::RECEIPT_NUMBER));
-        $object->setReceiptType(Arrays::get($data, self::RECEIPT_TYPE));
-        $object->setClientId(Arrays::get($data, self::CLIENT_ID));
-        
-        return $object;
-    }
-    
-    /**
-     * @param Receipt $object
-     *
-     * @return array
-     */
-    protected function prepare($object) {
-        $prepare   = [];
-        $prepare[] = MySql::prepareStatement(':' . self::RECEIPT_TYPE, $object->getReceiptType(), \PDO::PARAM_STR);
-        $prepare[] = MySql::prepareStatement(':' . self::RECEIPT_NUMBER, $object->getReceiptNumber(), \PDO::PARAM_INT);
-        $prepare[] = MySql::prepareStatement(':' . self::RECEIPT_DATE, $object->getReceiptDate(), \PDO::PARAM_STR);
-        $prepare[] = MySql::prepareStatement(':' . self::CLIENT_ID, $object->getClientId(), \PDO::PARAM_INT);
-        
-        return $prepare;
     }
     
 }

@@ -34,26 +34,59 @@ class ProductsManager extends ManagerAbstract {
      *
      * @return array
      */
-    public function filter($search){
+    public function filter($search) {
         $products = [];
-        $mysql = new MySql();
-        $value = "%$search%";
-        $product = new Product();
-        $product->setProductName($value);
-        $product->setProductReference($value);
-        $product->setProductPriceUnit(intval($search));
-        $where = self::PRODUCT_REFERENCE . ' LIKE :' . self::PRODUCT_REFERENCE . ' OR ';
-        $where .= self::PRODUCT_NAME . ' LIKE :' . self::PRODUCT_NAME . ' OR ';
-        $where .= self::PRODUCT_PRICE_UNIT . ' = :' . self::PRODUCT_PRICE_UNIT;
+        $mysql    = new MySql();
+        $value    = "%$search%";
+        $product  = new Product();
+        
+        if (is_numeric($search)) {
+            $product->setProductPriceUnit(intval($search));
+            $where = self::PRODUCT_PRICE_UNIT . ' = :' . self::PRODUCT_PRICE_UNIT;
+        } else {
+            $product->setProductName($value);
+            $product->setProductReference($value);
+            $where = self::PRODUCT_REFERENCE . ' LIKE :' . self::PRODUCT_REFERENCE . ' OR ';
+            $where .= self::PRODUCT_NAME . ' LIKE :' . self::PRODUCT_NAME;
+        }
+        
         $prepare = $this->prepare($product);
-        $select = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
+        $select  = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
         $mysql->close();
         
-        foreach ($select as $selectValue){
+        foreach ($select as $selectValue) {
             $products[] = $this->create($selectValue);
         }
         
         return $products;
+    }
+    
+    /**
+     * @param Product $object
+     *
+     * @return array
+     */
+    protected function prepare($object) {
+        parent::prepareStatement(':' . self::PRODUCT_NAME, $object->getProductName(), \PDO::PARAM_STR);
+        parent::prepareStatement(':' . self::PRODUCT_PRICE_UNIT, $object->getProductPriceUnit(), \PDO::PARAM_INT);
+        parent::prepareStatement(':' . self::PRODUCT_REFERENCE, $object->getProductReference(), \PDO::PARAM_STR);
+        
+        return parent::getPrepareAndClear();
+    }
+    
+    protected function create($data) {
+        $object = new Product();
+        
+        if (empty($data)) {
+            return $object;
+        }
+        
+        $object->setId(Arrays::get($data, self::ID));
+        $object->setProductName(Arrays::get($data, self::PRODUCT_NAME));
+        $object->setProductReference(Arrays::get($data, self::PRODUCT_REFERENCE));
+        $object->setProductPriceUnit(Arrays::get($data, self::PRODUCT_PRICE_UNIT));
+        
+        return $object;
     }
     
     public function getLast() {
@@ -93,35 +126,6 @@ class ProductsManager extends ManagerAbstract {
     
     public function delete($id) {
         parent::deleteByID($id, self::TABLE);
-    }
-    
-    protected function create($data) {
-        $object = new Product();
-        
-        if (empty($data)) {
-            return $object;
-        }
-        
-        $object->setId(Arrays::get($data, self::ID));
-        $object->setProductName(Arrays::get($data, self::PRODUCT_NAME));
-        $object->setProductReference(Arrays::get($data, self::PRODUCT_REFERENCE));
-        $object->setProductPriceUnit(Arrays::get($data, self::PRODUCT_PRICE_UNIT));
-        
-        return $object;
-    }
-    
-    /**
-     * @param Product $object
-     *
-     * @return array
-     */
-    protected function prepare($object) {
-        $prepare   = [];
-        $prepare[] = MySql::prepareStatement(':' . self::PRODUCT_NAME, $object->getProductName(), \PDO::PARAM_STR);
-        $prepare[] = MySql::prepareStatement(':' . self::PRODUCT_PRICE_UNIT, $object->getProductPriceUnit(), \PDO::PARAM_INT);
-        $prepare[] = MySql::prepareStatement(':' . self::PRODUCT_REFERENCE, $object->getProductReference(), \PDO::PARAM_STR);
-        
-        return $prepare;
     }
     
 }

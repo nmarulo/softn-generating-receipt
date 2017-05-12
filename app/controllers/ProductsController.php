@@ -73,22 +73,24 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function index() {
-        $objectManager = new ProductsManager();
-        
-        ViewController::sendViewData('products', $objectManager->getAll());
+        ViewController::sendViewData('products', $this->getProducts());
         ViewController::view('index');
     }
     
     public function getProductsJSON() {
+        echo json_encode($this->getProducts());
+    }
+    
+    private function getProducts(){
         $search        = Arrays::get($_GET, 'search');
         $objectManager = new ProductsManager();
-        
+    
         if ($search === FALSE) {
             $objects = $objectManager->getAll();
         } else {
             $objects = $objectManager->filter($search);
         }
         
-        echo json_encode($objects);
+        return $objects;
     }
 }
