@@ -103,10 +103,11 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	
 	doc.setFontType('normal');
 	doc.setFontSize(fontSize);
-	doc.text(marginXMax - 96, marginY - 6, options['option_name']);
-	doc.text(marginXMax - 96, marginY + 1, options['option_identification_document']);
-	doc.text(marginXMax - 96, marginY + 7, options['option_address']);
-	doc.text(marginXMax - 96, marginY + 14, options['option_phone_number']);
+	var marginXAux = marginXMax - 75;
+	doc.text(marginXAux, marginY - 6, options['option_name']);
+	doc.text(marginXAux, marginY + 1, options['option_identification_document']);
+	doc.text(marginXAux, marginY + 7, options['option_address']);
+	doc.text(marginXAux, marginY + 14, options['option_phone_number']);
 	
 	doc.setFontSize(fontSize);
 	doc.text(marginX, marginY + 10, strNumber);
@@ -266,9 +267,9 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	total = number_format(total, 2, ',', '.').toString();
 	doc.textAlingRight(marginXBase, marginYBase + (rowSize * 3), total + ' €');
 	
-	if(dataUrlString){
+	if (dataUrlString) {
 		return doc.output('dataurlstring');
-	}else{
+	} else {
 		doc.output('dataurlnewwindow');
 	}
 }

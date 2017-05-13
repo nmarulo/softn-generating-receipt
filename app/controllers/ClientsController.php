@@ -80,14 +80,10 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         ViewController::view('index');
     }
     
-    public function getClientsJSON() {
-        echo json_encode($this->getClients());
-    }
-    
-    private function getClients(){
+    public static function getClients() {
         $search        = Arrays::get($_GET, 'search');
         $objectManager = new ClientsManager();
-    
+        
         if ($search === FALSE) {
             $objects = $objectManager->getAll();
         } else {
@@ -95,5 +91,9 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         }
         
         return $objects;
+    }
+    
+    public function getClientsJSON() {
+        echo json_encode($this->getClients());
     }
 }

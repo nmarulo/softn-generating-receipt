@@ -38,7 +38,7 @@ $receipt    = $generating->getReceipt();
                             <div class="form-group">
                                 <input class="form-control search-data" type="text" placeholder="Buscar...">
                             </div>
-                            <div class="list-group"></div>
+                            <div class="content-autocomplete-data-list"></div>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@ $receipt    = $generating->getReceipt();
                             <div class="form-group">
                                 <input class="form-control search-data" type="text" placeholder="Buscar...">
                             </div>
-                            <div class="list-group"></div>
+                            <div class="content-autocomplete-data-list"></div>
                         </div>
                     </div>
                 </div>

@@ -18,6 +18,7 @@ class GeneratingManager {
         $lastReceipt       = $receiptManager->getLast();
         $lastReceiptNumber = $lastReceipt->getReceiptNumber();
         $receipt           = $object->getReceipt();
+        $receipt->setReceiptType('Factura');
         $receipt->setReceiptNumber(++$lastReceiptNumber);
         $receipt->setReceiptDate($date);
         $object->setReceipt($receipt);
@@ -27,19 +28,21 @@ class GeneratingManager {
     
     /**
      * @param Receipt $receipt
-     * @param array   $products
+     * @param array   $productsIdAndUnits
      */
-    public function generate($receipt, $products) {
-        $receiptManager           = new ReceiptsManager();
+    public function generate($receipt, $productsIdAndUnits) {
         $receiptHasProductManager = new ReceiptsHasProductsManager();
+        $receiptManager           = new ReceiptsManager();
         $receiptManager->insert($receipt);
         $receiptId = $receiptManager->getLastInsertId();
         
-        foreach ($products as $product) {
+        foreach ($productsIdAndUnits as $productAndUnits) {
+            $productId         = $productAndUnits[ProductsManager::ID];
+            $productUnits      = $productAndUnits[ReceiptsHasProductsManager::RECEIPT_PRODUCT_UNIT];
             $receiptHasProduct = new ReceiptHasProduct();
             $receiptHasProduct->setReceiptId($receiptId);
-            $receiptHasProduct->setProductId($product[ProductsManager::ID]);
-            $receiptHasProduct->setReceiptProductUnit($product[ReceiptsHasProductsManager::RECEIPT_PRODUCT_UNIT]);
+            $receiptHasProduct->setProductId($productId);
+            $receiptHasProduct->setReceiptProductUnit($productUnits);
             $receiptHasProductManager->insert($receiptHasProduct);
         }
     }
