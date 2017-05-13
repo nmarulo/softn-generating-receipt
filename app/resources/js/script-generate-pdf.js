@@ -103,11 +103,10 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	
 	doc.setFontType('normal');
 	doc.setFontSize(fontSize);
-	var marginXAux = marginXMax - 75;
-	doc.text(marginXAux, marginY - 6, options['option_name']);
-	doc.text(marginXAux, marginY + 1, options['option_identification_document']);
-	doc.text(marginXAux, marginY + 7, options['option_address']);
-	doc.text(marginXAux, marginY + 14, options['option_phone_number']);
+	doc.textAlingRight(marginXMax, marginY - 6, options['option_name']);
+	doc.textAlingRight(marginXMax, marginY + 1, options['option_identification_document']);
+	doc.textAlingRight(marginXMax, marginY + 7, options['option_address']);
+	doc.textAlingRight(marginXMax, marginY + 14, options['option_phone_number']);
 	
 	doc.setFontSize(fontSize);
 	doc.text(marginX, marginY + 10, strNumber);
@@ -164,12 +163,10 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	//Borde interior - columnas
 	lineBaseX = marginX + 18;
 	lineBaseY = marginY + 55;
-	var lineXBaseUnit = 0;
 	doc.line(lineBaseX, lineBaseY, lineBaseX, lineBaseY + sizeTableHeight);
 	lineBaseX = lineBaseX + 89;
 	doc.line(lineBaseX, lineBaseY, lineBaseX, lineBaseY + sizeTableHeight);
 	lineBaseX = lineBaseX + 16;
-	lineXBaseUnit = lineBaseX;
 	doc.line(lineBaseX, lineBaseY, lineBaseX, lineBaseY + sizeTableHeight);
 	lineBaseX = lineBaseX + 25;
 	doc.line(lineBaseX, lineBaseY, lineBaseX, lineBaseY + sizeTableHeight);
