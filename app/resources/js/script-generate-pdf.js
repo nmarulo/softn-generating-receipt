@@ -1,6 +1,6 @@
 (function (api, $) {
 	'use strict';
-	api.textAlingRight = function (x, y, text) {
+	api.textAlignRight = function (x, y, text) {
 		
 		// Get current font size
 		var fontSize = this.internal.getFontSize();
@@ -103,10 +103,10 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	
 	doc.setFontType('normal');
 	doc.setFontSize(fontSize);
-	doc.textAlingRight(marginXMax, marginY - 6, options['option_name']);
-	doc.textAlingRight(marginXMax, marginY + 1, options['option_identification_document']);
-	doc.textAlingRight(marginXMax, marginY + 7, options['option_address']);
-	doc.textAlingRight(marginXMax, marginY + 14, options['option_phone_number']);
+	doc.textAlignRight(marginXMax, marginY - 6, options['option_name']);
+	doc.textAlignRight(marginXMax, marginY + 1, options['option_identification_document']);
+	doc.textAlignRight(marginXMax, marginY + 7, options['option_address']);
+	doc.textAlignRight(marginXMax, marginY + 14, options['option_phone_number']);
 	
 	doc.setFontSize(fontSize);
 	doc.text(marginX, marginY + 10, strNumber);
@@ -195,15 +195,15 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 		doc.text(marginX + 19, marginYBase, products[i]['product']['product_name']);
 		
 		unit = number_format(products[i]['receipt_product_unit'], 0, ',', '.').toString();
-		doc.textAlingRight(MarginXAlignRightUnit, marginYBase, unit);
+		doc.textAlignRight(MarginXAlignRightUnit, marginYBase, unit);
 		
 		priceUnit = parseFloat(products[i]['product']['product_price_unit']).toFixed(2);
 		priceUnit = number_format(priceUnit, 2, ',', '.').toString();
-		doc.textAlingRight(MarginXAlignRightPriceUnit, marginYBase, priceUnit + ' €');
+		doc.textAlignRight(MarginXAlignRightPriceUnit, marginYBase, priceUnit + ' €');
 		
 		productSubtotal = products[i]['receipt_product_unit'] * products[i]['product']['product_price_unit'];
 		productSubtotal = number_format(productSubtotal, 2, ',', '.').toString();
-		doc.textAlingRight(MarginXAlignRightSubtotal, marginYBase, productSubtotal + ' €');
+		doc.textAlignRight(MarginXAlignRightSubtotal, marginYBase, productSubtotal + ' €');
 	}
 	
 	//Tabla de firma y total ---------------------
@@ -249,20 +249,20 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	doc.setFontSize(fontSize);
 	doc.setTextColor(0, 0, 0);
 	doc.setFontType('normal');
-	doc.textAlingRight(marginXBase, marginYBase + rowSize, ivaPercentage + '%');
+	doc.textAlignRight(marginXBase, marginYBase + rowSize, ivaPercentage + '%');
 	
 	marginXBase = marginXMax - 2;
 	subtotal = number_format(subtotal, 2, ',', '.').toString();
-	doc.textAlingRight(marginXBase, marginYBase, subtotal + ' €');
+	doc.textAlignRight(marginXBase, marginYBase, subtotal + ' €');
 	
 	ivaTotal = number_format(ivaTotal, 2, ',', '.').toString();
-	doc.textAlingRight(marginXBase, marginYBase + rowSize, ivaTotal + ' €');
+	doc.textAlignRight(marginXBase, marginYBase + rowSize, ivaTotal + ' €');
 	
 	doc.setFontSize(fontSize + 4);
 	doc.setTextColor(220, 0, 0);
 	doc.setFontType('bold');
 	total = number_format(total, 2, ',', '.').toString();
-	doc.textAlingRight(marginXBase, marginYBase + (rowSize * 3), total + ' €');
+	doc.textAlignRight(marginXBase, marginYBase + (rowSize * 3), total + ' €');
 	
 	if (dataUrlString) {
 		return doc.output('dataurlstring');
