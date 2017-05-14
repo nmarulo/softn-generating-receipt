@@ -93,7 +93,8 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         return $objects;
     }
     
-    public function getClientsJSON() {
-        echo json_encode($this->getClients());
+    public function dataList() {
+        ViewController::sendViewData('viewData', self::getClients());
+        ViewController::singleView('datalist');
     }
 }

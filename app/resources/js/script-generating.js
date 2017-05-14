@@ -39,27 +39,8 @@ function setVars() {
 	
 	//Establece la información del producto seleccionado.
 	setProductInput = function (element) {
-		var exists = false;
-		var productId = element.data('element-id');
 		inputReceiptProduct.val(element.text());
-		selectedProductId = productId;
-		
-		/*
-		 * En caso de que ya esta en la lista de productos,
-		 * evito agregarlo, ya que esta función se llamara con cada click.
-		 */
-		for (var i = 0; i < listProductsIdAndUnits.length && !exists; ++i) {
-			if (listProductsIdAndUnits[i]['id'] == productId) {
-				exists = true;
-			}
-		}
-		
-		if (!exists) {
-			listProductsIdAndUnits.push({
-				id: productId,
-				'receipt_product_unit': 1
-			})
-		}
+		selectedProductId = element.data('element-id');
 	};
 	
 	//Establece la información del cliente seleccionado.
@@ -96,13 +77,23 @@ function registerEvents() {
 	});
 	
 	$('#btn-add-product').on('click', function () {
-		var exit = false;
+		var exists = false;
+		var productUnits = inputReceiptProductUnit.val();
 		
-		for (var i = 0; i < listProductsIdAndUnits.length && !exit; ++i) {
+		//Comprueba si ya existe, el producto en la lista y actualiza la unidades.
+		for (var i = 0; i < listProductsIdAndUnits.length && !exists; ++i) {
 			if (listProductsIdAndUnits[i]['id'] == selectedProductId) {
-				listProductsIdAndUnits[i]['receipt_product_unit'] = inputReceiptProductUnit.val();
-				exit = true;
+				listProductsIdAndUnits[i]['receipt_product_unit'] = productUnits;
+				exists = true;
 			}
+		}
+		
+		//Si no existe, agrega el producto a la lista.
+		if (!exists) {
+			listProductsIdAndUnits.push({
+				id: selectedProductId,
+				'receipt_product_unit': productUnits
+			})
 		}
 		
 		setListSelectedProducts(listProductsIdAndUnits);
@@ -130,11 +121,6 @@ function registerEvents() {
 		elementLi.remove();
 	});
 	
-	$('.btn-generate-pdf').on('click', function (event) {
-		event.preventDefault();
-		generatePDF($(this).data('receipt-id'));
-	});
-	
 	btnGenerateReceipt.on('click', function (event) {
 		event.preventDefault();
 		generatingReceipt();
@@ -143,35 +129,6 @@ function registerEvents() {
 	divModalGenerateReceipt.on('hide.bs.modal', function () {
 		location.reload();
 	});
-}
-
-/**
- *
- * @param receiptID
- * @param isPageGenerating bool True si estoy en la pagina generating.php
- */
-function generatePDF(receiptID, isPageGenerating) {
-	var dataPDF = function (data) {
-		var client = data['client'];
-		var products = data['products'];
-		var receipt = data['receipt'];
-		var options = data['options'];
-		var dataUrlString = createPDF(client, products, receipt, options, isPageGenerating);
-		
-		if (isPageGenerating) {
-			divModalGenerateReceipt.modal('show');
-			$('#btn-generate-pdf').on('click', function (event) {
-				event.preventDefault();
-				window.open(dataUrlString, '_blank');
-				divModalGenerateReceipt.modal('hide');
-			});
-		}
-	};
-	var data = {
-		method: 'dataPDF',
-		id: receiptID
-	};
-	callAjaxParseJSON('receipts.php', data, dataPDF);
 }
 
 function registerEventContentListGroup(callbackSetDataInput, methodGetData, methodGetId, methodGetName) {
@@ -245,27 +202,4 @@ function generatingReceipt() {
 	};
 	
 	callAjax('generating.php', data, getReceiptId);
-}
-
-function callAjaxParseJSON(url, data, callback) {
-	callAjax(url, data, callback, true);
-}
-
-function callAjax(url, data, callback, parseJSON) {
-	$.ajax({
-		url: url,
-		data: data
-	}).done(function (data, textStatus, jqXHR) {
-		if (callback !== undefined) {
-			var parseData = data;
-			
-			if (parseJSON) {
-				parseData = JSON.parse(data);
-			}
-			
-			callback(parseData);
-		}
-	}).fail(function (jqXHR, textStatus, errorThrown) {
-		console.log('ERROR: ' + textStatus);
-	});
 }

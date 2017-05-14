@@ -16,5 +16,4 @@ $dataView = ViewController::getViewData('dataView');
         <span class="badge">Unidades: <?php echo $productUnits; ?></span>
         <span class="badge">Precio U.: <?php echo $productPriceUnit; ?></span>
     </li>
-<?php } ?>
-
+<?php }

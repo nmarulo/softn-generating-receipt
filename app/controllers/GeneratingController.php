@@ -106,7 +106,7 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
             }
         }
         
-        ViewController::sendViewData('dataList', $dataView);
+        ViewController::sendViewData('dataView', $dataView);
         ViewController::singleView('datalist');
     }
     

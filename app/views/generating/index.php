@@ -3,10 +3,14 @@ use Softn\controllers\ViewController;
 use Softn\models\ReceiptsManager;
 use Softn\models\ReceiptsHasProductsManager;
 
+ViewController::registerScript('bootstrap');
+ViewController::registerScript('jspdf.min');
+ViewController::registerScript('script-common');
+ViewController::registerScript('script-generate-pdf');
+ViewController::registerScript('script-generating');
 $generating = ViewController::getViewData('generating');
 $receipt    = $generating->getReceipt();
 ?>
-
 <div>
     <h1>Generar factura</h1>
 </div>
@@ -27,42 +31,18 @@ $receipt    = $generating->getReceipt();
         <div class="form-group">
             <label for="receipt-client" class="control-label">Cliente</label>
             <input id="receipt-client" class="form-control" type="text">
-            <div class="modal fade content-autocomplete-modal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Lista de clientes</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <input class="form-control search-data" type="text" placeholder="Buscar...">
-                            </div>
-                            <div class="content-autocomplete-data-list"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+            ViewController::sendViewData('viewData', 'Lista de clientes');
+            ViewController::singleView('modalcontent');
+            ?>
         </div>
         <div class="form-group">
             <label for="receipt-product" class="control-label">Producto/Servicio</label>
             <input id="receipt-product" class="form-control" type="text">
-            <div class="modal fade content-autocomplete-modal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Lista de productos/servicios</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <input class="form-control search-data" type="text" placeholder="Buscar...">
-                            </div>
-                            <div class="content-autocomplete-data-list"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+            ViewController::sendViewData('viewData', 'Lista de productos/servicios');
+            ViewController::singleView('modalcontent');
+            ?>
         </div>
         <div class="form-group">
             <label for="receipt-product-unit" class="control-label">Unidades</label>

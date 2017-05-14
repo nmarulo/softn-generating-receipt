@@ -1,4 +1,8 @@
-<?php use Softn\controllers\ViewController; ?>
+<?php
+use Softn\controllers\ViewController;
+
+ViewController::registerScript('jquery-3.2.1');
+?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -6,10 +10,12 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Generador de facturas</title>
-        <?php ViewController::styleView('normalize'); ?>
-        <link href="app/vendor/twbs/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-        <link href="app/vendor/fortawesome/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-        <?php ViewController::styleView('style'); ?>
+        <?php
+        ViewController::styleView('normalize');
+        ViewController::styleRouteView('app/vendor/twbs/bootstrap/dist/css/bootstrap.css');
+        ViewController::styleRouteView('app/vendor/fortawesome/font-awesome/css/font-awesome.min.css');
+        ViewController::styleView('style');
+        ?>
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>

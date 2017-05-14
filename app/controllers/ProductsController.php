@@ -90,7 +90,8 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
         return $objects;
     }
     
-    public function getProductsJSON() {
-        echo json_encode($this->getProducts());
+    public function dataList() {
+        ViewController::sendViewData('viewData', self::getProducts());
+        ViewController::singleView('datalist');
     }
 }

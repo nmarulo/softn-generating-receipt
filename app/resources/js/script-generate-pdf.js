@@ -44,6 +44,37 @@ function getBase64Image(img) {
 // };
 // img.src = "app/resources/img/softn.png";
 
+/**
+ *
+ * @param receiptID
+ * @param isPageGenerating bool True si estoy en la pagina generating.php
+ */
+function generatePDF(receiptID, isPageGenerating) {
+	var dataPDF = function (data) {
+		var client = data['client'];
+		var products = data['products'];
+		var receipt = data['receipt'];
+		var options = data['options'];
+		var dataUrlString = createPDF(client, products, receipt, options, isPageGenerating);
+		
+		if (isPageGenerating) {
+			divModalGenerateReceipt.modal('show');
+			$('#btn-generate-pdf').on('click', function (event) {
+				event.preventDefault();
+				window.open(dataUrlString, '_blank');
+				divModalGenerateReceipt.modal('hide');
+			});
+		}
+	};
+	
+	var data = {
+		method: 'dataPDF',
+		id: receiptID
+	};
+	
+	callAjaxParseJSON('receipts.php', data, dataPDF);
+}
+
 function createPDF(client, products, receipt, options, dataUrlString) {
 	var doc = new jsPDF();
 	var marginX = 18;//Margen inicial izquierdo

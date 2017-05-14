@@ -22,6 +22,8 @@ class ViewController {
     /** @var string Contenido principal de la vista. */
     private static $VIEW_CONTENT = '';
     
+    private static $VIEW_SCRIPTS = [];
+    
     /**
      * Método que establece el nombre del directorio de la vista del controlador.
      *
@@ -48,7 +50,17 @@ class ViewController {
      * @param string $fileName
      */
     public static function setViewContent($fileName) {
-        self::$VIEW_CONTENT = VIEWS . self::$DIRECTORY . DIRECTORY_SEPARATOR . $fileName . '.php';
+        $directoryAndSeparator = '';
+        
+        /*
+         * Para casos donde se quera obtener,
+         * las vistas, fuera de los directorios.
+         */
+        if(!empty(self::$DIRECTORY)){
+            $directoryAndSeparator = self::$DIRECTORY . DIRECTORY_SEPARATOR;
+        }
+        
+        self::$VIEW_CONTENT = VIEWS . $directoryAndSeparator . $fileName . '.php';
     }
     
     /**
@@ -121,19 +133,29 @@ class ViewController {
     
     /**
      * Método que incluye el nombre del script js.
-     *
-     * @param $fileName
      */
-    public static function scriptView($fileName) {
-        echo "<script src='app/resources/js/$fileName.js' type='text/javascript'></script>";
+    public static function includeScripts() {
+        foreach (self::$VIEW_SCRIPTS as $script){
+            echo "<script src='app/resources/js/$script.js' type='text/javascript'></script>";
+        }
     }
     
     /**
      * Método que incluye el nombre del estilo css.
      *
-     * @param $fileName
+     * @param $styleName
      */
-    public static function styleView($fileName) {
-        echo "<link href='app/resources/css/$fileName.css' rel='stylesheet' type='text/css'/>";
+    public static function styleView($styleName) {
+        self::styleRouteView("app/resources/css/$styleName.css");
+    }
+    
+    public static function styleRouteView($styleRoute){
+        echo "<link href='$styleRoute' rel='stylesheet' type='text/css'/>";
+    }
+    
+    public static function registerScript($scriptName) {
+        if (Arrays::valueExists(self::$VIEW_SCRIPTS, $scriptName) === FALSE) {
+            self::$VIEW_SCRIPTS[] = $scriptName;
+        }
     }
 }

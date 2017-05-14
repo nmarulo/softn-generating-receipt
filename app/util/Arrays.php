@@ -20,10 +20,18 @@ class Arrays {
      * @return bool|mixed Retorna FALSE si no es un array o el indice no existe.
      */
     public static function get($array, $key) {
-        if (!is_array($array) || !array_key_exists($key, $array)) {
-            return FALSE;
+        if (self::keyExists($array, $key)) {
+            return $array[$key];
         }
         
-        return $array[$key];
+        return FALSE;
+    }
+    
+    public static function keyExists($array, $key) {
+        return is_array($array) && array_key_exists($key, $array);
+    }
+    
+    public static function valueExists($array, $value) {
+        return is_array($array) && array_search($value, $array) !== FALSE;
     }
 }

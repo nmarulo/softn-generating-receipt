@@ -131,4 +131,9 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         
         return $object;
     }
+    
+    public function dataList(){
+        ViewController::sendViewData('viewData', self::getReceipts());
+        ViewController::singleView('datalist');
+    }
 }

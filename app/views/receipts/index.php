@@ -1,6 +1,13 @@
 <?php
 use Softn\controllers\ViewController;
 
+ViewController::registerScript('jquery-3.2.1');
+ViewController::registerScript('bootstrap');
+ViewController::registerScript('jspdf.min');
+ViewController::registerScript('script-common');
+ViewController::registerScript('script-generate-pdf');
+ViewController::registerScript('script-receipts');
+ViewController::registerScript('script-data-list');
 $receipts = ViewController::getViewData('receipts');
 ?>
 <div>
@@ -12,28 +19,11 @@ $receipts = ViewController::getViewData('receipts');
     </h1>
 </div>
 <div id="content-index">
-    <form class="form-inline" method="get">
-        <div class="form-group">
-            <label id="search-data" class="control-label">Buscar</label>
-            <input id="search-data" class="form-control" type="text" name="search" placeholder="Buscar...">
-        </div>
-        <input type="hidden" name="method" value="index">
-        <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-        <a class="btn btn-danger" href="receipts.php"><span class="glyphicon glyphicon-remove"></span></a>
-    </form>
+    <?php
+    ViewController::sendViewData('pageName', 'receipts');
+    ViewController::setDirectory('');
+    ViewController::singleView('searchdata');
+    ?>
     <h3>Lista de facturas</h3>
-    <ul>
-        <?php foreach ($receipts as $receipt) { ?>
-            <li>
-                <?php echo $receipt->getReceiptNumber(); ?>
-                <a href="receipts.php?method=update&update=<?php echo $receipt->getId(); ?>">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </a>
-                <a href="receipts.php?method=delete&delete=<?php echo $receipt->getId(); ?>">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </a>
-                <a class="btn-generate-pdf" data-receipt-id="<?php echo $receipt->getId(); ?>" href="#"><span class="glyphicon glyphicon-open-file"></span></a>
-            </li>
-        <?php } ?>
-    </ul>
+    <ul id="content-data-list"></ul>
 </div>
