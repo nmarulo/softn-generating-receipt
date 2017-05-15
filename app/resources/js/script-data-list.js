@@ -1,6 +1,6 @@
 var btnSearch = '';
 var btnClearSearch = '';
-var ulContentDataList = '';
+var contentDataList = '';
 var inputSearchData = '';
 
 (function () {
@@ -12,7 +12,7 @@ var inputSearchData = '';
 function setVar() {
 	btnSearch = $('#btn-search');
 	btnClearSearch = $('#btn-clear-search');
-	ulContentDataList = $('#content-data-list');
+	contentDataList = $('#content-data-list');
 	inputSearchData = $('#search-data');
 }
 
@@ -39,7 +39,7 @@ function setContentList() {
 	var search = inputSearchData.val();
 	
 	var setContentList = function (data) {
-		ulContentDataList.html(data);
+		contentDataList.html(data);
 	};
 	
 	var data = {

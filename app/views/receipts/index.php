@@ -10,20 +10,35 @@ ViewController::registerScript('script-receipts');
 ViewController::registerScript('script-data-list');
 $receipts = ViewController::getViewData('receipts');
 ?>
-<div>
-    <h1>
-        Facturas
-        <a class="btn btn-success" href="generating.php" title="Agregar">
-            <span class="glyphicon glyphicon-plus"></span>
-        </a>
-    </h1>
+<div class="row clearfix">
+    <div class="col-sm-6">
+        <h1>
+            Facturas
+            <a class="btn btn-success" href="generating.php" title="Agregar">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </h1>
+    </div>
+    <div class="col-sm-6">
+        <?php
+        ViewController::sendViewData('pageName', 'receipts');
+        ViewController::setDirectory('');
+        ViewController::singleView('searchdata');
+        ?>
+    </div>
 </div>
 <div id="content-index">
-    <?php
-    ViewController::sendViewData('pageName', 'receipts');
-    ViewController::setDirectory('');
-    ViewController::singleView('searchdata');
-    ?>
     <h3>Lista de facturas</h3>
-    <ul id="content-data-list"></ul>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Numero</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+            </tr>
+        </thead>
+        <tbody id="content-data-list"></tbody>
+    </table>
 </div>

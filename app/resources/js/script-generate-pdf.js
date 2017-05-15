@@ -107,6 +107,8 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 			receiptNumber = '00' + receipt['receipt_number'];
 		} else if (receipt['receipt_number'] < 1000) {
 			receiptNumber = '0' + receipt['receipt_number'];
+		}else{
+			receiptNumber = receipt['receipt_number'];
 		}
 	}
 	

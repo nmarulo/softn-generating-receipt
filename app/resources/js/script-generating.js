@@ -9,7 +9,7 @@ var inputHiddenReceiptClientId = '';
 var inputHiddenReceiptProducts = '';
 var inputReceiptProduct = '';
 var inputReceiptProductUnit = '';
-var ulListSelectedProducts = '';
+var contentSelectedProducts = '';
 var selectedProductId = 0;
 //Método que establece el valor al input de producto
 //y el identificador del producto seleccionado.
@@ -35,7 +35,7 @@ function setVars() {
 	inputHiddenReceiptProducts = $('#receipt-products');
 	inputReceiptProduct = $('#receipt-product');
 	inputReceiptProductUnit = $('#receipt-product-unit');
-	ulListSelectedProducts = $('#list-selected-products');
+	contentSelectedProducts = $('#list-selected-products');
 	
 	//Establece la información del producto seleccionado.
 	setProductInput = function (element) {
@@ -149,7 +149,7 @@ function registerEventContentListGroup(callbackSetDataInput, methodGetData, meth
 }
 
 function setContentAutocompleteModalElements(element) {
-	divContentAutocompleteModal = element.closest('.form-group').find('.content-autocomplete-modal');
+	divContentAutocompleteModal = element.closest('div').find('.content-autocomplete-modal');
 	divContentListGroup = divContentAutocompleteModal.find('.content-autocomplete-data-list');
 	inputSearchData = divContentAutocompleteModal.find('.search-data');
 }
@@ -179,7 +179,7 @@ function setInputHiddenReceiptProducts(listProducts) {
 
 function setListSelectedProducts(listProductsIdAndUnits) {
 	var setContentList = function (data) {
-		ulListSelectedProducts.html(data);
+		contentSelectedProducts.html(data);
 	};
 	
 	var data = {

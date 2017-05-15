@@ -1,10 +1,25 @@
 <aside>
-    <ul>
-        <li><a href="index.php">Inicio</a></li>
-        <li><a href="generating.php">Generar</a></li>
-        <li><a href="clients.php">Clientes</a></li>
-        <li><a href="products.php">Productos/Servicios</a></li>
-        <li><a href="receipts.php">Facturas</a></li>
-        <li><a href="options.php">Opciones</a></li>
-    </ul>
+    <nav class="navbar navbar-custom">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-sidebar-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">SoftN</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="menu-sidebar-collapse">
+            <div class="list-group">
+                <a class="list-group-item" href="index.php"><i class="fa fa-home" aria-hidden="true"></i> Inicio</a>
+                <a class="list-group-item" href="generating.php">Generar</a>
+                <a class="list-group-item" href="clients.php">Clientes</a>
+                <a class="list-group-item" href="products.php">Productos/Servicios</a>
+                <a class="list-group-item" href="receipts.php">Facturas</a>
+                <a class="list-group-item" href="options.php">Opciones</a>
+            </div>
+        </div><!-- /.navbar-collapse -->
+    </nav>
 </aside>
