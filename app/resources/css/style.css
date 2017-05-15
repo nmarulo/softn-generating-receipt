@@ -69,6 +69,20 @@ body {
     color: #555555;
 }
 
+.form-table{
+    display: table;
+}
+
+.form-table .input-group,
+.form-table-row{
+    display: table-row;
+}
+
+.form-table-cell-hidden{
+    display: table-cell;
+    padding-bottom: 15px;
+}
+
 .text-header {
     padding: 12px 15px;
 }

@@ -24,25 +24,31 @@ if ($isUpdate) {
     </h1>
 </div>
 <div>
-    <form method="get">
-        <div class="form-group">
-            <label for="client-name" class="control-label">Nombre</label>
-            <input id="client-name" class="form-control" type="text" name="<?php echo ClientsManager::CLIENT_NAME; ?>" value="<?php echo $client->getClientName(); ?>">
+    <form class="form-table" method="get">
+        <div class="form-group input-group">
+            <span id="span-client-name" class="input-group-addon">Nombre</span>
+            <input id="client-name" class="form-control" type="text" aria-describedby="span-client-name" name="<?php echo ClientsManager::CLIENT_NAME; ?>" value="<?php echo $client->getClientName(); ?>">
         </div>
-        <div class="form-group">
-            <label for="client-address" class="control-label">Dirección</label>
-            <input id="client-address" class="form-control" type="text" name="<?php echo ClientsManager::CLIENT_ADDRESS; ?>" value="<?php echo $client->getClientAddress(); ?>">
+        <span class="form-table-cell-hidden"></span>
+        <div class="form-group input-group">
+            <span id="span-client-address" class="input-group-addon">Dirección</span>
+            <input id="client-address" class="form-control" type="text" aria-describedby="span-client-address" name="<?php echo ClientsManager::CLIENT_ADDRESS; ?>" value="<?php echo $client->getClientAddress(); ?>">
         </div>
-        <div class="form-group">
-            <label for="client-identification-document" class="control-label">Documento de identificación</label>
-            <input id="client-identification-document" class="form-control" type="text" name="<?php echo ClientsManager::CLIENT_IDENTIFICATION_DOCUMENT; ?>" value="<?php echo $client->getClientIdentificationDocument(); ?>">
+        <span class="form-table-cell-hidden"></span>
+        <div class="form-group input-group">
+            <span id="span-client-identification-document" class="input-group-addon">Documento de identificación</span>
+            <input id="client-identification-document" class="form-control" aria-describedby="span-client-identification-document" type="text" name="<?php echo ClientsManager::CLIENT_IDENTIFICATION_DOCUMENT; ?>" value="<?php echo $client->getClientIdentificationDocument(); ?>">
         </div>
-        <div class="form-group">
-            <label for="client-city" class="control-label">Ciudad</label>
-            <input id="client-city" class="form-control" type="text" name="<?php echo ClientsManager::CLIENT_CITY; ?>" value="<?php echo $client->getClientCity(); ?>">
+        <span class="form-table-cell-hidden"></span>
+        <div class="form-group input-group">
+            <span id="span-client-city" class="input-group-addon">Ciudad</span>
+            <input id="client-city" class="form-control" type="text" aria-describedby="span-client-city" name="<?php echo ClientsManager::CLIENT_CITY; ?>" value="<?php echo $client->getClientCity(); ?>">
         </div>
+        <span class="form-table-cell-hidden"></span>
         <input type="hidden" value="<?php echo $client->getId(); ?>" name="id">
         <input type="hidden" value="update" name="method">
-        <button class="btn btn-primary" type="submit"><?php echo $button; ?></button>
+        <div class="form-table-row">
+            <button class="btn btn-primary" type="submit"><?php echo $button; ?></button>
+        </div>
     </form>
 </div>

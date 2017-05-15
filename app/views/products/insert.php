@@ -24,21 +24,26 @@ if ($isUpdate) {
     </h1>
 </div>
 <div>
-    <form method="get">
-        <div class="form-group">
-            <label for="product-name" class="control-label">Nombre</label>
-            <input id="product-name" class="form-control" type="text" name="<?php echo ProductsManager::PRODUCT_NAME; ?>" value="<?php echo $object->getProductName(); ?>">
+    <form class="form-table" method="get">
+        <div class="form-group input-group">
+            <span id="span-product-name" class="input-group-addon">Nombre</span>
+            <input id="product-name" class="form-control" type="text" aria-describedby="span-product-name" name="<?php echo ProductsManager::PRODUCT_NAME; ?>" value="<?php echo $object->getProductName(); ?>">
         </div>
-        <div class="form-group">
-            <label for="product-price-unit" class="control-label">Precio unidad</label>
-            <input id="product-price-unit" class="form-control" type="text" name="<?php echo ProductsManager::PRODUCT_PRICE_UNIT; ?>" value="<?php echo $object->getProductPriceUnit(); ?>">
+        <span class="form-table-cell-hidden"></span>
+        <div class="form-group input-group">
+            <span id="span-product-price-unit" class="input-group-addon">Precio unidad</span>
+            <input id="product-price-unit" class="form-control" type="text" aria-describedby="span-product-price-unit" name="<?php echo ProductsManager::PRODUCT_PRICE_UNIT; ?>" value="<?php echo $object->getProductPriceUnit(); ?>">
         </div>
-        <div class="form-group">
-            <label for="product-reference" class="control-label">Referencia</label>
-            <input id="product-reference" class="form-control" type="text" name="<?php echo ProductsManager::PRODUCT_REFERENCE; ?>" value="<?php echo $object->getProductReference(); ?>">
+        <span class="form-table-cell-hidden"></span>
+        <div class="form-group input-group">
+            <span id="span-product-reference" class="input-group-addon">Referencia</span>
+            <input id="product-reference" class="form-control" type="text" aria-describedby="span-product-reference" name="<?php echo ProductsManager::PRODUCT_REFERENCE; ?>" value="<?php echo $object->getProductReference(); ?>">
         </div>
+        <span class="form-table-cell-hidden"></span>
         <input type="hidden" value="<?php echo $object->getId(); ?>" name="id">
         <input type="hidden" value="update" name="method">
-        <button class="btn btn-primary" type="submit"><?php echo $button; ?></button>
+        <div class="form-table-row">
+            <button class="btn btn-primary" type="submit"><?php echo $button; ?></button>
+        </div>
     </form>
 </div>

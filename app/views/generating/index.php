@@ -19,20 +19,23 @@ $receipt    = $generating->getReceipt();
         <div class="row clearfix">
             <div class="col-sm-6">
                 <div class="panel panel-default">
-                    <div class="panel-body">
+                    <div class="panel-body form-table">
                         <div class="form-group input-group">
                             <span id="span-receipt-type" class="input-group-addon">Tipo</span>
                             <input id="receipt-type" class="form-control" type="text" aria-describedby="span-receipt-type" name="<?php echo ReceiptsManager::RECEIPT_TYPE; ?>" value="<?php echo $receipt->getReceiptType(); ?>">
                         </div>
+                        <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
-                            <span id="span-receipt-number" class="input-group-addon">Numero</span>
+                            <span id="span-receipt-number" class="input-group-addon">Número</span>
                             <input id="receipt-number" class="form-control" type="number" aria-describedby="span-receipt-number" name="<?php echo ReceiptsManager::RECEIPT_NUMBER; ?>" value="<?php echo $receipt->getReceiptNumber(); ?>">
                         </div>
+                        <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
                             <span id="span-receipt-date" class="input-group-addon">Fecha</span>
                             <input id="receipt-date" class="form-control" type="text" aria-describedby="span-receipt-date" name="<?php echo ReceiptsManager::RECEIPT_DATE; ?>" value="<?php echo $receipt->getReceiptDate(); ?>">
                         </div>
-                        <div class="input-group">
+                        <span class="form-table-cell-hidden"></span>
+                        <div class="input-group form-table-row">
                             <span id="span-receipt-client" class="input-group-addon">Cliente</span>
                             <input id="receipt-client" class="form-control" type="text" aria-describedby="span-receipt-client">
                             <?php
@@ -49,7 +52,7 @@ $receipt    = $generating->getReceipt();
             <div class="col-sm-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading">Agregar producto/servicio</div>
-                    <div class="panel-body">
+                    <div class="panel-body form-table">
                         <div class="form-group input-group">
                             <span id="span-receipt-product" class="input-group-addon">Producto/Servicio</span>
                             <input id="receipt-product" class="form-control" type="text" aria-describedby="span-receipt-product">
@@ -58,11 +61,15 @@ $receipt    = $generating->getReceipt();
                                     ViewController::singleView('modalcontent');
                                     ?>
                         </div>
+                        <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
                             <span id="span-receipt-product-unit" class="input-group-addon">Unidades</span>
                             <input id="receipt-product-unit" class="form-control" type="number" aria-describedby="span-receipt-product-unit" value="1">
                         </div>
-                        <button id="btn-add-product" class="btn btn-primary" type="button">Agregar producto</button>
+                        <span class="form-table-cell-hidden"></span>
+                        <div class="form-table-row">
+                            <button id="btn-add-product" class="btn btn-primary" type="button">Agregar producto</button>
+                        </div>
                     </div>
                 </div>
             </div>
