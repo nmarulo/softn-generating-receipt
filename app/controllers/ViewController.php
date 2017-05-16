@@ -128,6 +128,7 @@ class ViewController {
      * @return bool|mixed
      */
     public static function getViewData($key) {
+        //TODO: Mostrar un mensaje si el indice no existe.
         return Arrays::get(self::$VIEW_DATA, $key);
     }
     

@@ -3,7 +3,6 @@ use Softn\controllers\ViewController;
 
 ViewController::registerScript('script-common');
 ViewController::registerScript('script-data-list');
-$clients = ViewController::getViewData('products');
 ?>
 <div class="row clearfix">
     <div class="col-sm-6">

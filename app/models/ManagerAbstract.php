@@ -175,7 +175,7 @@ abstract class ManagerAbstract implements ManagerInterface {
     }
     
     protected function prepareStatement($parameter, $value, $dataType) {
-        if (!empty($value)) {
+        if (!empty($value) || is_numeric($value)) {
             $this->prepare[] = MySql::prepareStatement($parameter, $value, $dataType);
         }
     }

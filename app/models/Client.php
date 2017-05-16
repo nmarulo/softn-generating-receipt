@@ -26,6 +26,9 @@ class Client implements \JsonSerializable {
     /** @var string */
     private $clientCity;
     
+    /** @var int */
+    private $clientNumberReceipts;
+    
     /**
      * Client constructor.
      */
@@ -35,6 +38,7 @@ class Client implements \JsonSerializable {
         $this->clientAddress                = '';
         $this->clientIdentificationDocument = '';
         $this->clientCity                   = '';
+        $this->clientNumberReceipts         = 0;
     }
     
     public function jsonSerialize() {
@@ -44,7 +48,22 @@ class Client implements \JsonSerializable {
             ClientsManager::CLIENT_CITY                    => $this->clientCity,
             ClientsManager::CLIENT_IDENTIFICATION_DOCUMENT => $this->clientIdentificationDocument,
             ClientsManager::CLIENT_ADDRESS                 => $this->clientAddress,
+            ClientsManager::CLIENT_NUMBER_RECEIPTS         => $this->clientNumberReceipts,
         ];
+    }
+    
+    /**
+     * @return int
+     */
+    public function getClientNumberReceipts() {
+        return $this->clientNumberReceipts;
+    }
+    
+    /**
+     * @param int $clientNumberReceipts
+     */
+    public function setClientNumberReceipts($clientNumberReceipts) {
+        $this->clientNumberReceipts = $clientNumberReceipts;
     }
     
     /**

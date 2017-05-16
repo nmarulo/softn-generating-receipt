@@ -8,7 +8,6 @@ ViewController::registerScript('script-common');
 ViewController::registerScript('script-generate-pdf');
 ViewController::registerScript('script-receipts');
 ViewController::registerScript('script-data-list');
-$receipts = ViewController::getViewData('receipts');
 ?>
 <div class="row clearfix">
     <div class="col-sm-6">

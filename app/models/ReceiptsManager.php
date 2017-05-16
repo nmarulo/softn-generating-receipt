@@ -113,15 +113,6 @@ class ReceiptsManager extends ManagerAbstract {
     }
     
     /**
-     * @param $id
-     *
-     * @return Receipt
-     */
-    public function getByID($id) {
-        return parent::selectByID($id, self::TABLE);;
-    }
-    
-    /**
      * @param Receipt $object
      */
     public function insert($object) {
@@ -148,7 +139,24 @@ class ReceiptsManager extends ManagerAbstract {
      * @param int $id
      */
     public function delete($id) {
+        $receipt        = $this->getByID($id);
+        $clientsManager = new ClientsManager();
+        $client         = $clientsManager->getByID($receipt->getClientId());
+        //TODO: Conversión temporal.
+        $numberReceipt = intval($client->getClientNumberReceipts());
+        $client->setClientNumberReceipts(--$numberReceipt < 0 ? 0 : $numberReceipt);
+        $clientsManager->update($client);
         parent::deleteByID($id, self::TABLE);
+        
+    }
+    
+    /**
+     * @param $id
+     *
+     * @return Receipt
+     */
+    public function getByID($id) {
+        return parent::selectByID($id, self::TABLE);;
     }
     
 }

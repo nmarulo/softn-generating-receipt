@@ -1,7 +1,7 @@
 <?php
 use Softn\controllers\ViewController;
 
-$viewData = ViewController::getViewData('viewData');
+$viewData       = ViewController::getViewData('viewData');
 
 foreach ($viewData as $client) {
     $id = $client->getId();
@@ -19,6 +19,6 @@ foreach ($viewData as $client) {
         <td><?php echo $client->getClientIdentificationDocument(); ?></td>
         <td><?php echo $client->getClientAddress(); ?></td>
         <td><?php echo $client->getClientCity(); ?></td>
-        <td>#</td>
+        <td><?php echo $client->getClientNumberReceipts(); ?></td>
     </tr>
 <?php }

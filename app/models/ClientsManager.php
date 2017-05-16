@@ -24,6 +24,8 @@ class ClientsManager extends ManagerAbstract {
     
     const CLIENT_NAME                    = 'client_name';
     
+    const CLIENT_NUMBER_RECEIPTS         = 'client_number_receipts';
+    
     /**
      * ClientsManager constructor.
      */
@@ -45,6 +47,7 @@ class ClientsManager extends ManagerAbstract {
         $client->setClientAddress($value);
         $client->setClientCity($value);
         $client->setClientIdentificationDocument($value);
+        $client->setClientNumberReceipts('');
         $where   = self::CLIENT_ADDRESS . ' LIKE :' . self::CLIENT_ADDRESS . ' OR ';
         $where   .= self::CLIENT_CITY . ' LIKE :' . self::CLIENT_CITY . ' OR ';
         $where   .= self::CLIENT_NAME . ' LIKE :' . self::CLIENT_NAME . ' OR ';
@@ -70,6 +73,7 @@ class ClientsManager extends ManagerAbstract {
         parent::prepareStatement(':' . self::CLIENT_IDENTIFICATION_DOCUMENT, $object->getClientIdentificationDocument(), \PDO::PARAM_STR);
         parent::prepareStatement(':' . self::CLIENT_ADDRESS, $object->getClientAddress(), \PDO::PARAM_STR);
         parent::prepareStatement(':' . self::CLIENT_CITY, $object->getClientCity(), \PDO::PARAM_STR);
+        parent::prepareStatement(':' . self::CLIENT_NUMBER_RECEIPTS, $object->getClientNumberReceipts(), \PDO::PARAM_INT);
         
         return parent::getPrepareAndClear();
     }
@@ -93,6 +97,7 @@ class ClientsManager extends ManagerAbstract {
         $object->setClientCity(Arrays::get($data, self::CLIENT_CITY));
         $object->setClientAddress(Arrays::get($data, self::CLIENT_ADDRESS));
         $object->setClientName(Arrays::get($data, self::CLIENT_NAME));
+        $object->setClientNumberReceipts(Arrays::get($data, self::CLIENT_NUMBER_RECEIPTS));
         
         return $object;
     }
@@ -132,6 +137,7 @@ class ClientsManager extends ManagerAbstract {
         parent::addSetForUpdate(self::CLIENT_ADDRESS);
         parent::addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
         parent::addSetForUpdate(self::CLIENT_CITY);
+        parent::addSetForUpdate(self::CLIENT_NUMBER_RECEIPTS);
         $id = $object->getId();
         parent::updateData($object, self::TABLE, $id);
     }

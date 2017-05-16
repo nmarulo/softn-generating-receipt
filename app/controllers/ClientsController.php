@@ -43,7 +43,13 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
                 $objectManager->insert($object);
             }
         } else {
-            $objectManager->update($object);
+            $client = $objectManager->getByID($object->getId());
+            $client->setClientIdentificationDocument($object->getClientIdentificationDocument());
+            $client->setClientCity($object->getClientCity());
+            $client->setClientNumberReceipts($object->getClientNumberReceipts());
+            $client->setClientAddress($object->getClientAddress());
+            $client->setClientName($object->getClientName());
+            $objectManager->update($client);
         }
         
         ViewController::sendViewData('client', $object);
@@ -76,8 +82,12 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
     }
     
     public function index() {
-        ViewController::sendViewData('clients', $this->getClients());
         ViewController::view('index');
+    }
+    
+    public function dataList() {
+        ViewController::sendViewData('viewData', self::getClients());
+        ViewController::singleView('datalist');
     }
     
     public static function getClients() {
@@ -91,10 +101,5 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         }
         
         return $objects;
-    }
-    
-    public function dataList() {
-        ViewController::sendViewData('viewData', self::getClients());
-        ViewController::singleView('datalist');
     }
 }

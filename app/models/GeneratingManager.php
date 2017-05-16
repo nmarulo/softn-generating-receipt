@@ -31,10 +31,17 @@ class GeneratingManager {
      * @param array   $productsIdAndUnits
      */
     public function generate($receipt, $productsIdAndUnits) {
+        $clientsManager = new ClientsManager();
         $receiptHasProductManager = new ReceiptsHasProductsManager();
         $receiptManager           = new ReceiptsManager();
         $receiptManager->insert($receipt);
         $receiptId = $receiptManager->getLastInsertId();
+        
+        $client = $clientsManager->getByID($receipt->getClientId());
+        //TODO: conversión temporal
+        $numberReceipts = intval($client->getClientNumberReceipts());
+        $client->setClientNumberReceipts(++$numberReceipts);
+        $clientsManager->update($client);
         
         foreach ($productsIdAndUnits as $productAndUnits) {
             $productId         = $productAndUnits[ProductsManager::ID];

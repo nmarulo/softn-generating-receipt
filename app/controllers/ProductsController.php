@@ -73,8 +73,12 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function index() {
-        ViewController::sendViewData('products', $this->getProducts());
         ViewController::view('index');
+    }
+    
+    public function dataList() {
+        ViewController::sendViewData('viewData', self::getProducts());
+        ViewController::singleView('datalist');
     }
     
     public static function getProducts() {
@@ -88,10 +92,5 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
         }
         
         return $objects;
-    }
-    
-    public function dataList() {
-        ViewController::sendViewData('viewData', self::getProducts());
-        ViewController::singleView('datalist');
     }
 }

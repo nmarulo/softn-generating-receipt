@@ -54,7 +54,6 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function index() {
-        ViewController::sendViewData('receipts', $this->getReceipts());
         ViewController::view('index');
     }
     
@@ -115,25 +114,25 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         ];
     }
     
-    protected function getViewForm() {
-        // TODO: Implement getViewForm() method.
+    public function dataList() {
+        ViewController::sendViewData('viewData', self::getReceipts());
+        ViewController::singleView('datalist');
     }
     
-    private function getReceipts(){
-        $search = Arrays::get($_GET, 'search');
+    private function getReceipts() {
+        $search        = Arrays::get($_GET, 'search');
         $objectManager = new ReceiptsManager();
         
-        if($search === FALSE){
+        if ($search === FALSE) {
             $object = $objectManager->getAll();
-        }else{
+        } else {
             $object = $objectManager->filter($search);
         }
         
         return $object;
     }
     
-    public function dataList(){
-        ViewController::sendViewData('viewData', self::getReceipts());
-        ViewController::singleView('datalist');
+    protected function getViewForm() {
+        // TODO: Implement getViewForm() method.
     }
 }
