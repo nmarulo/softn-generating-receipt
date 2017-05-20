@@ -126,6 +126,7 @@ class ClientsManager extends ManagerAbstract {
         parent::addValueAndColumnForInsert(self::CLIENT_ADDRESS);
         parent::addValueAndColumnForInsert(self::CLIENT_IDENTIFICATION_DOCUMENT);
         parent::addValueAndColumnForInsert(self::CLIENT_CITY);
+        parent::addValueAndColumnForInsert(self::CLIENT_NUMBER_RECEIPTS);
         parent::insertData($object, self::TABLE);
     }
     
@@ -148,8 +149,21 @@ class ClientsManager extends ManagerAbstract {
     
     /**
      * @param int $id
+     *
+     * @return bool
      */
     public function delete($id) {
-        parent::deleteByID($id, self::TABLE);
+        if ($this->canBeDelete($id)) {
+            return parent::deleteByID($id, self::TABLE);
+        }
+        
+        return FALSE;
+    }
+    
+    private function canBeDelete($id) {
+        $receiptsManager = new ReceiptsManager();
+        $count           = $receiptsManager->getCountReceiptByClientId($id);
+        
+        return $count == 0;
     }
 }

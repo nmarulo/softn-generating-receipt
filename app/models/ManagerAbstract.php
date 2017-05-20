@@ -85,6 +85,18 @@ abstract class ManagerAbstract implements ManagerInterface {
         $select = $mysql->selectByColumn($value, $table, $column);
         $mysql->close();
         
+    }
+    
+        if (count($select) > 1) {
+            $objects = [];
+            
+            foreach ($select as $value) {
+                $objects[] = $this->create($value);
+            }
+            
+            return $objects;
+        }
+        
         return $this->create(Arrays::get($select, 0));
     }
     
@@ -105,7 +117,6 @@ abstract class ManagerAbstract implements ManagerInterface {
         $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
         $mysql->close();
         
-        return $this->create(Arrays::get($select, 0));
     }
     
     /**
@@ -124,16 +135,10 @@ abstract class ManagerAbstract implements ManagerInterface {
      * @return array
      */
     protected function selectAll($table) {
-        $objects = [];
-        $mysql   = new MySql();
-        $select  = $mysql->select($table, MySql::FETCH_ALL);
+        $mysql  = new MySql();
+        $select = $mysql->select($table, MySql::FETCH_ALL);
         $mysql->close();
         
-        foreach ($select as $value) {
-            $objects[] = $this->create($value);
-        }
-        
-        return $objects;
     }
     
     /**
@@ -207,5 +212,19 @@ abstract class ManagerAbstract implements ManagerInterface {
         $this->clear();
         
         return $isExecute;
+    }
+    
+    protected function countData($table, $where, $prepare) {
+        $mySql   = new MySql();
+        $columns = 'COUNT(*) AS COUNT';
+        $select  = $mySql->select($table, MySql::FETCH_ALL, $where, $prepare, $columns);
+        
+        $count = Arrays::get($select, 0);
+        
+        if ($count === FALSE) {
+            return 0;
+        }
+        
+        return Arrays::get($count, 'COUNT');
     }
 }

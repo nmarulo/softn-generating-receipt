@@ -159,4 +159,13 @@ class ReceiptsManager extends ManagerAbstract {
         return parent::selectByID($id, self::TABLE);;
     }
     
+    public function getCountReceiptByClientId($id) {
+        $parameter = ':' . self::CLIENT_ID;
+        $where     = self::CLIENT_ID . " = $parameter";
+        $prepare   = [];
+        $prepare[] = MySql::prepareStatement($parameter, $id, \PDO::PARAM_INT);
+        
+        return parent::countData(self::TABLE, $where, $prepare);
+    }
+    
 }

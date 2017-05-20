@@ -39,6 +39,7 @@ class ProductsManager extends ManagerAbstract {
         $mysql    = new MySql();
         $value    = "%$search%";
         $product  = new Product();
+        $product->setProductPriceUnit('');
         
         if (is_numeric($search)) {
             $product->setProductPriceUnit(intval($search));

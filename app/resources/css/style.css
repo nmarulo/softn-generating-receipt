@@ -4,6 +4,7 @@
     box-shadow: none;
 }
 
+.alert,
 .panel,
 .navbar,
 .modal-content,
@@ -13,6 +14,7 @@
     border: 0;
 }
 
+.alert,
 .btn,
 .panel,
 .panel-heading,
@@ -31,7 +33,6 @@
 
 .input-group-addon {
     text-align: left;
-    font-weight: bold;
     border: 1px solid #EBEBEB;
 }
 
@@ -48,7 +49,7 @@ button.list-group-item:focus {
 }
 
 .panel {
-    border-bottom: 1px solid transparent;
+    border-bottom: 4px solid transparent;
 }
 
 .panel-primary {
@@ -60,25 +61,29 @@ button.list-group-item:focus {
 }
 
 .panel-default > .panel-heading {
+    background-color: #DDDDDD;
+}
+
+.panel-default > .panel-heading {
     color: #555555;
 }
 
 /* GENERAL =================================== */
 body {
     background-color: #F5F5F5;
-    color: #555555;
+    color: #666666;
 }
 
-.form-table{
+.form-table {
     display: table;
 }
 
-.form-table .input-group,
-.form-table-row{
+.form-table > .input-group,
+.form-table-row {
     display: table-row;
 }
 
-.form-table-cell-hidden{
+.form-table-cell-hidden {
     display: table-cell;
     padding-bottom: 15px;
 }
@@ -128,4 +133,26 @@ body {
 
 .navbar-custom .list-group {
     margin-bottom: 0;
+}
+
+#messages {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+}
+
+#messages .alert {
+    border-left: 4px solid transparent;
+}
+
+#messages .alert-danger {
+    border-color: #A94442;
+}
+
+#messages .alert-success {
+    border-color: #3C763D;
 }

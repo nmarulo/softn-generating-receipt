@@ -68,11 +68,11 @@ function registerEvents() {
 		registerEventContentListGroup(setProductInput, 'getProducts', 'getId', 'getProductName');
 	});
 	
-	inputReceiptProduct.on('focus', function(){
+	inputReceiptProduct.on('focus', function () {
 		$(this).trigger('click');
 	});
 	
-	inputReceiptClient.on('focus', function(){
+	inputReceiptClient.on('focus', function () {
 		$(this).trigger('click');
 	});
 	
@@ -129,6 +129,10 @@ function registerEvents() {
 	divModalGenerateReceipt.on('hide.bs.modal', function () {
 		location.reload();
 	});
+	
+	divContentAutocompleteModal.on('hide.bs.modal', function () {
+		inputSearchData.val('');
+	})
 }
 
 function registerEventContentListGroup(callbackSetDataInput, methodGetData, methodGetId, methodGetName) {

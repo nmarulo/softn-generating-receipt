@@ -7,6 +7,7 @@ namespace Softn\controllers;
 
 use Softn\models\Client;
 use Softn\models\ClientsManager;
+use Softn\models\ReceiptsManager;
 use Softn\util\Arrays;
 
 /**
@@ -71,13 +72,22 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
     }
     
     public function delete() {
-        $id = Arrays::get($_GET, 'delete');
+        $message = 'El cliente no existe.';
+        $type    = 'danger';
+        $id      = Arrays::get($_GET, 'delete');
         
         if ($id !== FALSE) {
             $objectManager = new ClientsManager();
-            $objectManager->delete($id);
+            $message       = 'No se puede borrar el cliente.';
+            
+            if ($objectManager->delete($id)) {
+                $type    = 'success';
+                $message = 'Cliente borrado correctamente.';
+            }
         }
         
+        ViewController::sendViewData('message', $message);
+        ViewController::sendViewData('type', $type);
         $this->index();
     }
     
