@@ -85,8 +85,10 @@ abstract class ManagerAbstract implements ManagerInterface {
         $select = $mysql->selectByColumn($value, $table, $column);
         $mysql->close();
         
+        return $this->createObjects($select);
     }
     
+    private function createObjects($select) {
         if (count($select) > 1) {
             $objects = [];
             
@@ -117,6 +119,7 @@ abstract class ManagerAbstract implements ManagerInterface {
         $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
         $mysql->close();
         
+        return $this->createObjects($select);
     }
     
     /**
@@ -139,6 +142,7 @@ abstract class ManagerAbstract implements ManagerInterface {
         $select = $mysql->select($table, MySql::FETCH_ALL);
         $mysql->close();
         
+        return $this->createObjects($select);
     }
     
     /**
