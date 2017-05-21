@@ -58,12 +58,14 @@ function generatePDF(receiptID, isPageGenerating) {
 		var dataUrlString = createPDF(client, products, receipt, options, isPageGenerating);
 		
 		if (isPageGenerating) {
-			divModalGenerateReceipt.modal('show');
 			$('#btn-generate-pdf').on('click', function (event) {
 				event.preventDefault();
 				window.open(dataUrlString, '_blank');
-				divModalGenerateReceipt.modal('hide');
 			});
+			
+			$('#btn-group-actions-generate').removeClass('hidden');
+			contentSelectedProducts.text('');
+			listProductsIdAndUnits = [];
 		}
 	};
 	

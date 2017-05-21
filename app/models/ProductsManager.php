@@ -98,6 +98,46 @@ class ProductsManager extends ManagerAbstract {
         return parent::selectAll(self::TABLE);
     }
     
+    public function insert($object) {
+        parent::addValueAndColumnForInsert(self::PRODUCT_NAME);
+        parent::addValueAndColumnForInsert(self::PRODUCT_PRICE_UNIT);
+        parent::addValueAndColumnForInsert(self::PRODUCT_REFERENCE);
+        
+        return parent::insertData($object, self::TABLE);
+    }
+    
+    /**
+     * @param int     $id
+     * @param Product $object
+     *
+     * @return bool
+     */
+    public function update($id, $object) {
+        $product = $this->getAndSetterObject($id, $object);
+        
+        parent::addSetForUpdate(self::PRODUCT_NAME);
+        parent::addSetForUpdate(self::PRODUCT_PRICE_UNIT);
+        parent::addSetForUpdate(self::PRODUCT_REFERENCE);
+        
+        return parent::updateData($product, self::TABLE, $id);
+    }
+    
+    /**
+     * @param int     $id
+     * @param Product $object
+     *
+     * @return Product
+     */
+    protected function getAndSetterObject($id, $object) {
+        $product = $this->getByID($id);
+        
+        $product->setProductName($object->getProductName());
+        $product->setProductReference($object->getProductReference());
+        $product->setProductPriceUnit($object->getProductPriceUnit());
+        
+        return $product;
+    }
+    
     /**
      * @param $id
      *
@@ -107,26 +147,18 @@ class ProductsManager extends ManagerAbstract {
         return parent::selectByID($id, self::TABLE);
     }
     
-    public function insert($object) {
-        parent::addValueAndColumnForInsert(self::PRODUCT_NAME);
-        parent::addValueAndColumnForInsert(self::PRODUCT_PRICE_UNIT);
-        parent::addValueAndColumnForInsert(self::PRODUCT_REFERENCE);
-        parent::insertData($object, self::TABLE);
-    }
-    
-    /**
-     * @param Product $object
-     */
-    public function update($object) {
-        parent::addSetForUpdate(self::PRODUCT_NAME);
-        parent::addSetForUpdate(self::PRODUCT_PRICE_UNIT);
-        parent::addSetForUpdate(self::PRODUCT_REFERENCE);
-        $id = $object->getId();
-        parent::updateData($object, self::TABLE, $id);
-    }
-    
     public function delete($id) {
-        parent::deleteByID($id, self::TABLE);
+        if ($this->canBeDelete($id)) {
+            return parent::deleteByID($id, self::TABLE);
+        }
+        
+        return FALSE;
+    }
+    
+    private function canBeDelete($id) {
+        $receiptsManager = new ReceiptsHasProductsManager();
+        
+        return $receiptsManager->getCountReceiptByProductId($id) == 0;
     }
     
 }

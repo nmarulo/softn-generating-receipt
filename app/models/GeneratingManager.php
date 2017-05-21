@@ -5,11 +5,22 @@
 
 namespace Softn\models;
 
+use Softn\util\Arrays;
+
 /**
  * Class GeneratingManager
  * @author Nicolás Marulanda P.
  */
 class GeneratingManager {
+    
+    private $receiptId;
+    
+    /**
+     * GeneratingManager constructor.
+     */
+    public function __construct() {
+        $this->receiptId = 0;
+    }
     
     public function defaultData() {
         $date              = date('d/m/Y', time());
@@ -27,31 +38,81 @@ class GeneratingManager {
     }
     
     /**
-     * @param Receipt $receipt
-     * @param array   $productsIdAndUnits
+     * @param Generating $generating
+     *
+     * @return bool
      */
-    public function generate($receipt, $productsIdAndUnits) {
-        $clientsManager = new ClientsManager();
-        $receiptHasProductManager = new ReceiptsHasProductsManager();
-        $receiptManager           = new ReceiptsManager();
-        $receiptManager->insert($receipt);
-        $receiptId = $receiptManager->getLastInsertId();
-        
-        $client = $clientsManager->getByID($receipt->getClientId());
-        //TODO: conversión temporal
-        $numberReceipts = intval($client->getClientNumberReceipts());
-        $client->setClientNumberReceipts(++$numberReceipts);
-        $clientsManager->update($client);
-        
-        foreach ($productsIdAndUnits as $productAndUnits) {
-            $productId         = $productAndUnits[ProductsManager::ID];
-            $productUnits      = $productAndUnits[ReceiptsHasProductsManager::RECEIPT_PRODUCT_UNIT];
-            $receiptHasProduct = new ReceiptHasProduct();
-            $receiptHasProduct->setReceiptId($receiptId);
-            $receiptHasProduct->setProductId($productId);
-            $receiptHasProduct->setReceiptProductUnit($productUnits);
-            $receiptHasProductManager->insert($receiptHasProduct);
+    public function generate($generating) {
+        if (!$this->insertReceipt($generating->getReceipt())) {
+            return FALSE;
         }
+        
+        if (!$this->updateClient($generating->getReceipt()
+                                            ->getClientId())
+        ) {
+            return FALSE;
+        }
+        
+        return $this->insertReceiptsHasProducts($this->receiptId, $generating->getReceiptsHasProducts());
+    }
+    
+    /**
+     * @param Receipt $receipt
+     *
+     * @return bool
+     */
+    private function insertReceipt($receipt) {
+        $receiptManager = new ReceiptsManager();
+        
+        if ($receiptManager->insert($receipt)) {
+            $this->receiptId = $receiptManager->getLastInsertId();
+            
+            return TRUE;
+        }
+        
+        return FALSE;
+    }
+    
+    /**
+     * @param int $idClient
+     *
+     * @return bool
+     */
+    private function updateClient($idClient) {
+        $clientsManager = new ClientsManager();
+        
+        return $clientsManager->updateNumberReceipts($idClient);
+    }
+    
+    /**
+     * @param int   $receiptId
+     * @param array $productsIdAndUnits
+     *
+     * @return bool
+     */
+    private function insertReceiptsHasProducts($receiptId, $productsIdAndUnits) {
+        if ($receiptId == 0) {
+            return FALSE;
+        }
+        
+        $receiptHasProductManager = new ReceiptsHasProductsManager();
+        $notError                 = TRUE;
+        $count                    = count($productsIdAndUnits);
+        
+        for ($i = 0; $i < $count && $notError; ++$i) {
+            $value             = Arrays::get($productsIdAndUnits, $i);
+            $receiptHasProduct = new ReceiptHasProduct();
+            
+            $receiptHasProduct->setReceiptId($receiptId);
+            $receiptHasProduct->setProductId($value->getProductId());
+            $receiptHasProduct->setReceiptProductUnit($value->getReceiptProductUnit());
+            
+            if (!$receiptHasProductManager->insert($receiptHasProduct)) {
+                $notError = FALSE;
+            }
+        }
+        
+        return $notError;
     }
     
 }

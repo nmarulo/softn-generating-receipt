@@ -8,11 +8,11 @@ foreach ($viewData as $receipt) {
     ?>
     <tr>
         <td class="btn-actions">
-            <a class="btn btn-danger" href="receipts.php?method=delete&delete=<?php echo $id; ?>">
-                <span class="glyphicon glyphicon-remove"></span>
-            </a>
             <a class="btn btn-warning btn-generate-pdf" data-receipt-id="<?php echo $receipt->getId(); ?>" href="#">
                 <span class="glyphicon glyphicon-open-file"></span>
+            </a>
+            <a class="btn btn-danger" href="receipts.php?method=delete&delete=<?php echo $id; ?>">
+                <span class="glyphicon glyphicon-remove"></span>
             </a>
         </td>
         <td><?php echo $receipt->getReceiptNumber(); ?></td>

@@ -1,7 +1,6 @@
 <?php
 use Softn\controllers\ViewController;
 
-ViewController::registerScript('script-common');
 ViewController::registerScript('script-data-list');
 ?>
 <div class="row clearfix">

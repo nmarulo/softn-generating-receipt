@@ -19,7 +19,7 @@ interface ManagerInterface {
     
     public function insert($object);
     
-    public function update($object);
+    public function update($id, $object);
     
     public function delete($id);
 }

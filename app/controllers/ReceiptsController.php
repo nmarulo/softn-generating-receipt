@@ -14,6 +14,7 @@ use Softn\models\Receipt;
 use Softn\models\ReceiptsHasProductsManager;
 use Softn\models\ReceiptsManager;
 use Softn\util\Arrays;
+use Softn\util\Messages;
 
 /**
  * Class ReceiptsController
@@ -41,15 +42,27 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function delete() {
-        $id = Arrays::get($_GET, 'delete');
+        $messages    = 'La factura no existe.';
+        $typeMessage = Messages::TYPE_DANGER;
+        $id          = Arrays::get($_GET, 'delete');
         
         if ($id !== FALSE) {
+            $messages      = 'No se puede borrar la factura.';
             $objectManager = new ReceiptsManager();
-            $objectManager->delete($id);
-            $receiptHasProductManager = new ReceiptsHasProductsManager();
-            $receiptHasProductManager->delete($id);
+            
+            /*
+             * No se borran manualmente los datos de la tabla "ReceiptsHasProduct"
+             * ya que estos datos se borraran en cascada luego de borrar la factura.
+             */
+            if ($objectManager->delete($id)) {
+                $typeMessage = Messages::TYPE_SUCCESS;
+                $messages    = 'Factura borrada correctamente.';
+            }
+            
         }
         
+        ViewController::sendViewData('messages', $messages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
         $this->index();
     }
     
@@ -99,17 +112,17 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         $optionsManager = new OptionsManager();
         
         return [
-            OptionsManager::OPTION_KEY_NAME                    => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_NAME)
+            OptionsManager::OPTION_KEY_NAME                    => $optionsManager->getByKey(OptionsManager::OPTION_KEY_NAME)
                                                                                  ->getOptionValue(),
-            OptionsManager::OPTION_KEY_ADDRESS                 => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_ADDRESS)
+            OptionsManager::OPTION_KEY_ADDRESS                 => $optionsManager->getByKey(OptionsManager::OPTION_KEY_ADDRESS)
                                                                                  ->getOptionValue(),
-            OptionsManager::OPTION_KEY_WEB_SITE                => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_WEB_SITE)
+            OptionsManager::OPTION_KEY_WEB_SITE                => $optionsManager->getByKey(OptionsManager::OPTION_KEY_WEB_SITE)
                                                                                  ->getOptionValue(),
-            OptionsManager::OPTION_KEY_IVA                     => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_IVA)
+            OptionsManager::OPTION_KEY_IVA                     => $optionsManager->getByKey(OptionsManager::OPTION_KEY_IVA)
                                                                                  ->getOptionValue(),
-            OptionsManager::OPTION_KEY_PHONE_NUMBER            => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_PHONE_NUMBER)
+            OptionsManager::OPTION_KEY_PHONE_NUMBER            => $optionsManager->getByKey(OptionsManager::OPTION_KEY_PHONE_NUMBER)
                                                                                  ->getOptionValue(),
-            OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT => $optionsManager->selectByKey(OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT)
+            OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT => $optionsManager->getByKey(OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT)
                                                                                  ->getOptionValue(),
         ];
     }

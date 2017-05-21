@@ -1,13 +1,13 @@
 <?php
 use Softn\models\OptionsManager;
+use Softn\controllers\ViewController;
 
-$optionsManager              = new OptionsManager();
-$valueName                   = $optionsManager->selectByKey(OptionsManager::OPTION_KEY_NAME);
-$valueIdentificationDocument = $optionsManager->selectByKey(OptionsManager::OPTION_KEY_IDENTIFICATION_DOCUMENT);
-$valueAddress                = $optionsManager->selectByKey(OptionsManager::OPTION_KEY_ADDRESS);
-$valuePhoneNumber            = $optionsManager->selectByKey(OptionsManager::OPTION_KEY_PHONE_NUMBER);
-$valueWebSite                = $optionsManager->selectByKey(OptionsManager::OPTION_KEY_WEB_SITE);
-$valueIVA                    = $optionsManager->selectByKey(OptionsManager::OPTION_KEY_IVA);
+$valueName                   = ViewController::getViewData('name');
+$valueIdentificationDocument = ViewController::getViewData('identificationDocument');
+$valueAddress                = ViewController::getViewData('address');
+$valuePhoneNumber            = ViewController::getViewData('phoneNumber');
+$valueWebSite                = ViewController::getViewData('webSite');
+$valueIVA                    = ViewController::getViewData('IVA');
 ?>
 <div>
     <h1>Opciones</h1>

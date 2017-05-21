@@ -82,10 +82,11 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         parent::addValueAndColumnForInsert(self::RECEIPT_ID);
         parent::addValueAndColumnForInsert(self::PRODUCT_ID);
         parent::addValueAndColumnForInsert(self::RECEIPT_PRODUCT_UNIT);
-        parent::insertData($object, self::TABLE);
+        
+        return parent::insertData($object, self::TABLE);
     }
     
-    public function update($object) {
+    public function update($id, $object) {
         // TODO: Implement update() method.
     }
     
@@ -95,9 +96,15 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         $where        = self::RECEIPT_ID . ' = ' . $paramReceipt;
         $prepare      = [];
         $prepare[]    = MySql::prepareStatement($paramReceipt, $id, \PDO::PARAM_INT);
+        $isExecute    = $mysql->delete(self::TABLE, $where, $prepare);
         
-        $mysql->delete(self::TABLE, $where, $prepare);
         $mysql->close();
+        
+        return $isExecute;
+    }
+    
+    public function getCountReceiptByProductId($id) {
+        return parent::countData(self::TABLE, self::PRODUCT_ID, $id);
     }
     
     /**
@@ -113,4 +120,9 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         
         return $prepare;
     }
+    
+    protected function getAndSetterObject($id, $object) {
+        // TODO: Implement getAndSetterObject() method.
+    }
+    
 }

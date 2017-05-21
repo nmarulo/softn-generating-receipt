@@ -110,15 +110,6 @@ class ClientsManager extends ManagerAbstract {
     }
     
     /**
-     * @param int $id
-     *
-     * @return Client
-     */
-    public function getByID($id) {
-        return parent::selectByID($id, self::TABLE);
-    }
-    
-    /**
      * @param Client $object
      */
     public function insert($object) {
@@ -127,20 +118,8 @@ class ClientsManager extends ManagerAbstract {
         parent::addValueAndColumnForInsert(self::CLIENT_IDENTIFICATION_DOCUMENT);
         parent::addValueAndColumnForInsert(self::CLIENT_CITY);
         parent::addValueAndColumnForInsert(self::CLIENT_NUMBER_RECEIPTS);
-        parent::insertData($object, self::TABLE);
-    }
-    
-    /**
-     * @param Client $object
-     */
-    public function update($object) {
-        parent::addSetForUpdate(self::CLIENT_NAME);
-        parent::addSetForUpdate(self::CLIENT_ADDRESS);
-        parent::addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
-        parent::addSetForUpdate(self::CLIENT_CITY);
-        parent::addSetForUpdate(self::CLIENT_NUMBER_RECEIPTS);
-        $id = $object->getId();
-        parent::updateData($object, self::TABLE, $id);
+        
+        return parent::insertData($object, self::TABLE);
     }
     
     public function getLast() {
@@ -162,8 +141,63 @@ class ClientsManager extends ManagerAbstract {
     
     private function canBeDelete($id) {
         $receiptsManager = new ReceiptsManager();
-        $count           = $receiptsManager->getCountReceiptByClientId($id);
         
-        return $count == 0;
+        return $receiptsManager->getCountReceiptByClientId($id) == 0;
+    }
+    
+    public function updateNumberReceipts($id, $num = 1) {
+        $client         = $this->getByID($id);
+        $numberReceipts = intval($client->getClientNumberReceipts()); //TODO: conversión temporal
+        
+        $client->setClientNumberReceipts($numberReceipts + $num);
+        
+        return $this->update($id, $client);
+    }
+    
+    /**
+     * @param int $id
+     *
+     * @return Client
+     */
+    public function getByID($id) {
+        return parent::selectByID($id, self::TABLE);
+    }
+    
+    /**
+     * @param int    $id
+     * @param Client $object
+     *
+     * @return bool
+     */
+    public function update($id, $object) {
+        $client = $this->getAndSetterObject($id, $object);
+        
+        parent::addSetForUpdate(self::CLIENT_NAME);
+        parent::addSetForUpdate(self::CLIENT_ADDRESS);
+        parent::addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
+        parent::addSetForUpdate(self::CLIENT_CITY);
+        parent::addSetForUpdate(self::CLIENT_NUMBER_RECEIPTS);
+        
+        return parent::updateData($client, self::TABLE, $id);
+    }
+    
+    /**
+     * Método que obtiene y establece los nuevos valores del objeto.
+     *
+     * @param int    $id
+     * @param Client $object
+     *
+     * @return Client
+     */
+    protected function getAndSetterObject($id, $object) {
+        $client = $this->getByID($id);
+        
+        $client->setClientIdentificationDocument($object->getClientIdentificationDocument());
+        $client->setClientCity($object->getClientCity());
+        $client->setClientNumberReceipts($object->getClientNumberReceipts());
+        $client->setClientAddress($object->getClientAddress());
+        $client->setClientName($object->getClientName());
+        
+        return $client;
     }
 }

@@ -2,6 +2,8 @@
 use Softn\controllers\ViewController;
 
 ViewController::registerScript('jquery-3.2.1');
+ViewController::registerScript('bootstrap');
+ViewController::registerScript('script-common');
 ?>
 <!DOCTYPE html>
 <html lang="es">

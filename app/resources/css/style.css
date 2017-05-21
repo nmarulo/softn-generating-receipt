@@ -145,6 +145,14 @@ body {
     outline: 0;
 }
 
+#messages .messages-content {
+    margin: 5px auto;
+}
+
+#messages .alert {
+    margin-bottom: 0;
+}
+
 #messages .alert {
     border-left: 4px solid transparent;
 }

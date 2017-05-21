@@ -58,6 +58,7 @@ abstract class ManagerAbstract implements ManagerInterface {
     protected function deleteByID($id, $table) {
         $mysql     = new MySql();
         $isExecute = $mysql->deleteByColumn($id, $table, self::ID);
+        
         $mysql->close();
         
         return $isExecute;
@@ -83,13 +84,20 @@ abstract class ManagerAbstract implements ManagerInterface {
     protected function selectByColumn($value, $table, $column) {
         $mysql  = new MySql();
         $select = $mysql->selectByColumn($value, $table, $column);
+        
         $mysql->close();
         
         return $this->createObjects($select);
     }
     
-    private function createObjects($select) {
-        if (count($select) > 1) {
+    /**
+     * @param array $select      Resultado de la consulta select.
+     * @param bool  $alwaysArray Indica si retornara siempre una lista con los datos.
+     *
+     * @return array|object
+     */
+    private function createObjects($select, $alwaysArray = FALSE) {
+        if (count($select) > 1 || $alwaysArray) {
             $objects = [];
             
             foreach ($select as $value) {
@@ -117,6 +125,7 @@ abstract class ManagerAbstract implements ManagerInterface {
     protected function getLastData($table) {
         $mysql  = new MySql();
         $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', 'id DESC', 1);
+        
         $mysql->close();
         
         return $this->createObjects($select);
@@ -134,15 +143,17 @@ abstract class ManagerAbstract implements ManagerInterface {
     
     /**
      * @param string $table
+     * @param string $orderBy
      *
      * @return array
      */
-    protected function selectAll($table) {
+    protected function selectAll($table, $orderBy = self::ID) {
         $mysql  = new MySql();
-        $select = $mysql->select($table, MySql::FETCH_ALL);
+        $select = $mysql->select($table, MySql::FETCH_ALL, '', [], '*', "$orderBy DESC");
+        
         $mysql->close();
         
-        return $this->createObjects($select);
+        return $this->createObjects($select, TRUE);
     }
     
     /**
@@ -160,12 +171,17 @@ abstract class ManagerAbstract implements ManagerInterface {
      * @return bool
      */
     protected function insertData($object, $table) {
-        $mysql              = new MySql();
-        $values             = $this->valuesForInsert;
-        $columns            = $this->columnsForInsert;
-        $prepare            = $this->prepare($object);
-        $isExecute          = $mysql->insert($table, $columns, $values, $prepare);
-        $this->lastInsertId = $mysql->lastInsertId();
+        $mysql     = new MySql();
+        $values    = $this->valuesForInsert;
+        $columns   = $this->columnsForInsert;
+        $prepare   = $this->prepare($object);
+        $isExecute = FALSE;
+        
+        if ($mysql->insert($table, $columns, $values, $prepare)) {
+            $isExecute          = TRUE;
+            $this->lastInsertId = $mysql->lastInsertId();
+        }
+        
         $mysql->close();
         $this->clear();
         
@@ -197,6 +213,8 @@ abstract class ManagerAbstract implements ManagerInterface {
     }
     
     /**
+     * Método que actualiza los datos del objeto.
+     *
      * @param object $object
      * @param string $table
      * @param int    $value
@@ -212,18 +230,24 @@ abstract class ManagerAbstract implements ManagerInterface {
         $prepare   = $this->prepare($object);
         $prepare[] = $mysql->prepareStatement($param, $value, \PDO::PARAM_INT);
         $isExecute = $mysql->update($table, $columns, $where, $prepare);
+        
         $mysql->close();
         $this->clear();
         
         return $isExecute;
     }
     
-    protected function countData($table, $where, $prepare) {
-        $mySql   = new MySql();
-        $columns = 'COUNT(*) AS COUNT';
-        $select  = $mySql->select($table, MySql::FETCH_ALL, $where, $prepare, $columns);
-        
-        $count = Arrays::get($select, 0);
+    protected abstract function getAndSetterObject($id, $object);
+    
+    protected function countData($table, $column, $value, $dataType = \PDO::PARAM_INT) {
+        $mySql     = new MySql();
+        $prepare   = [];
+        $parameter = ":$column";
+        $where     = "$column = $parameter";
+        $prepare[] = MySql::prepareStatement($parameter, $value, $dataType);
+        $columns   = 'COUNT(*) AS COUNT';
+        $select    = $mySql->select($table, MySql::FETCH_ALL, $where, $prepare, $columns);
+        $count     = Arrays::get($select, 0);
         
         if ($count === FALSE) {
             return 0;

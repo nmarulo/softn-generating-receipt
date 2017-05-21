@@ -39,15 +39,6 @@ class OptionsManager extends ManagerAbstract {
         parent::__construct();
     }
     
-    /**
-     * @param string $value
-     *
-     * @return Option
-     */
-    public function selectByKey($value) {
-        return parent::selectByColumn($value, self::TABLE, self::OPTION_KEY);
-    }
-    
     public function getLast() {
         // TODO: Implement getLast() method.
     }
@@ -65,12 +56,40 @@ class OptionsManager extends ManagerAbstract {
     }
     
     /**
+     * @param string $optionKey
      * @param Option $object
+     *
+     * @return bool
      */
-    public function update($object) {
+    public function update($optionKey, $object) {
+        $option = $this->getAndSetterObject($optionKey, $object);
+        
         parent::addSetForUpdate(self::OPTION_VALUE);
-        $optionKey = $object->getOptionKey();
-        parent::updateData($object, self::TABLE, $optionKey, self::OPTION_KEY);
+        
+        return parent::updateData($option, self::TABLE, $optionKey, self::OPTION_KEY);
+    }
+    
+    /**
+     * @param string $optionKey
+     * @param Option $object
+     *
+     * @return Option
+     */
+    protected function getAndSetterObject($optionKey, $object) {
+        $option = $this->getByKey($optionKey);
+        
+        $option->setOptionValue($object->getOptionValue());
+        
+        return $option;
+    }
+    
+    /**
+     * @param string $value
+     *
+     * @return Option
+     */
+    public function getByKey($value) {
+        return parent::selectByColumn($value, self::TABLE, self::OPTION_KEY);
     }
     
     public function delete($id) {

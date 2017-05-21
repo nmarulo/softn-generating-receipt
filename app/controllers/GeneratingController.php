@@ -9,9 +9,11 @@ use Softn\models\Generating;
 use Softn\models\GeneratingManager;
 use Softn\models\ProductsManager;
 use Softn\models\Receipt;
+use Softn\models\ReceiptHasProduct;
 use Softn\models\ReceiptsHasProductsManager;
 use Softn\models\ReceiptsManager;
 use Softn\util\Arrays;
+use Softn\util\Messages;
 
 /**
  * Class GeneratingController
@@ -31,22 +33,71 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
     }
     
     public function generate() {
-        $this->getViewForm();
+        $notError          = FALSE;
+        $messages          = 'No se puede generar la factura.';
+        $typeMessage       = Messages::TYPE_DANGER;
+        $generating        = $this->getViewForm();
+        $generatingManager = new GeneratingManager();
+        
+        if ($generatingManager->generate($generating)) {
+            $messages    = 'La factura se genero correctamente.';
+            $typeMessage = Messages::TYPE_SUCCESS;
+            $notError    = TRUE;
+        }
+        
+        echo json_encode([
+            'messages'    => $messages,
+            'typeMessage' => $typeMessage,
+            'notError'    => $notError,
+        ]);
     }
     
     protected function getViewForm() {
-        $generatingManager      = new GeneratingManager();
+        $generating             = new Generating();
         $receipt                = new Receipt();
         $clientId               = Arrays::get($_GET, ReceiptsManager::CLIENT_ID);
         $productsIdAndUnitsJSON = Arrays::get($_GET, ReceiptsHasProductsManager::RECEIPT_PRODUCTS);
         $productsIdAndUnits     = json_decode($productsIdAndUnitsJSON, TRUE);
+        $receiptHasProducts     = $this->getReceiptHasProducts($productsIdAndUnits);
         
         $receipt->setClientId($clientId);
         $receipt->setReceiptDate(Arrays::get($_GET, ReceiptsManager::RECEIPT_DATE));
         $receipt->setReceiptNumber(Arrays::get($_GET, ReceiptsManager::RECEIPT_NUMBER));
         $receipt->setReceiptType(Arrays::get($_GET, ReceiptsManager::RECEIPT_TYPE));
+        $generating->setReceipt($receipt);
+        $generating->setReceiptsHasProducts($receiptHasProducts);
         
-        $generatingManager->generate($receipt, $productsIdAndUnits);
+        return $generating;
+    }
+    
+    private function getReceiptHasProducts($productsIdAndUnits) {
+        $receiptHasProducts = [];
+        
+        if (!is_array($productsIdAndUnits)) {
+            $productsIdAndUnits = [];
+        }
+        
+        foreach ($productsIdAndUnits as $productAndUnits) {
+            $productId         = Arrays::get($productAndUnits, ProductsManager::ID);
+            $productUnits      = Arrays::get($productAndUnits, ReceiptsHasProductsManager::RECEIPT_PRODUCT_UNIT);
+            $receiptHasProduct = new ReceiptHasProduct();
+            
+            $receiptHasProduct->setProductId($productId);
+            $receiptHasProduct->setReceiptProductUnit($productUnits);
+            
+            $receiptHasProducts[] = $receiptHasProduct;
+        }
+        
+        return $receiptHasProducts;
+    }
+    
+    public function messages() {
+        $messages    = Arrays::get($_GET, 'messages');
+        $typeMessage = Arrays::get($_GET, 'typeMessage');
+        
+        ViewController::sendViewData('messages', $messages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
+        parent::messages();
     }
     
     public function index() {
@@ -117,5 +168,4 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
     private function getProducts() {
         return ProductsController::getProducts();
     }
-    
 }

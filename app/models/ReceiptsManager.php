@@ -42,10 +42,13 @@ class ReceiptsManager extends ManagerAbstract {
         $value    = "%$search%";
         $receipt  = new Receipt();
         
+        $receipt->setClientId('');
+        
         if (is_numeric($search)) {
             $receipt->setReceiptNumber(intval($search));
             $where = self::RECEIPT_NUMBER . ' = :' . self::RECEIPT_NUMBER;
         } else {
+            $receipt->setReceiptNumber('');
             $receipt->setReceiptType($value);
             $receipt->setReceiptDate($value);
             $where = self::RECEIPT_DATE . ' LIKE :' . self::RECEIPT_DATE . ' OR ';
@@ -54,7 +57,12 @@ class ReceiptsManager extends ManagerAbstract {
         
         $prepare = $this->prepare($receipt);
         $select  = $mysql->select(self::TABLE, MySql::FETCH_ALL, $where, $prepare);
+        
         $mysql->close();
+        
+        if (empty($select)) {
+            return $receipts;
+        }
         
         foreach ($select as $selectValue) {
             $receipts[] = $this->create($selectValue);
@@ -120,34 +128,42 @@ class ReceiptsManager extends ManagerAbstract {
         parent::addValueAndColumnForInsert(self::RECEIPT_NUMBER);
         parent::addValueAndColumnForInsert(self::RECEIPT_DATE);
         parent::addValueAndColumnForInsert(self::CLIENT_ID);
-        parent::insertData($object, self::TABLE);
+        
+        return parent::insertData($object, self::TABLE);
     }
     
     /**
+     * @param int     $id
      * @param Receipt $object
+     *
+     * @return bool
      */
-    public function update($object) {
+    public function update($id, $object) {
+        $receipt = $this->getAndSetterObject($id, $object);
+        
         parent::addSetForUpdate(self::RECEIPT_DATE);
         parent::addSetForUpdate(self::RECEIPT_NUMBER);
         parent::addSetForUpdate(self::RECEIPT_TYPE);
         parent::addSetForUpdate(self::CLIENT_ID);
-        $id = $object->getId();
-        parent::updateData($object, self::TABLE, $id);
+        
+        return parent::updateData($receipt, self::TABLE, $id);
     }
     
     /**
-     * @param int $id
+     * @param int     $id
+     * @param Receipt $object
+     *
+     * @return Receipt
      */
-    public function delete($id) {
-        $receipt        = $this->getByID($id);
-        $clientsManager = new ClientsManager();
-        $client         = $clientsManager->getByID($receipt->getClientId());
-        //TODO: Conversión temporal.
-        $numberReceipt = intval($client->getClientNumberReceipts());
-        $client->setClientNumberReceipts(--$numberReceipt < 0 ? 0 : $numberReceipt);
-        $clientsManager->update($client);
-        parent::deleteByID($id, self::TABLE);
+    protected function getAndSetterObject($id, $object) {
+        $receipt = $this->getByID($id);
         
+        $receipt->setReceiptType($object->getReceiptType());
+        $receipt->setReceiptDate($object->getReceiptDate());
+        $receipt->setReceiptNumber($object->getReceiptNumber());
+        $receipt->setClientId($object->getClientId());
+        
+        return $receipt;
     }
     
     /**
@@ -159,13 +175,19 @@ class ReceiptsManager extends ManagerAbstract {
         return parent::selectByID($id, self::TABLE);;
     }
     
-    public function getCountReceiptByClientId($id) {
-        $parameter = ':' . self::CLIENT_ID;
-        $where     = self::CLIENT_ID . " = $parameter";
-        $prepare   = [];
-        $prepare[] = MySql::prepareStatement($parameter, $id, \PDO::PARAM_INT);
+    /**
+     * @param int $id
+     */
+    public function delete($id) {
+        $receipt        = $this->getByID($id);
+        $clientsManager = new ClientsManager();
         
-        return parent::countData(self::TABLE, $where, $prepare);
+        $clientsManager->updateNumberReceipts($receipt->getClientId(), -1);
+        
+        return parent::deleteByID($id, self::TABLE);
     }
     
+    public function getCountReceiptByClientId($id) {
+        return parent::countData(self::TABLE, self::CLIENT_ID, $id);
+    }
 }

@@ -29,5 +29,10 @@ abstract class ControllerAbstract {
         ], ['']);
     }
     
+    protected function messages(){
+        ViewController::setDirectory('');
+        ViewController::singleView('messages');
+    }
+    
     protected abstract function getViewForm();
 }

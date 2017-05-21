@@ -8,6 +8,7 @@ namespace Softn\controllers;
 use Softn\models\Product;
 use Softn\models\ProductsManager;
 use Softn\util\Arrays;
+use Softn\util\Messages;
 
 /**
  * Class ProductsController
@@ -33,25 +34,42 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     
     public function update() {
         $objectManager = new ProductsManager();
-        $object        = $this->getViewForm();
         $id            = Arrays::get($_GET, 'update');
+        $messages      = FALSE;
+        $typeMessage   = Messages::TYPE_DANGER;
         
-        if ($object->getId() == 0) {
-            if ($id !== FALSE) {
-                $object = $objectManager->getByID($id);
+        if ($id === FALSE) {
+            $object = $this->getViewForm();
+            $id     = $object->getId();
+            
+            if ($id == 0) {
+                $messages = 'No se puede agregar el producto.';
+                
+                if ($objectManager->insert($object)) {
+                    $messages    = 'El producto se agrego correctamente';
+                    $typeMessage = Messages::TYPE_SUCCESS;
+                }
             } else {
-                $objectManager->insert($object);
+                $messages = 'No se puede actualizar el producto.';
+                
+                if ($objectManager->update($id, $object)) {
+                    $messages    = 'El producto se actualizo correctamente';
+                    $typeMessage = Messages::TYPE_SUCCESS;
+                }
             }
         } else {
-            $objectManager->update($object);
+            $object = $objectManager->getByID($id);
         }
         
+        ViewController::sendViewData('messages', $messages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
         ViewController::sendViewData('product', $object);
         ViewController::view('insert');
     }
     
     protected function getViewForm() {
         $product = new Product();
+        
         $product->setId(Arrays::get($_GET, ProductsManager::ID));
         $product->setProductPriceUnit(Arrays::get($_GET, ProductsManager::PRODUCT_PRICE_UNIT));
         $product->setProductReference(Arrays::get($_GET, ProductsManager::PRODUCT_REFERENCE));
@@ -61,14 +79,22 @@ class ProductsController extends ControllerAbstract implements ControllerCRUDInt
     }
     
     public function delete() {
-        $id = Arrays::get($_GET, 'delete');
+        $messages    = 'El producto no existe.';
+        $typeMessage = Messages::TYPE_DANGER;
+        $id          = Arrays::get($_GET, 'delete');
         
-        //TODO: no se puede borrar un producto si fue agregado en una factura.
         if ($id !== FALSE) {
             $objectManager = new ProductsManager();
-            $objectManager->delete($id);
+            $messages      = 'No se puede borrar el producto.';
+            
+            if ($objectManager->delete($id)) {
+                $typeMessage = Messages::TYPE_SUCCESS;
+                $messages    = 'Cliente borrado correctamente.';
+            }
         }
         
+        ViewController::sendViewData('messages', $messages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
         $this->index();
     }
     

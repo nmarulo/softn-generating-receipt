@@ -53,7 +53,7 @@ class ViewController {
         $directoryAndSeparator = '';
         
         /*
-         * Para casos donde se quera obtener,
+         * Para casos donde se quiera obtener,
          * las vistas, fuera de los directorios.
          */
         if(!empty(self::$DIRECTORY)){

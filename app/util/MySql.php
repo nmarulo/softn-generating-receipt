@@ -42,17 +42,17 @@ class MySql {
     }
     
     /**
-     * @param int    $id
+     * @param int    $value
      * @param string $table
      * @param string $column
      * @param int    $dataType
      *
      * @return array|bool|\PDOStatement
      */
-    public function selectByColumn($id, $table, $column, $dataType = \PDO::PARAM_INT) {
+    public function selectByColumn($value, $table, $column, $dataType = \PDO::PARAM_INT) {
         $where     = $column . ' = :' . $column;
         $prepare   = [];
-        $prepare[] = $this->prepareStatement(':' . $column, $id, $dataType);
+        $prepare[] = $this->prepareStatement(':' . $column, $value, $dataType);
         $select    = $this->select($table, MySql::FETCH_ALL, $where, $prepare);
         
         return $select;
@@ -176,7 +176,13 @@ class MySql {
             return \FALSE;
         }
         
-        return $this->prepareObject->execute();
+        try {
+            
+            return $this->prepareObject->execute();
+        } catch (\PDOException $ex) {
+            
+            return FALSE;
+        }
     }
     
     /**
@@ -195,7 +201,11 @@ class MySql {
             $parameter      = $value['parameter'];
             $parameterValue = $value['value'];
             
-            if (!$this->prepareObject->bindValue($parameter, $parameterValue, $value['dataType'])) {
+            try {
+                if (!$this->prepareObject->bindValue($parameter, $parameterValue, $value['dataType'])) {
+                    $error = \TRUE;
+                }
+            } catch (\PDOException $ex) {
                 $error = \TRUE;
             }
             
@@ -254,10 +264,11 @@ class MySql {
      * @return bool
      */
     public function deleteByColumn($value, $table, $column, $dataType = \PDO::PARAM_INT) {
-        $param = ":$column";
+        $param     = ":$column";
         $where     = "$column = $param";
         $prepare   = [];
         $prepare[] = $this->prepareStatement($param, $value, $dataType);
+        
         return $this->delete($table, $where, $prepare);
     }
     

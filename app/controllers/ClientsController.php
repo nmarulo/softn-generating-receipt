@@ -9,6 +9,7 @@ use Softn\models\Client;
 use Softn\models\ClientsManager;
 use Softn\models\ReceiptsManager;
 use Softn\util\Arrays;
+use Softn\util\Messages;
 
 /**
  * Class ClientsController
@@ -27,32 +28,37 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         parent::method(new ClientsController());
     }
     
-    public function insert() {
-        ViewController::sendViewData('client', new Client());
-        ViewController::view('insert');
-    }
-    
     public function update() {
         $objectManager = new ClientsManager();
-        $object        = $this->getViewForm();
         $id            = Arrays::get($_GET, 'update');
+        $messages      = FALSE;
+        $typeMessage   = Messages::TYPE_DANGER;
         
-        if ($object->getId() == 0) {
-            if ($id !== FALSE) {
-                $object = $objectManager->getByID($id);
+        if ($id === FALSE) {
+            $object = $this->getViewForm();
+            $id     = $object->getId();
+            
+            if ($id == 0) {
+                $messages = 'No se puede agregar el cliente.';
+                
+                if ($objectManager->insert($object)) {
+                    $messages    = 'El cliente se agrego correctamente';
+                    $typeMessage = Messages::TYPE_SUCCESS;
+                }
             } else {
-                $objectManager->insert($object);
+                $messages = 'No se puede actualizar el cliente.';
+                
+                if ($objectManager->update($id, $object)) {
+                    $messages    = 'El cliente se actualizo correctamente';
+                    $typeMessage = Messages::TYPE_SUCCESS;
+                }
             }
         } else {
-            $client = $objectManager->getByID($object->getId());
-            $client->setClientIdentificationDocument($object->getClientIdentificationDocument());
-            $client->setClientCity($object->getClientCity());
-            $client->setClientNumberReceipts($object->getClientNumberReceipts());
-            $client->setClientAddress($object->getClientAddress());
-            $client->setClientName($object->getClientName());
-            $objectManager->update($client);
+            $object = $objectManager->getByID($id);
         }
         
+        ViewController::sendViewData('messages', $messages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
         ViewController::sendViewData('client', $object);
         ViewController::view('insert');
     }
@@ -62,6 +68,7 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
      */
     protected function getViewForm() {
         $client = new Client();
+        
         $client->setId(Arrays::get($_GET, ClientsManager::ID));
         $client->setClientName(Arrays::get($_GET, ClientsManager::CLIENT_NAME));
         $client->setClientAddress(Arrays::get($_GET, ClientsManager::CLIENT_ADDRESS));
@@ -71,23 +78,28 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
         return $client;
     }
     
+    public function insert() {
+        ViewController::sendViewData('client', new Client());
+        ViewController::view('insert');
+    }
+    
     public function delete() {
-        $message = 'El cliente no existe.';
-        $type    = 'danger';
-        $id      = Arrays::get($_GET, 'delete');
+        $messages    = 'El cliente no existe.';
+        $typeMessage = Messages::TYPE_DANGER;
+        $id          = Arrays::get($_GET, 'delete');
         
         if ($id !== FALSE) {
             $objectManager = new ClientsManager();
-            $message       = 'No se puede borrar el cliente.';
+            $messages      = 'No se puede borrar el cliente.';
             
             if ($objectManager->delete($id)) {
-                $type    = 'success';
-                $message = 'Cliente borrado correctamente.';
+                $typeMessage = Messages::TYPE_SUCCESS;
+                $messages    = 'Cliente borrado correctamente.';
             }
         }
         
-        ViewController::sendViewData('message', $message);
-        ViewController::sendViewData('type', $type);
+        ViewController::sendViewData('messages', $messages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
         $this->index();
     }
     

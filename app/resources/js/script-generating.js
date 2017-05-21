@@ -2,8 +2,7 @@ var inputSearchData = '';
 var formGenerateReceipt = '';
 var btnGenerateReceipt = '';
 var divContentAutocompleteModal = '';
-var divContentListGroup = '';
-var divModalGenerateReceipt = '';
+var divContentAutocompleteListGroup = '';
 var inputReceiptClient = '';
 var inputHiddenReceiptClientId = '';
 var inputHiddenReceiptProducts = '';
@@ -28,7 +27,6 @@ var listProductsIdAndUnits = [];
 function setVars() {
 	formGenerateReceipt = $('#form-generate-receipt');
 	btnGenerateReceipt = $('#btn-generate-receipt');
-	divModalGenerateReceipt = $('#modal-generate-receipt');
 	divContentAutocompleteModal = $('.content-autocomplete-modal');
 	inputReceiptClient = $('#receipt-client');
 	inputHiddenReceiptClientId = $('#receipt-client-id');
@@ -126,17 +124,13 @@ function registerEvents() {
 		generatingReceipt();
 	});
 	
-	divModalGenerateReceipt.on('hide.bs.modal', function () {
-		location.reload();
-	});
-	
 	divContentAutocompleteModal.on('hide.bs.modal', function () {
 		inputSearchData.val('');
 	})
 }
 
 function registerEventContentListGroup(callbackSetDataInput, methodGetData, methodGetId, methodGetName) {
-	divContentListGroup.on('click', 'button', function () {
+	divContentAutocompleteListGroup.on('click', 'button', function () {
 		callbackSetDataInput($(this));
 		divContentAutocompleteModal.modal('hide');
 	});
@@ -144,7 +138,7 @@ function registerEventContentListGroup(callbackSetDataInput, methodGetData, meth
 	inputSearchData.on('keyup', function () {
 		var inputText = $(this).val();
 		
-		if (inputText.length < 3 || (isNaN(inputText) && inputText.length == 0)) {
+		if (inputText.length < 3 && isNaN(inputText)) {
 			inputText = '';
 		}
 		
@@ -154,13 +148,13 @@ function registerEventContentListGroup(callbackSetDataInput, methodGetData, meth
 
 function setContentAutocompleteModalElements(element) {
 	divContentAutocompleteModal = element.closest('div').find('.content-autocomplete-modal');
-	divContentListGroup = divContentAutocompleteModal.find('.content-autocomplete-data-list');
+	divContentAutocompleteListGroup = divContentAutocompleteModal.find('.content-autocomplete-data-list');
 	inputSearchData = divContentAutocompleteModal.find('.search-data');
 }
 
 function setDataContentListGroupAndRegisterEvents(methodGetData, methodGetId, methodGetName, search) {
 	var setContentList = function (data) {
-		divContentListGroup.html(data);
+		divContentAutocompleteListGroup.html(data);
 	};
 	
 	var data = {
@@ -201,9 +195,23 @@ function generatingReceipt() {
 		generatePDF(data['id'], true);
 	};
 	
-	var getReceiptId = function (data) {
-		callAjaxParseJSON('receipts.php', {method: 'lastInsert'}, showPDF);
+	var generateAndGetLastReceipt = function (data) {
+		includeMessages('generating.php', data['messages'], data['typeMessage']);
+		
+		//Si es igual, la factura se genero.
+		if (data['notError'] == '1') {
+			formGenerateReceipt.find('input').each(function () {
+				$(this).attr('disabled', true);
+			});
+			
+			formGenerateReceipt.find('button').each(function () {
+				$(this).attr('disabled', true);
+			});
+			
+			btnGenerateReceipt.closest('div').addClass('hidden');
+			callAjaxParseJSON('receipts.php', {method: 'lastInsert'}, showPDF);
+		}
 	};
 	
-	callAjax('generating.php', data, getReceiptId);
+	callAjaxParseJSON('generating.php', data, generateAndGetLastReceipt);
 }
