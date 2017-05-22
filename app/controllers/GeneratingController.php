@@ -19,7 +19,7 @@ use Softn\util\Messages;
  * Class GeneratingController
  * @author Nicolás Marulanda P.
  */
-class GeneratingController extends ControllerAbstract implements ControllerInterface {
+class GeneratingController extends ControllerAbstract {
     
     /**
      * GeneratingController constructor.
@@ -102,6 +102,7 @@ class GeneratingController extends ControllerAbstract implements ControllerInter
     
     public function index() {
         $objectManager = new GeneratingManager();
+        
         ViewController::sendViewData('generating', $objectManager->defaultData());
         ViewController::view('index');
     }

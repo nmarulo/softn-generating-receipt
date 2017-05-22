@@ -12,7 +12,7 @@ use Softn\util\MySql;
  * Class ProductsManager
  * @author Nicolás Marulanda P.
  */
-class ProductsManager extends ManagerAbstract {
+class ProductsManager extends ManagerCRUDAbstract {
     
     const TABLE              = 'products';
     
@@ -115,6 +115,11 @@ class ProductsManager extends ManagerAbstract {
     public function update($id, $object) {
         $product = $this->getAndSetterObject($id, $object);
         
+        if (empty($product)) {
+            
+            return FALSE;
+        }
+        
         parent::addSetForUpdate(self::PRODUCT_NAME);
         parent::addSetForUpdate(self::PRODUCT_PRICE_UNIT);
         parent::addSetForUpdate(self::PRODUCT_REFERENCE);
@@ -130,6 +135,11 @@ class ProductsManager extends ManagerAbstract {
      */
     protected function getAndSetterObject($id, $object) {
         $product = $this->getByID($id);
+        
+        if (empty($product->getId())) {
+            
+            return NULL;
+        }
         
         $product->setProductName($object->getProductName());
         $product->setProductReference($object->getProductReference());

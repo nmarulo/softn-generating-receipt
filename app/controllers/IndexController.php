@@ -9,7 +9,7 @@ namespace Softn\controllers;
  * Class IndexController
  * @author Nicolás Marulanda P.
  */
-class IndexController extends ControllerAbstract implements ControllerInterface {
+class IndexController extends ControllerAbstract {
     
     /**
      * IndexController constructor.
@@ -24,9 +24,5 @@ class IndexController extends ControllerAbstract implements ControllerInterface 
     
     public function index() {
         ViewController::view('index');
-    }
-    
-    protected function getViewForm() {
-        // TODO: Implement getViewForm() method.
     }
 }

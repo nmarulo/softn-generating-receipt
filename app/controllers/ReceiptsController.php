@@ -20,7 +20,7 @@ use Softn\util\Messages;
  * Class ReceiptsController
  * @author Nicolás Marulanda P.
  */
-class ReceiptsController extends ControllerAbstract implements ControllerCRUDInterface {
+class ReceiptsController extends ControllerAbstract {
     
     /**
      * ReceiptsController constructor.
@@ -31,14 +31,6 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
     
     public static function init() {
         parent::method(new ReceiptsController());
-    }
-    
-    public function insert() {
-        // TODO: Implement insert() method.
-    }
-    
-    public function update() {
-        // TODO: Implement update() method.
     }
     
     public function delete() {
@@ -143,9 +135,5 @@ class ReceiptsController extends ControllerAbstract implements ControllerCRUDInt
         }
         
         return $object;
-    }
-    
-    protected function getViewForm() {
-        // TODO: Implement getViewForm() method.
     }
 }

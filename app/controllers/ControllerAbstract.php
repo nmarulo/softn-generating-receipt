@@ -11,7 +11,7 @@ use Softn\util\Arrays;
  * Class ControllerAbstract
  * @author Nicolás Marulanda P.
  */
-abstract class ControllerAbstract {
+abstract class ControllerAbstract implements ControllerInterface {
     
     protected static function method($instance) {
         $method    = 'index';
@@ -33,6 +33,4 @@ abstract class ControllerAbstract {
         ViewController::setDirectory('');
         ViewController::singleView('messages');
     }
-    
-    protected abstract function getViewForm();
 }

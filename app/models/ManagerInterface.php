@@ -15,11 +15,5 @@ interface ManagerInterface {
     
     public function getAll();
     
-    public function getByID($id);
-    
-    public function insert($object);
-    
-    public function update($id, $object);
-    
-    public function delete($id);
+    public function getLast();
 }

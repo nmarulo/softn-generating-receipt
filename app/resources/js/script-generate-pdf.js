@@ -98,6 +98,8 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	var receiptNumber = '';
 	var productSubtotal = 0.00;
 	var strNumber = 'Número:';
+	var thousandsSep = '';
+	var decPoint = '.';
 	
 	if (receipt['receipt_type'] == 'Presupuesto') {
 		receiptNumber = '';
@@ -229,15 +231,15 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 		doc.text(marginX + 1, marginYBase, products[i]['product']['product_reference']);
 		doc.text(marginX + 19, marginYBase, products[i]['product']['product_name']);
 		
-		unit = number_format(products[i]['receipt_product_unit'], 0, ',', '.').toString();
+		unit = number_format(products[i]['receipt_product_unit'], 0, '.', thousandsSep).toString();
 		doc.textAlignRight(MarginXAlignRightUnit, marginYBase, unit);
 		
 		priceUnit = parseFloat(products[i]['product']['product_price_unit']).toFixed(2);
-		priceUnit = number_format(priceUnit, 2, ',', '.').toString();
+		priceUnit = number_format(priceUnit, 2, decPoint, thousandsSep).toString();
 		doc.textAlignRight(MarginXAlignRightPriceUnit, marginYBase, priceUnit + ' €');
 		
 		productSubtotal = products[i]['receipt_product_unit'] * products[i]['product']['product_price_unit'];
-		productSubtotal = number_format(productSubtotal, 2, ',', '.').toString();
+		productSubtotal = number_format(productSubtotal, 2, decPoint, thousandsSep).toString();
 		doc.textAlignRight(MarginXAlignRightSubtotal, marginYBase, productSubtotal + ' €');
 	}
 	
@@ -287,16 +289,16 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	doc.textAlignRight(marginXBase, marginYBase + rowSize, ivaPercentage + '%');
 	
 	marginXBase = marginXMax - 2;
-	subtotal = number_format(subtotal, 2, ',', '.').toString();
+	subtotal = number_format(subtotal, 2, decPoint, thousandsSep).toString();
 	doc.textAlignRight(marginXBase, marginYBase, subtotal + ' €');
 	
-	ivaTotal = number_format(ivaTotal, 2, ',', '.').toString();
+	ivaTotal = number_format(ivaTotal, 2, decPoint, thousandsSep).toString();
 	doc.textAlignRight(marginXBase, marginYBase + rowSize, ivaTotal + ' €');
 	
 	doc.setFontSize(fontSize + 4);
 	doc.setTextColor(220, 0, 0);
 	doc.setFontType('bold');
-	total = number_format(total, 2, ',', '.').toString();
+	total = number_format(total, 2, decPoint, thousandsSep).toString();
 	doc.textAlignRight(marginXBase, marginYBase + (rowSize * 3), total + ' €');
 	
 	if (dataUrlString) {

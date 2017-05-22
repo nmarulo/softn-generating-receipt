@@ -67,7 +67,7 @@ $receipt    = $generating->getReceipt();
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-table-row">
-                            <button id="btn-add-product" class="btn btn-primary" type="button">Agregar producto</button>
+                            <button id="btn-add-product" class="btn btn-primary" type="button" disabled="disabled">Agregar producto</button>
                         </div>
                     </div>
                 </div>

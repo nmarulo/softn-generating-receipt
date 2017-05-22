@@ -16,12 +16,13 @@ class ViewController {
     /** @var string Nombre del directorio de la vista del controlador. */
     private static $DIRECTORY = 'index';
     
-    /** @var array Datos a enviar a la vista. */
+    /** @var array Lista de datos a enviar a la vista. */
     private static $VIEW_DATA = [];
     
     /** @var string Contenido principal de la vista. */
     private static $VIEW_CONTENT = '';
     
+    /** @var array Lista de nombre de los scripts. */
     private static $VIEW_SCRIPTS = [];
     
     /**
@@ -56,7 +57,7 @@ class ViewController {
          * Para casos donde se quiera obtener,
          * las vistas, fuera de los directorios.
          */
-        if(!empty(self::$DIRECTORY)){
+        if (!empty(self::$DIRECTORY)) {
             $directoryAndSeparator = self::$DIRECTORY . DIRECTORY_SEPARATOR;
         }
         
@@ -136,7 +137,7 @@ class ViewController {
      * Método que incluye el nombre del script js.
      */
     public static function includeScripts() {
-        foreach (self::$VIEW_SCRIPTS as $script){
+        foreach (self::$VIEW_SCRIPTS as $script) {
             echo "<script src='app/resources/js/$script.js' type='text/javascript'></script>";
         }
     }
@@ -150,7 +151,7 @@ class ViewController {
         self::styleRouteView("app/resources/css/$styleName.css");
     }
     
-    public static function styleRouteView($styleRoute){
+    public static function styleRouteView($styleRoute) {
         echo "<link href='$styleRoute' rel='stylesheet' type='text/css'/>";
     }
     

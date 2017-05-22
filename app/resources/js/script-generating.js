@@ -1,6 +1,7 @@
 var inputSearchData = '';
 var formGenerateReceipt = '';
 var btnGenerateReceipt = '';
+var btnAddProduct = '';
 var divContentAutocompleteModal = '';
 var divContentAutocompleteListGroup = '';
 var inputReceiptClient = '';
@@ -34,10 +35,13 @@ function setVars() {
 	inputReceiptProduct = $('#receipt-product');
 	inputReceiptProductUnit = $('#receipt-product-unit');
 	contentSelectedProducts = $('#list-selected-products');
+	btnAddProduct = $('#btn-add-product');
 	
 	//Establece la información del producto seleccionado.
 	setProductInput = function (element) {
+		btnDisabled(btnAddProduct, false);
 		inputReceiptProduct.val(element.text());
+		
 		selectedProductId = element.data('element-id');
 	};
 	
@@ -74,7 +78,13 @@ function registerEvents() {
 		$(this).trigger('click');
 	});
 	
-	$('#btn-add-product').on('click', function () {
+	btnAddProduct.on('click', function () {
+		btnDisabled(btnAddProduct, true);
+		
+		if(selectedProductId === 0){
+			return false;
+		}
+		
 		var exists = false;
 		var productUnits = inputReceiptProductUnit.val();
 		
@@ -98,6 +108,7 @@ function registerEvents() {
 		setInputHiddenReceiptProducts(listProductsIdAndUnits);
 		inputReceiptProduct.val('');
 		inputReceiptProductUnit.val(1);
+		selectedProductId = 0;
 	});
 	
 	$(document).on('click', '#btn-remove-product', function () {

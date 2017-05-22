@@ -15,7 +15,7 @@ use Softn\util\Messages;
  * Class ClientsController
  * @author Nicolás Marulanda P.
  */
-class ClientsController extends ControllerAbstract implements ControllerCRUDInterface {
+class ClientsController extends ControllerCRUDAbstract {
     
     /**
      * ClientsController constructor.
@@ -29,10 +29,11 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
     }
     
     public function update() {
-        $objectManager = new ClientsManager();
-        $id            = Arrays::get($_GET, 'update');
-        $messages      = FALSE;
-        $typeMessage   = Messages::TYPE_DANGER;
+        $view           = 'index';
+        $objectsManager = new ClientsManager();
+        $id             = Arrays::get($_GET, 'update');
+        $messages       = FALSE;
+        $typeMessage    = Messages::TYPE_DANGER;
         
         if ($id === FALSE) {
             $object = $this->getViewForm();
@@ -41,26 +42,40 @@ class ClientsController extends ControllerAbstract implements ControllerCRUDInte
             if ($id == 0) {
                 $messages = 'No se puede agregar el cliente.';
                 
-                if ($objectManager->insert($object)) {
-                    $messages    = 'El cliente se agrego correctamente';
+                if ($objectsManager->insert($object)) {
+                    $messages    = 'El cliente se agrego correctamente.';
                     $typeMessage = Messages::TYPE_SUCCESS;
+                    $view        = 'insert';
+    
+                    $object = $objectsManager->getByID($objectsManager->getLastInsertId());
                 }
             } else {
                 $messages = 'No se puede actualizar el cliente.';
                 
-                if ($objectManager->update($id, $object)) {
-                    $messages    = 'El cliente se actualizo correctamente';
+                if ($objectsManager->update($id, $object)) {
+                    $messages    = 'El cliente se actualizo correctamente.';
                     $typeMessage = Messages::TYPE_SUCCESS;
+                    $view        = 'insert';
                 }
             }
         } else {
-            $object = $objectManager->getByID($id);
+            $object = $objectsManager->getByID($id);
+            $view   = 'insert';
+            
+            if ($object->getId() === 0) {
+                $messages = 'El cliente no existe.';
+                $view     = 'index';
+                $object   = NULL;
+            }
+        }
+        
+        if (!empty($object)) {
+            ViewController::sendViewData('client', $object);
         }
         
         ViewController::sendViewData('messages', $messages);
         ViewController::sendViewData('typeMessage', $typeMessage);
-        ViewController::sendViewData('client', $object);
-        ViewController::view('insert');
+        ViewController::view($view);
     }
     
     /**

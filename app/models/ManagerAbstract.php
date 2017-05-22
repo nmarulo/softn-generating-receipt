@@ -47,8 +47,6 @@ abstract class ManagerAbstract implements ManagerInterface {
         return $this->lastInsertId;
     }
     
-    public abstract function getLast();
-    
     /**
      * @param int    $id
      * @param string $table
@@ -236,8 +234,6 @@ abstract class ManagerAbstract implements ManagerInterface {
         
         return $isExecute;
     }
-    
-    protected abstract function getAndSetterObject($id, $object);
     
     protected function countData($table, $column, $value, $dataType = \PDO::PARAM_INT) {
         $mySql     = new MySql();

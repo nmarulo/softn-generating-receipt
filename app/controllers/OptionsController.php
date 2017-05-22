@@ -14,7 +14,7 @@ use Softn\util\Messages;
  * Class OptionsController
  * @author Nicolás Marulanda P.
  */
-class OptionsController extends ControllerAbstract implements ControllerInterface {
+class OptionsController extends ControllerAbstract {
     
     /**
      * OptionsController constructor.
@@ -33,20 +33,20 @@ class OptionsController extends ControllerAbstract implements ControllerInterfac
         $options        = $this->getViewForm();
         $count          = count($options);
         $messages       = 'Actualizado correctamente.';
-        $typeMessages   = Messages::TYPE_SUCCESS;
+        $typeMessage    = Messages::TYPE_SUCCESS;
         
         for ($i = 0; $i < $count && $notError; ++$i) {
             $option = Arrays::get($options, $i);
             
             if (!$optionsManager->update($option->getOptionKey(), $option)) {
-                $notError     = FALSE;
-                $messages     = 'No se puede actualizar el campo con el valor "' . $option->getOptionValue() . '".';
-                $typeMessages = Messages::TYPE_DANGER;
+                $notError    = FALSE;
+                $messages    = 'No se puede actualizar el campo con el valor "' . $option->getOptionValue() . '".';
+                $typeMessage = Messages::TYPE_DANGER;
             }
         }
         
         ViewController::sendViewData('messages', $messages);
-        ViewController::sendViewData('typeMessages', $typeMessages);
+        ViewController::sendViewData('typeMessage', $typeMessage);
         $this->index();
     }
     
@@ -90,5 +90,4 @@ class OptionsController extends ControllerAbstract implements ControllerInterfac
         ViewController::sendViewData('IVA', $valueIVA);
         ViewController::view('index');
     }
-    
 }

@@ -23,12 +23,13 @@ class GeneratingManager {
     }
     
     public function defaultData() {
-        $date              = date('d/m/Y', time());
+        $date              = date('Y-m-d', time());
         $receiptManager    = new ReceiptsManager();
         $object            = new Generating();
         $lastReceipt       = $receiptManager->getLast();
         $lastReceiptNumber = $lastReceipt->getReceiptNumber();
         $receipt           = $object->getReceipt();
+        
         $receipt->setReceiptType('Factura');
         $receipt->setReceiptNumber(++$lastReceiptNumber);
         $receipt->setReceiptDate($date);

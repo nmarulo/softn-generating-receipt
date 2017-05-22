@@ -122,6 +122,8 @@ class ReceiptsManager extends ManagerAbstract {
     
     /**
      * @param Receipt $object
+     *
+     * @return bool
      */
     public function insert($object) {
         parent::addValueAndColumnForInsert(self::RECEIPT_TYPE);
@@ -141,6 +143,11 @@ class ReceiptsManager extends ManagerAbstract {
     public function update($id, $object) {
         $receipt = $this->getAndSetterObject($id, $object);
         
+        if (empty($receipt)) {
+            
+            return FALSE;
+        }
+        
         parent::addSetForUpdate(self::RECEIPT_DATE);
         parent::addSetForUpdate(self::RECEIPT_NUMBER);
         parent::addSetForUpdate(self::RECEIPT_TYPE);
@@ -157,6 +164,11 @@ class ReceiptsManager extends ManagerAbstract {
      */
     protected function getAndSetterObject($id, $object) {
         $receipt = $this->getByID($id);
+        
+        if (empty($receipt->getId())) {
+            
+            return NULL;
+        }
         
         $receipt->setReceiptType($object->getReceiptType());
         $receipt->setReceiptDate($object->getReceiptDate());
@@ -177,6 +189,8 @@ class ReceiptsManager extends ManagerAbstract {
     
     /**
      * @param int $id
+     *
+     * @return bool
      */
     public function delete($id) {
         $receipt        = $this->getByID($id);

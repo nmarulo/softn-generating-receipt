@@ -73,3 +73,7 @@ function callAjax(url, data, callback, parseJSON) {
 		console.log('ERROR: ' + textStatus);
 	});
 }
+
+function btnDisabled(btn, disabled){
+	btn.attr('disabled', disabled);
+}

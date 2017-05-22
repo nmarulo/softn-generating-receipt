@@ -86,10 +86,6 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         return parent::insertData($object, self::TABLE);
     }
     
-    public function update($id, $object) {
-        // TODO: Implement update() method.
-    }
-    
     public function delete($id) {
         $mysql        = new MySql();
         $paramReceipt = ':' . self::RECEIPT_ID;
@@ -120,9 +116,4 @@ class ReceiptsHasProductsManager extends ManagerAbstract {
         
         return $prepare;
     }
-    
-    protected function getAndSetterObject($id, $object) {
-        // TODO: Implement getAndSetterObject() method.
-    }
-    
 }

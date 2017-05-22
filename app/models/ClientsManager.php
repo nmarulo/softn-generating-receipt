@@ -12,7 +12,7 @@ use Softn\util\MySql;
  * Class ClientsManager
  * @author Nicolás Marulanda P.
  */
-class ClientsManager extends ManagerAbstract {
+class ClientsManager extends ManagerCRUDAbstract {
     
     const TABLE                          = 'clients';
     
@@ -172,6 +172,11 @@ class ClientsManager extends ManagerAbstract {
     public function update($id, $object) {
         $client = $this->getAndSetterObject($id, $object);
         
+        if (empty($client)) {
+            
+            return FALSE;
+        }
+        
         parent::addSetForUpdate(self::CLIENT_NAME);
         parent::addSetForUpdate(self::CLIENT_ADDRESS);
         parent::addSetForUpdate(self::CLIENT_IDENTIFICATION_DOCUMENT);
@@ -191,6 +196,11 @@ class ClientsManager extends ManagerAbstract {
      */
     protected function getAndSetterObject($id, $object) {
         $client = $this->getByID($id);
+        
+        if (empty($client->getId())) {
+            
+            return NULL;
+        }
         
         $client->setClientIdentificationDocument($object->getClientIdentificationDocument());
         $client->setClientCity($object->getClientCity());

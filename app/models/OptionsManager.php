@@ -47,14 +47,6 @@ class OptionsManager extends ManagerAbstract {
         // TODO: Implement getAll() method.
     }
     
-    public function getByID($id) {
-        // TODO: Implement getByID() method.
-    }
-    
-    public function insert($object) {
-        // TODO: Implement insert() method.
-    }
-    
     /**
      * @param string $optionKey
      * @param Option $object
@@ -63,6 +55,10 @@ class OptionsManager extends ManagerAbstract {
      */
     public function update($optionKey, $object) {
         $option = $this->getAndSetterObject($optionKey, $object);
+        
+        if (empty($option)) {
+            return FALSE;
+        }
         
         parent::addSetForUpdate(self::OPTION_VALUE);
         
@@ -78,6 +74,10 @@ class OptionsManager extends ManagerAbstract {
     protected function getAndSetterObject($optionKey, $object) {
         $option = $this->getByKey($optionKey);
         
+        if (empty($option->getId())) {
+            return NULL;
+        }
+        
         $option->setOptionValue($object->getOptionValue());
         
         return $option;
@@ -90,10 +90,6 @@ class OptionsManager extends ManagerAbstract {
      */
     public function getByKey($value) {
         return parent::selectByColumn($value, self::TABLE, self::OPTION_KEY);
-    }
-    
-    public function delete($id) {
-        // TODO: Implement delete() method.
     }
     
     protected function create($data) {
