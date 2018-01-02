@@ -1,0 +1,8 @@
+.idea/
+.phpintel/
+vendor/
+Storage/Logs/*.log
+*.lock
+*.vpp*
+*.mwb*
+demo-*.sql
