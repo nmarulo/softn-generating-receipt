@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\Receipts;
 use Silver\Core\Controller;
+use Silver\Http\Redirect;
+use Silver\Http\Request;
 use Silver\Http\View;
 
 /**
@@ -16,5 +18,12 @@ class ReceiptsController extends Controller {
                    ->with('receipts', Receipts::query()
                                               ->orderBy('receipt_number', 'desc')
                                               ->all());
+    }
+    
+    public function postDelete(Request $request) {
+        $receipt = new Receipts();
+        $receipt->id = $request->input('id');
+        $receipt->delete();
+        Redirect::to('/receipts');
     }
 }

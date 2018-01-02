@@ -26,9 +26,12 @@
                     <a class="btn btn-primary" href="{{url('/products/form/')}}{{$product->id}}">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
-                    <a class="btn btn-danger" href="#">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
+                    <form method="post" action="{{url('/products/delete')}}">
+                        <input type="hidden" name="id" value="{{$product->id}}"/>
+                        <button type="submit" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </form>
                 </td>
                 <td>{{$product->product_reference}}</td>
                 <td>{{$product->product_name}}</td>

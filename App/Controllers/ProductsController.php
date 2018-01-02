@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Products;
 use Silver\Core\Controller;
+use Silver\Http\Redirect;
 use Silver\Http\Request;
 use Silver\Http\View;
 
@@ -30,6 +31,10 @@ class ProductsController extends Controller {
             $actionValue = 'Actualizar';
         }
         
+        return $this->viewForm($isUpdate, $actionValue, $product);
+    }
+    
+    private function viewForm($isUpdate, $actionValue, $product) {
         return View::make('products.form')
                    ->with('isUpdate', $isUpdate)
                    ->with('actionValue', $actionValue)
@@ -50,9 +55,13 @@ class ProductsController extends Controller {
             $product->save();
         }
         
-        return View::make('products.form')
-                   ->with('isUpdate', TRUE)
-                   ->with('actionValue', 'Actualizar')
-                   ->with('product', $product);
+        return $this->viewForm(TRUE, 'Actualizar', $product);
+    }
+    
+    public function postDelete(Request $request) {
+        $products     = new Products();
+        $products->id = $request->input('id');
+        $products->delete();
+        Redirect::to('/products');
     }
 }

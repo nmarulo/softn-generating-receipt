@@ -2,8 +2,10 @@
 
 namespace App\Controllers;
 
+use App\Facades\Response;
 use App\Models\Clients;
 use Silver\Core\Controller;
+use Silver\Http\Redirect;
 use Silver\Http\Request;
 use Silver\Http\View;
 
@@ -23,13 +25,17 @@ class ClientsController extends Controller {
         $client      = new Clients();
         $isUpdate    = FALSE;
         $actionValue = 'Nuevo';
-        
+
         if ($id) {
             $client      = Clients::find($id);
             $isUpdate    = TRUE;
             $actionValue = 'Actualizar';
         }
-        
+
+        return $this->viewForm($isUpdate, $actionValue, $client);
+    }
+    
+    private function viewForm($isUpdate, $actionValue, $client) {
         return View::make('clients.form')
                    ->with('isUpdate', $isUpdate)
                    ->with('actionValue', $actionValue)
@@ -52,10 +58,14 @@ class ClientsController extends Controller {
             $client->save();
         }
         
-        return View::make('clients.form')
-                   ->with('isUpdate', TRUE)
-                   ->with('actionValue', 'Actualizar')
-                   ->with('client', $client);
+        return $this->viewForm(TRUE, 'Actualizar', $client);
+    }
+    
+    public function postDelete(Request $request) {
+        $client     = new Clients();
+        $client->id = $request->input('id');
+        $client->delete();
+        Redirect::to('/clients');
     }
     
 }

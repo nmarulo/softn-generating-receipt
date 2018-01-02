@@ -26,9 +26,12 @@
                     <a class="btn btn-warning btn-generate-pdf" data-receipt-id="" href="#">
                         <span class="glyphicon glyphicon-open-file"></span>
                     </a>
-                    <a class="btn btn-danger" href="">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
+                    <form method="post" action="{{url('/receipts/delete')}}">
+                        <input type="hidden" name="id" value="{{$receipt->id}}"/>
+                        <button type="submit" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </form>
                 </td>
                 <td>{{$receipt->receipt_number}}</td>
                 <td>{{$receipt->receipt_type}}</td>
