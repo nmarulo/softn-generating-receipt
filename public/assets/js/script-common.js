@@ -51,15 +51,14 @@ function includeMessages(url, messages, typeMessage) {
 	callAjax(url, data, setContentView, false);
 }
 
-function callAjaxParseJSON(url, data, callback) {
-	callAjax(url, data, callback, true);
-}
-
-function callAjax(url, data, callback, parseJSON) {
+function callAjax(url, method, data, callback, parseJSON) {
 	$.ajax({
+		method: method,
 		url: url,
 		data: data
 	}).done(function (data, textStatus, jqXHR) {
+		console.log('callAjax LOG |');
+		console.log(data);
 		if (callback !== undefined) {
 			var parseData = data;
 			
@@ -74,6 +73,6 @@ function callAjax(url, data, callback, parseJSON) {
 	});
 }
 
-function btnDisabled(btn, disabled){
+function btnDisabled(btn, disabled) {
 	btn.attr('disabled', disabled);
 }

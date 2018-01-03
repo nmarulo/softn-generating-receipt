@@ -23,7 +23,7 @@
             #foreach($receipts as $receipt)
             <tr>
                 <td class="btn-actions">
-                    <a class="btn btn-warning btn-generate-pdf" data-receipt-id="" href="#">
+                    <a class="btn btn-warning btn-generate-pdf" data-receipt-id="{{$receipt->id}}" href="#">
                         <span class="glyphicon glyphicon-open-file"></span>
                     </a>
                     <form method="post" action="{{url('/receipts/delete')}}">
@@ -42,4 +42,9 @@
         </tbody>
     </table>
 </div>
+#end
+#set[scripts]
+<script src="{{ asset('js/jspdf.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/script-generate-pdf.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/script-receipts.js') }}" type="text/javascript"></script>
 #end

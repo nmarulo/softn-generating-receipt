@@ -37,12 +37,13 @@ function getBase64Image(img) {
 	return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
 	
 }
+
 var img = new Image();
 img.onload = function () {
 	var dataURI = getBase64Image(img);
 	return dataURI;
 };
-img.src = "app/resources/img/facturaFondo.png";
+img.src = "assets/images/facturaFondo.png";
 
 /**
  *
@@ -62,19 +63,10 @@ function generatePDF(receiptID, isPageGenerating) {
 				event.preventDefault();
 				window.open(dataUrlString, '_blank');
 			});
-			
-			$('#btn-group-actions-generate').removeClass('hidden');
-			contentSelectedProducts.text('');
-			listProductsIdAndUnits = [];
 		}
 	};
 	
-	var data = {
-		method: 'dataPDF',
-		id: receiptID
-	};
-	
-	callAjaxParseJSON('receipts.php', data, dataPDF);
+	callAjax('generating/datapdf', 'POST', {'receipt_id': receiptID}, dataPDF, true);
 }
 
 function createPDF(client, products, receipt, options, dataUrlString) {
@@ -111,7 +103,7 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 			receiptNumber = '00' + receipt['receipt_number'];
 		} else if (receipt['receipt_number'] < 1000) {
 			receiptNumber = '0' + receipt['receipt_number'];
-		}else{
+		} else {
 			receiptNumber = receipt['receipt_number'];
 		}
 	}
@@ -155,7 +147,7 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	doc.setTextColor(0, 0, 0);
 	doc.text(marginX + 20, marginY + 16, receipt['receipt_date']);
 	
-	if(receipt['receipt_license_plate'] !== null){
+	if (receipt['receipt_license_plate'] !== null) {
 		doc.setTextColor(102, 102, 102);
 		doc.text(marginX, marginY + 22.5, 'Matrícula:');
 		doc.setTextColor(0, 0, 0);
@@ -384,7 +376,7 @@ function number_format(number, decimals, decPoint, thousandsSep) { // eslint-dis
 	var toFixedFix = function (n, prec) {
 		var k = Math.pow(10, prec)
 		return '' + (Math.round(n * k) / k)
-				.toFixed(prec)
+			.toFixed(prec)
 	}
 	
 	// @todo: for IE parseFloat(0.55).toFixed(0) = 0;

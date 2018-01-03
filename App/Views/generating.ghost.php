@@ -3,7 +3,7 @@
 #set[content]
 <h1>Generar factura</h1>
 <div id="content-index">
-    <form id="form-generate-receipt" method="get">
+    <form id="form-generate-receipt" method="post">
         <div class="row clearfix">
             <div class="col-sm-6">
                 <div class="panel panel-default">
@@ -43,7 +43,9 @@
                                                 <span id="span-search-data" class="input-group-addon">Buscar</span>
                                                 <input id="search-data" class="form-control search-data" type="text" aria-describedby="span-search-data">
                                             </div>
-                                            <div class="content-autocomplete-data-list"></div>
+                                            <div class="content-autocomplete-data-list">
+                                                lista
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -62,7 +64,7 @@
                         <div class="form-group input-group">
                             <span id="span-receipt-product" class="input-group-addon">Producto/Servicio</span>
                             <input id="receipt-product" class="form-control" type="text" aria-describedby="span-receipt-product">
-                            <div class="modal fade content-autocomplete-modal" tabindex="-1" role="dialog">
+                            <div id="modal-products" class="modal fade content-autocomplete-modal" tabindex="-1" role="dialog">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -74,7 +76,11 @@
                                                 <span id="span-search-data" class="input-group-addon">Buscar</span>
                                                 <input id="search-data" class="form-control search-data" type="text" aria-describedby="span-search-data">
                                             </div>
-                                            <div class="content-autocomplete-data-list"></div>
+                                            <div class="content-autocomplete-data-list">
+                                                <div class="list-group">
+                                                    lista
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -99,21 +105,17 @@
     </form>
     <div id="btn-group-actions-generate" class="hidden">
         <button id="btn-generate-pdf" class="btn btn-success" type="button">Generar PDF</button>
-        <a class="btn btn-primary" href="{{url('/receipt')}}">Ver lista de facturas</a>
+        <a class="btn btn-primary" href="{{url('/receipts')}}">Ver lista de facturas</a>
         <a class="btn btn-warning" href="{{url('/generating')}}">Nueva factura</a>
     </div>
     <div id="list-selected-products" class="form-group">
-        <p class="text-header bg-primary">Lista de servicios/productos agregados</p>
-        <ul class="list-group">
-<!--        #foreach ($dataView as $value)-->
-            <li class="list-group-item" data-element-id="">
-                <button id="btn-remove-product" class="btn btn-danger btn-action" type="button"><span class="glyphicon glyphicon-remove"></span></button>
-                <span>$productName</span>
-                <span class="badge">Unidades: $productUnits</span>
-                <span class="badge">Precio U.: $productPriceUnit &euro;</span>
-            </li>
-<!--        #endforeach-->
-        </ul>
+        No hay productos seleccionados
     </div>
 </div>
 #end
+#set[scripts]
+<script src="{{ asset('js/jspdf.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/script-generate-pdf.js') }}" type="text/javascript"></script>
+<script src="{{ asset('js/script-generating.js') }}" type="text/javascript"></script>
+#end
+

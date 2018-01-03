@@ -59,15 +59,15 @@ function registerEvents() {
 	inputReceiptClient.on('click', function () {
 		setContentAutocompleteModalElements($(this));
 		divContentAutocompleteModal.modal('show');
-		setDataContentListGroupAndRegisterEvents('getClients', 'getId', 'getClientName', '');
-		registerEventContentListGroup(setClientInput, 'getClients', 'getId', 'getClientName');
+		setDataContentListGroupAndRegisterEvents('clients', 'client_name', '');
+		registerEventContentListGroup(setClientInput, 'clients', 'client_name');
 	});
 	
 	inputReceiptProduct.on('click', function () {
 		setContentAutocompleteModalElements($(this));
 		divContentAutocompleteModal.modal('show');
-		setDataContentListGroupAndRegisterEvents('getProducts', 'getId', 'getProductName', '');
-		registerEventContentListGroup(setProductInput, 'getProducts', 'getId', 'getProductName');
+		setDataContentListGroupAndRegisterEvents('products', 'product_name', '');
+		registerEventContentListGroup(setProductInput, 'products', 'product_name');
 	});
 	
 	inputReceiptProduct.on('focus', function () {
@@ -81,7 +81,7 @@ function registerEvents() {
 	btnAddProduct.on('click', function () {
 		btnDisabled(btnAddProduct, true);
 		
-		if(selectedProductId === 0){
+		if (selectedProductId === 0) {
 			return false;
 		}
 		
@@ -128,6 +128,10 @@ function registerEvents() {
 		setInputHiddenReceiptProducts(listProductsIdAndUnits);
 		//Borra el elemento actual.
 		elementLi.remove();
+		
+		if (listProductsIdAndUnits.length === 0) {
+			contentSelectedProducts.html('No hay productos seleccionados.');
+		}
 	});
 	
 	btnGenerateReceipt.on('click', function (event) {
@@ -140,7 +144,7 @@ function registerEvents() {
 	})
 }
 
-function registerEventContentListGroup(callbackSetDataInput, methodGetData, methodGetId, methodGetName) {
+function registerEventContentListGroup(callbackSetDataInput, methodGetData, methodGetName) {
 	divContentAutocompleteListGroup.on('click', 'button', function () {
 		callbackSetDataInput($(this));
 		divContentAutocompleteModal.modal('hide');
@@ -153,7 +157,7 @@ function registerEventContentListGroup(callbackSetDataInput, methodGetData, meth
 			inputText = '';
 		}
 		
-		setDataContentListGroupAndRegisterEvents(methodGetData, methodGetId, methodGetName, inputText);
+		setDataContentListGroupAndRegisterEvents(methodGetData, methodGetName, inputText);
 	});
 }
 
@@ -163,14 +167,18 @@ function setContentAutocompleteModalElements(element) {
 	inputSearchData = divContentAutocompleteModal.find('.search-data');
 }
 
-function setDataContentListGroupAndRegisterEvents(methodGetData, methodGetId, methodGetName, search) {
+/**
+ *
+ * @param methodGetData
+ * @param methodGetName
+ * @param search
+ */
+function setDataContentListGroupAndRegisterEvents(methodGetData, methodGetName, search) {
 	var setContentList = function (data) {
 		divContentAutocompleteListGroup.html(data);
 	};
 	
 	var data = {
-		method: 'dataList',
-		methodGetId: methodGetId,
 		methodGetName: methodGetName,
 		methodGetData: methodGetData
 	};
@@ -179,7 +187,7 @@ function setDataContentListGroupAndRegisterEvents(methodGetData, methodGetId, me
 		data['search'] = search;
 	}
 	
-	callAjax('generating.php', data, setContentList, false);
+	callAjax('generating/datamodal', 'POST', data, setContentList, false);
 }
 
 function setInputHiddenReceiptProducts(listProducts) {
@@ -192,37 +200,31 @@ function setListSelectedProducts(listProductsIdAndUnits) {
 	};
 	
 	var data = {
-		method: 'selectedProducts',
 		productsIdAndUnits: listProductsIdAndUnits
 	};
 	
-	callAjax('generating.php', data, setContentList, false);
+	callAjax('generating/selectedproducts', 'POST', data, setContentList, false);
 }
 
 function generatingReceipt() {
 	var data = formGenerateReceipt.serialize();
 	
-	var showPDF = function (data) {
-		generatePDF(data['id'], true);
-	};
-	
 	var generateAndGetLastReceipt = function (data) {
-		includeMessages('generating.php', data['messages'], data['typeMessage']);
-		
 		//Si es igual, la factura se genero.
-		if (data['notError'] == '1') {
-			formGenerateReceipt.find('input').each(function () {
-				$(this).attr('disabled', true);
-			});
-			
-			formGenerateReceipt.find('button').each(function () {
-				$(this).attr('disabled', true);
-			});
-			
-			btnGenerateReceipt.closest('div').addClass('hidden');
-			callAjaxParseJSON('receipts.php', {method: 'lastInsert'}, showPDF);
-		}
+		formGenerateReceipt.find('input').each(function () {
+			$(this).attr('disabled', true);
+		});
+		
+		formGenerateReceipt.find('button').each(function () {
+			$(this).attr('disabled', true);
+		});
+		
+		btnGenerateReceipt.closest('div').addClass('hidden');
+		$('#btn-group-actions-generate').removeClass('hidden');
+		contentSelectedProducts.text('');
+		listProductsIdAndUnits = [];
+		generatePDF(data['receipt_id'], true);
 	};
 	
-	callAjaxParseJSON('generating.php', data, generateAndGetLastReceipt);
+	callAjax('generating', 'POST', data, generateAndGetLastReceipt, true);
 }

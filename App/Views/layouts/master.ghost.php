@@ -34,6 +34,7 @@
     </footer>
     <script src="{{ asset('js/jquery-3.2.1.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/bootstrap.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/jspdf.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/script-common.js') }}" type="text/javascript"></script>
+    #block(scripts)
 </body>
 </html>
