@@ -18,12 +18,19 @@ use Silver\Http\View;
 class GeneratingController extends Controller {
     
     public function index() {
-        $receipt                 = new Receipts();
-        $receipt->receipt_date   = date('Y-m-d', time());
-        $lastReceipt             = Receipts::query()
-                                           ->orderBy('receipt_number', 'desc')
-                                           ->first();
-        $receipt->receipt_number = intval($lastReceipt->receipt_number) + 1;
+        $receipt               = new Receipts();
+        $receipt->receipt_date = date('Y-m-d', time());
+        $lastReceipt           = Receipts::query()
+                                         ->orderBy('receipt_number', 'desc')
+                                         ->first();
+        
+        if ($lastReceipt) {
+            $receiptNumber = intval($lastReceipt->receipt_number) + 1;
+        } else {
+            $receiptNumber = 1;
+        }
+        
+        $receipt->receipt_number = $receiptNumber;
         
         return View::make('generating')
                    ->with('receipt', $receipt);
@@ -104,11 +111,7 @@ class GeneratingController extends Controller {
     
     public function dataModal(Request $request) {
         $objects = [];
-        $search  = $request->input('search', FALSE);
-        
-        if (!$search) {
-            $search = '%';
-        }
+        $search  = $request->input('search', '');
         
         switch ($request->input('methodGetData')) {
             case 'clients':
