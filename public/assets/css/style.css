@@ -96,10 +96,14 @@ body {
     width: 90px;
 }
 
-.btn-actions a.btn,
+.btn-actions .btn,
 .btn-action {
     padding: 3px 10px;
     font-size: 0.7em;
+}
+
+.btn-actions form{
+    display: inline-block;
 }
 
 .navbar-custom {

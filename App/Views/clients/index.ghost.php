@@ -28,9 +28,12 @@
                     <a class="btn btn-primary" href="{{url('/clients/form/')}}{{$client->id}}">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
-                    <a class="btn btn-danger" href="">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
+                    <form method="post" action="{{url('/clients/delete')}}">
+                        <input type="hidden" name="id" value="{{$client->id}}"/>
+                        <button type="submit" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </form>
                 </td>
                 <td>{{$client->client_name}}</td>
                 <td>{{$client->client_identification_document}}</td>
