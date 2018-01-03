@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Facades\Response;
 use App\Models\Clients;
 use Silver\Core\Controller;
 use Silver\Http\Redirect;
@@ -25,13 +24,13 @@ class ClientsController extends Controller {
         $client      = new Clients();
         $isUpdate    = FALSE;
         $actionValue = 'Nuevo';
-
+        
         if ($id) {
             $client      = Clients::find($id);
             $isUpdate    = TRUE;
             $actionValue = 'Actualizar';
         }
-
+        
         return $this->viewForm($isUpdate, $actionValue, $client);
     }
     
@@ -65,7 +64,7 @@ class ClientsController extends Controller {
         $client     = new Clients();
         $client->id = $request->input('id');
         $client->delete();
-        Redirect::to('/clients');
+        Redirect::to(\URL . '/clients');
     }
     
 }

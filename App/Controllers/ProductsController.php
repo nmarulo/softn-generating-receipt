@@ -62,6 +62,6 @@ class ProductsController extends Controller {
         $products     = new Products();
         $products->id = $request->input('id');
         $products->delete();
-        Redirect::to('/products');
+        Redirect::to(\URL . '/products');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Clients;
 use App\Models\Receipts;
 use Silver\Core\Controller;
 use Silver\Http\Redirect;
@@ -21,9 +22,15 @@ class ReceiptsController extends Controller {
     }
     
     public function postDelete(Request $request) {
-        $receipt = new Receipts();
-        $receipt->id = $request->input('id');
+        $receipt = Receipts::find($request->input('id'));
+        $client  = Clients::find($receipt->client_id);
         $receipt->delete();
-        Redirect::to('/receipts');
+        $receiptNumber = intval($client->client_number_receipts);
+        
+        if ($receiptNumber > 0) {
+            $client->client_number_receipts = --$receiptNumber;
+            $client->save();
+        }
+        Redirect::to(\URL . '/receipts');
     }
 }
