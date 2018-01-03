@@ -215,6 +215,10 @@ function generatingReceipt() {
 			$(this).attr('disabled', true);
 		});
 		
+		formGenerateReceipt.find('select').each(function(){
+			$(this).attr('disabled', true);
+		});
+		
 		formGenerateReceipt.find('button').each(function () {
 			$(this).attr('disabled', true);
 		});

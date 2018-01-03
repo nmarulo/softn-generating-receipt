@@ -10,7 +10,10 @@
                     <div class="panel-body form-table">
                         <div class="form-group input-group">
                             <span id="span-receipt-type" class="input-group-addon">Tipo</span>
-                            <input id="receipt-type" class="form-control" type="text" aria-describedby="span-receipt-type" name="receipt_type" value="{{$receipt->receipt_type}}">
+                            <select id="receipt-type" class="form-control" aria-describedby="span-receipt-type" name="receipt_type">
+                              <option>Factura</option>
+                              <option>Presupuesto</option>
+                            </select>
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">

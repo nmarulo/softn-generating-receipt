@@ -18,7 +18,15 @@ use Silver\Http\View;
 class GeneratingController extends Controller {
     
     public function index() {
-        return View::make('generating');
+        $receipt                 = new Receipts();
+        $receipt->receipt_date   = date('Y-m-d', time());
+        $lastReceipt             = Receipts::query()
+                                           ->orderBy('receipt_number', 'desc')
+                                           ->first();
+        $receipt->receipt_number = intval($lastReceipt->receipt_number) + 1;
+        
+        return View::make('generating')
+                   ->with('receipt', $receipt);
     }
     
     public function dataPDF(Request $request) {
