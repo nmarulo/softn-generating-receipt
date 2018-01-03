@@ -7,9 +7,10 @@
         <span class="glyphicon glyphicon-plus"></span>
     </a>
 </h1>
-<div id="content-index">
-    <h3>Lista de facturas</h3>
-    <table class="table table-hover table-striped">
+<div id="content-index" class="panel panel-default">
+    <div class="panel-body">
+        <h3>Lista de facturas</h3>
+        <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th></th>
@@ -41,6 +42,7 @@
             #endforeach
         </tbody>
     </table>
+    </div>
 </div>
 #end
 #set[scripts]

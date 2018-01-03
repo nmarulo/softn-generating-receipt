@@ -57,8 +57,6 @@ function callAjax(url, method, data, callback, parseJSON) {
 		url: url,
 		data: data
 	}).done(function (data, textStatus, jqXHR) {
-		console.log('callAjax LOG |');
-		console.log(data);
 		if (callback !== undefined) {
 			var parseData = data;
 			
