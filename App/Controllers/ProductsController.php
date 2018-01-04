@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\Products;
+use App\Models\ReceiptsProducts;
 use Silver\Core\Controller;
+use Silver\Database\Query;
 use Silver\Http\Redirect;
 use Silver\Http\Request;
 use Silver\Http\View;
@@ -59,9 +61,18 @@ class ProductsController extends Controller {
     }
     
     public function postDelete(Request $request) {
-        $products     = new Products();
-        $products->id = $request->input('id');
-        $products->delete();
+        $id               = $request->input('id');
+        $receipt_products = intval(Query::count()
+                                        ->from(ReceiptsProducts::tableName())
+                                        ->where('product_id', '=', $id)
+                                        ->first()->count);
+        
+        if ($receipt_products == 0) {
+            $products     = new Products();
+            $products->id = $id;
+            $products->delete();
+        }
+        
         Redirect::to(\URL . '/products');
     }
 }
