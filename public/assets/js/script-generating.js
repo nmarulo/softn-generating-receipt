@@ -210,12 +210,16 @@ function generatingReceipt() {
 	var data = formGenerateReceipt.serialize();
 	
 	var generateAndGetLastReceipt = function (data) {
+		if (typeof data === 'boolean') {
+			return false;
+		}
+		
 		//Si es igual, la factura se genero.
 		formGenerateReceipt.find('input').each(function () {
 			$(this).attr('disabled', true);
 		});
 		
-		formGenerateReceipt.find('select').each(function(){
+		formGenerateReceipt.find('select').each(function () {
 			$(this).attr('disabled', true);
 		});
 		
@@ -223,10 +227,10 @@ function generatingReceipt() {
 			$(this).attr('disabled', true);
 		});
 		
-		btnGenerateReceipt.closest('div').addClass('hidden');
-		$('#btn-group-actions-generate').removeClass('hidden');
 		contentSelectedProducts.text('');
 		listProductsIdAndUnits = [];
+		btnGenerateReceipt.closest('div').addClass('hidden');
+		$('#btn-group-actions-generate').removeClass('hidden');
 		generatePDF(data['receipt_id'], true);
 	};
 	

@@ -81,18 +81,23 @@ class GeneratingController extends Controller {
     }
     
     public function generate(Request $request) {
+        //[{"id":3,"receipt_product_unit":"1"}]
+        $products = (array)json_decode($request->input('receipt_products', []));
+        $clientId = $request->input('client_id', FALSE);
+        
+        if (count($products) == 0 || empty($clientId)) {
+            return json_encode(FALSE);
+        }
+        
         $receipt                        = new Receipts();
         $receipt->receipt_type          = $request->input('receipt_type');
         $receipt->receipt_number        = $request->input('receipt_number');
         $receipt->receipt_date          = $request->input('receipt_date');
         $receipt->receipt_license_plate = $request->input('receipt_license_plate');
-        $receipt->client_id             = $request->input('client_id');
-        
-        //[{"id":3,"receipt_product_unit":"1"}]
-        $products                   = (array)json_decode($request->input('receipt_products', []));
-        $receipt                    = $receipt->save();
-        $receiptProduct             = new ReceiptsProducts();
-        $receiptProduct->receipt_id = $receipt->id;
+        $receipt->client_id             = $clientId;
+        $receipt                        = $receipt->save();
+        $receiptProduct                 = new ReceiptsProducts();
+        $receiptProduct->receipt_id     = $receipt->id;
         
         array_walk($products, function($product) use ($receiptProduct) {
             $product                              = (array)$product;
