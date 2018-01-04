@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\Clients;
+use App\Models\Receipts;
 use Silver\Core\Controller;
+use Silver\Database\Query;
 use Silver\Http\Redirect;
 use Silver\Http\Request;
 use Silver\Http\View;
@@ -61,9 +63,18 @@ class ClientsController extends Controller {
     }
     
     public function postDelete(Request $request) {
-        $client     = new Clients();
-        $client->id = $request->input('id');
-        $client->delete();
+        $id              = $request->input('id');
+        $receipt_numbers = intval(Query::count()
+                                       ->from(Receipts::tableName())
+                                       ->where('client_id', '=', $id)
+                                       ->first()->count);
+        
+        if ($receipt_numbers == 0) {
+            $client     = new Clients();
+            $client->id = $id;
+            $client->delete();
+        }
+        
         Redirect::to(\URL . '/clients');
     }
     
