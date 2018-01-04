@@ -68,6 +68,10 @@ button.list-group-item:focus {
     color: #555555;
 }
 
+.btn-default {
+    border: 1px solid #CCCCCC;
+}
+
 /* GENERAL =================================== */
 body {
     background-color: #F5F5F5;
@@ -102,7 +106,7 @@ body {
     font-size: 0.7em;
 }
 
-.btn-actions form{
+.btn-actions form {
     display: inline-block;
 }
 

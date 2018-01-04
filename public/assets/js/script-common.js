@@ -67,7 +67,7 @@ function callAjax(url, method, data, callback, parseJSON) {
 			callback(parseData);
 		}
 	}).fail(function (jqXHR, textStatus, errorThrown) {
-		console.log('ERROR: ' + textStatus);
+		console.log(jqXHR.statusText + '[' + jqXHR.status + '] ' + jqXHR.responseText);
 	});
 }
 

@@ -27,12 +27,9 @@
                     <a class="btn btn-warning btn-generate-pdf" data-receipt-id="{{$receipt->id}}" href="#">
                         <span class="glyphicon glyphicon-open-file"></span>
                     </a>
-                    <form method="post" action="{{url('/receipts/delete')}}">
-                        <input type="hidden" name="id" value="{{$receipt->id}}"/>
-                        <button type="submit" class="btn btn-danger">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete" data-element-id="{{$receipt->id}}" data-form-action="{{url('/receipts/delete')}}">
                             <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </form>
+                    </button>
                 </td>
                 <td>{{$receipt->receipt_number}}</td>
                 <td>{{$receipt->receipt_type}}</td>
@@ -44,8 +41,10 @@
     </table>
     </div>
 </div>
+{{ include('includes.modaldelete') }}
 #end
 #set[scripts]
+<script src="{{ asset('js/script-modal-delete.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/jspdf.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/script-generate-pdf.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/script-receipts.js') }}" type="text/javascript"></script>

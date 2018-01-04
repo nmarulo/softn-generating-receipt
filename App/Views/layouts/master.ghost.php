@@ -29,7 +29,7 @@
         <div class="container-fluid">
             <hr/>
             <p class="pull-left">SoftN | Generador de facturas</p>
-            <p class="pull-right">Versión 0.1</p>
+            <p class="pull-right">Versión 0.2</p>
         </div>
     </footer>
     <script src="{{ asset('js/jquery-3.2.1.js') }}" type="text/javascript"></script>

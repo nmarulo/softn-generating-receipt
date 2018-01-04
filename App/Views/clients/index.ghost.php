@@ -28,12 +28,9 @@
                     <a class="btn btn-primary" href="{{url('/clients/form/')}}{{$client->id}}">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
-                    <form method="post" action="{{url('/clients/delete')}}">
-                        <input type="hidden" name="id" value="{{$client->id}}"/>
-                        <button type="submit" class="btn btn-danger">
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete" data-element-id="{{$client->id}}" data-form-action="{{url('/clients/delete')}}">
                             <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </form>
+                    </button>
                 </td>
                 <td>{{$client->client_name}}</td>
                 <td>{{$client->client_identification_document}}</td>
@@ -46,4 +43,8 @@
     </table>
     </div>
 </div>
+{{ include('includes.modaldelete') }}
+#end
+#set[scripts]
+<script src="{{ asset('js/script-modal-delete.js') }}" type="text/javascript"></script>
 #end

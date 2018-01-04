@@ -1,4 +1,4 @@
-<p class="text-header bg-primary">Lista de servicios/productos agregados</p>
+<div class="text-header bg-primary">Lista de servicios/productos agregados</div>
 <ul class="list-group">
     #foreach ($products as $product)
     <li class="list-group-item" data-element-id="{{$product['id']}}">
