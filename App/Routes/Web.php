@@ -44,5 +44,8 @@ Route::group(['prefix' => 'receipts'], function() {
     Route::post('/delete', 'Receipts@postDelete', 'unguard');
 });
 
-Route::get('/settings', 'Settings@index', 'unguard');
+Route::group(['prefix' => 'settings'], function() {
+    Route::get('/', 'Settings@index', 'unguard');
+    Route::post('/', 'Settings@postForm', 'unguard');
+});
 
