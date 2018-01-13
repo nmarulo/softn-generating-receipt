@@ -2,6 +2,7 @@
 
 /**
  * SilverEngine  - PHP MVC framework
+ *
  * @package   SilverEngine
  * @author    SilverEngine Team
  * @copyright 2015-2017
@@ -9,7 +10,7 @@
  * @link      https://github.com/SilverEngine/Framework
  */
 
-namespace App;
+namespace App\Routes;
 
 use Silver\Core\Route;
 
@@ -37,3 +38,4 @@ Route::get('/receipts', 'Receipts@index', 'unguard');
 Route::post('/receipts/delete', 'Receipts@postDelete', 'unguard');
 
 Route::get('/settings', 'Settings@index', 'unguard');
+
