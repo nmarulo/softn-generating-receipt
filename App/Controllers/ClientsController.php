@@ -19,7 +19,11 @@ class ClientsController extends Controller {
         return View::make('clients.index')
                    ->with('clients', Clients::query()
                                             ->orderBy('id', 'desc')
-                                            ->all());
+                                            ->all())
+                   ->with('messagesModal', [
+                       'type'    => 'info',
+                       'message' => 'test',
+                   ]);
     }
     
     public function form($id = FALSE) {
