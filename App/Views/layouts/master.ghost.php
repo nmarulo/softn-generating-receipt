@@ -32,6 +32,7 @@
             <p class="pull-right">Versión 0.2</p>
         </div>
     </footer>
+    {{ include('includes.messages') }}
     <script src="{{ asset('js/jquery-3.2.1.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/bootstrap.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/script-common.js') }}" type="text/javascript"></script>
