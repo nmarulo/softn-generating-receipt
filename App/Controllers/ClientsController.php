@@ -21,8 +21,10 @@ class ClientsController extends Controller {
                                             ->orderBy('id', 'desc')
                                             ->all())
                    ->with('messagesModal', [
-                       'type'    => 'info',
-                       'message' => 'test',
+                       [
+                           'type'    => 'info',
+                           'message' => 'test',
+                       ],
                    ]);
     }
     
