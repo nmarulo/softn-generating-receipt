@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Facades\Messages;
 use App\Models\Clients;
 use App\Models\Products;
 use App\Models\Receipts;
@@ -86,18 +87,40 @@ class GeneratingController extends Controller {
         $clientId = $request->input('client_id', FALSE);
         
         if (count($products) == 0 || empty($clientId)) {
+            Messages::addDanger('Por favor, seleccione un cliente y mínimo un producto.');
+            
             return json_encode(FALSE);
         }
         
+        $result = ['receipt_id' => 0];
+        
+        if ($receipt = $this->insertReceipt($request)) {
+            $this->insertProducts($receipt);
+            $this->updateClient($receipt->client_id);
+            $result['receipt_id'] = $receipt->id;
+        }
+        
+        return json_encode($result);
+    }
+    
+    private function insertReceipt(Request $request) {
         $receipt                        = new Receipts();
         $receipt->receipt_type          = $request->input('receipt_type');
         $receipt->receipt_number        = $request->input('receipt_number');
         $receipt->receipt_date          = $request->input('receipt_date');
         $receipt->receipt_license_plate = $request->input('receipt_license_plate');
-        $receipt->client_id             = $clientId;
-        $receipt                        = $receipt->save();
-        $receiptProduct                 = new ReceiptsProducts();
-        $receiptProduct->receipt_id     = $receipt->id;
+        $receipt->client_id             = $request->input('client_id');
+        
+        if (!$receipt = $receipt->save()) {
+            Messages::addDanger('Error al registrar la factura.');
+        }
+        
+        return $receipt;
+    }
+    
+    private function insertProducts(Receipts $receipt) {
+        $receiptProduct             = new ReceiptsProducts();
+        $receiptProduct->receipt_id = $receipt->id;
         
         array_walk($products, function($product) use ($receiptProduct) {
             $product                              = (array)$product;
@@ -106,12 +129,15 @@ class GeneratingController extends Controller {
             Query::insert(ReceiptsProducts::tableName(), $receiptProduct->data())
                  ->execute();
         });
-        
-        $client                         = Clients::find($receipt->client_id);
+    }
+    
+    private function updateClient($clientId) {
+        $client                         = Clients::find($clientId);
         $client->client_number_receipts = intval($client->client_number_receipts) + 1;
-        $client->save();
         
-        return json_encode(['receipt_id' => $receipt->id]);
+        if(!$client->save()){
+            Messages::addDanger('Error al actualizar el cliente.');
+        }
     }
     
     public function dataModal(Request $request) {

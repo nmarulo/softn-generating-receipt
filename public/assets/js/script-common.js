@@ -1,5 +1,5 @@
 var idMessages = '';
-var timeout = null;
+var messagesTimeout = null;
 
 (function () {
 	setVars();
