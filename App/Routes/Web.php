@@ -19,8 +19,6 @@ Route::group(['prefix' => 'generating'], function() {
     Route::get('/', 'Generating@index', 'unguard');
     Route::post('/', 'Generating@generate', 'unguard');
     Route::post('/datapdf', 'Generating@dataPDF', 'unguard');
-    Route::post('/products', 'Generating@products', 'unguard');
-    Route::post('/clients', 'Generating@clients', 'unguard');
     Route::post('/datamodal', 'Generating@dataModal', 'unguard');
     Route::post('/selectedproducts', 'Generating@selectedProducts', 'unguard');
 });
