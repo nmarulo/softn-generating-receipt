@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Facades\Messages;
 use App\Models\Products;
 use App\Models\ReceiptsProducts;
 use Silver\Core\Controller;
@@ -28,7 +29,11 @@ class ProductsController extends Controller {
         $actionValue = 'Nuevo';
         
         if ($id) {
-            $product     = Products::find($id);
+            if (!$product = Products::find($id)) {
+                Messages::addDanger('El producto no existe.');
+                Redirect::to(URL . '/products');
+            }
+            
             $isUpdate    = TRUE;
             $actionValue = 'Actualizar';
         }
@@ -51,10 +56,19 @@ class ProductsController extends Controller {
         $product->product_reference  = $request->input('product_reference');
         
         if (empty($id)) {
-            $product = Products::create($product->data());
+            if ($product = Products::create($product->data())) {
+                Messages::addSuccess('El producto ha sido registrado correctamente.');
+                Redirect::to(URL . '/products/form/' . $product->id);
+            } else {
+                Messages::addDanger('Error al registrar los datos del producto.');
+            }
         } else {
             $product->id = $id;
-            $product->save();
+            if ($product->save()) {
+                Messages::addSuccess('Producto actualizado correctamente.');
+            } else {
+                Messages::addDanger('Error al actualizar los datos del producto.');
+            }
         }
         
         return $this->viewForm(TRUE, 'Actualizar', $product);
@@ -68,9 +82,14 @@ class ProductsController extends Controller {
                                         ->first()->count);
         
         if ($receipt_products == 0) {
-            $products     = new Products();
-            $products->id = $id;
-            $products->delete();
+            if ($products = Products::find($id)) {
+                $products->delete();
+                Messages::addSuccess('Producto eliminado correctamente.');
+            } else {
+                Messages::addDanger('El producto no existe.');
+            }
+        } else {
+            Messages::addDanger('No se puede eliminar un producto con facturas vinculadas.');
         }
         
         Redirect::to(\URL . '/products');

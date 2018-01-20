@@ -69,9 +69,9 @@ class ClientsController extends Controller {
             $client->id = $id;
             
             if ($client->save()) {
-                Messages::addSuccess('El cliente se ha actualizado correctamente.');
+                Messages::addSuccess('Cliente actualizado correctamente.');
             } else {
-                Messages::addDanger('Error al actualizar los datos de cliente.');
+                Messages::addDanger('Error al actualizar los datos del cliente.');
             }
         }
         
