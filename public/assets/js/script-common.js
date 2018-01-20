@@ -1,4 +1,5 @@
 var idMessages = '';
+var timeout = null;
 
 (function () {
 	setVars();
@@ -16,10 +17,10 @@ function registerEvents() {
 }
 
 function removeMessagesTimeOut() {
-	if (timeout != undefined) {
-		clearTimeout(timeout);
+	if (messagesTimeout != undefined) {
+		clearTimeout(messagesTimeout);
 	}
-	var timeout = setTimeout(function () {
+	messagesTimeout = setTimeout(function () {
 		removeMessages();
 	}, 5000);
 }
