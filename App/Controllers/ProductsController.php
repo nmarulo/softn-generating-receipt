@@ -64,6 +64,7 @@ class ProductsController extends Controller {
             }
         } else {
             $product->id = $id;
+            
             if ($product->save()) {
                 Messages::addSuccess('Producto actualizado correctamente.');
             } else {
