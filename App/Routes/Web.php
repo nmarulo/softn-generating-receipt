@@ -49,3 +49,5 @@ Route::group(['prefix' => 'settings'], function() {
     Route::post('/', 'Settings@postForm', 'unguard');
 });
 
+Route::post('/messages', 'Messages@post', 'messages', 'public');
+
