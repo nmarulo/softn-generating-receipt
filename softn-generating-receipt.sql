@@ -18,7 +18,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `products` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `product_name` VARCHAR(37) NOT NULL,
-  `product_price_unit` INT NOT NULL,
+  `product_price_unit` DECIMAL(10,2) NOT NULL,
   `product_reference` VARCHAR(6) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `receipts` (
   `receipt_type` VARCHAR(20) NOT NULL,
   `receipt_number` INT NULL,
   `receipt_date` DATE NOT NULL,
+  `receipt_license_plate` VARCHAR(20) NULL,
   `client_id` INT NOT NULL,
   PRIMARY KEY (`id`, `client_id`),
   CONSTRAINT `fk_Receipts_Clients`
@@ -93,4 +94,3 @@ INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (5, 'option_we
 INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (6, 'option_iva', '21');
 
 COMMIT;
-
