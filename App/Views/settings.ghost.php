@@ -42,7 +42,21 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" name="method" value="update">
+    </form>
+    <form method="post">
+        <div class="panel panel-default">
+            <div class="panel-heading">Configuración general</div>
+            <div class="panel-body form-table">
+                <div class="form-group input-group">
+                    <span id="span-setting-date-format" class="input-group-addon">Formato de la fecha:</span>
+                    <input id="option-name" class="form-control" type="text" aria-describedby="span-setting-date-format" name="setting_date_format" value="{{$valueDateFormat->option_value}}">
+                </div>
+                <span class="form-table-cell-hidden"></span>
+                <div class="form-table-row">
+                    <button class="btn btn-primary btn-block" type="submit">Guardar</button>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 #end
