@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Facades\Messages;
 use App\Models\Settings;
 use Silver\Core\Controller;
 use Silver\Http\Redirect;
@@ -12,6 +13,8 @@ use Silver\Http\View;
  * settings controller
  */
 class SettingsController extends Controller {
+    
+    private $error;
     
     public function index() {
         return $this->sendData(View::make('settings'));
@@ -32,7 +35,8 @@ class SettingsController extends Controller {
     }
     
     public function postForm(Request $request) {
-        $settings = new Settings();
+        $this->error = FALSE;
+        $settings    = new Settings();
         
         $this->saveSetting($request, $settings, 'option_name');
         $this->saveSetting($request, $settings, 'option_identification_document');
@@ -41,13 +45,23 @@ class SettingsController extends Controller {
         $this->saveSetting($request, $settings, 'option_web_site');
         $this->saveSetting($request, $settings, 'option_iva');
         
+        if ($this->error) {
+            Messages::addDanger('Error al actualizar.');
+        } else {
+            Messages::addSuccess('Actualizado correctamente.');
+        }
+        
         Redirect::to(\URL . '/settings');
     }
     
     private function saveSetting(Request $request, Settings $settings, $input) {
+        if ($this->error) {
+            return;
+        }
+        
         $settings               = Settings::where('option_key', '=', $input)
                                           ->first();
         $settings->option_value = $request->input($input);
-        $settings->save();
+        $this->error            = !$settings->save();
     }
 }

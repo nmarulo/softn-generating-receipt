@@ -5,20 +5,20 @@ namespace Silver\Database;
 class Model extends QueryObject
 {
 
-    public static function query()
+    public static function query() 
     {
         return Query::select()
             ->from(static::class)
             ->setFetchStyle(static::class);
     }
 
-    public static function where($column, $op = null, $value = null)
+    public static function where($column, $op = null, $value = null) 
     {
         return static::query()
             ->where($column, $op, $value);
     }
 
-    public static function find($id)
+    public static function find($id) 
     {
         return static::where(static::primaryKey(), $id)
             ->first();
@@ -72,18 +72,18 @@ class Model extends QueryObject
         return $this->selectable;
     }
 
-    public static function all()
+    public static function all() 
     {
         return static::query()->all();
     }
 
-    public static function create($data)
+    public static function create($data) 
     {
         Query::insert(static::class, $data)->execute();
         return static::find(Query::lastInsertId());
     }
 
-    public function delete()
+    public function delete() 
     {
         Query::delete()
             ->from(static::class)
@@ -91,7 +91,7 @@ class Model extends QueryObject
             ->execute();
     }
 
-    public function save()
+    public function save() 
     {
         $id = static::primaryKey();
 

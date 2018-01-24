@@ -18,17 +18,17 @@
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
                             <span id="span-receipt-number" class="input-group-addon">Número</span>
-                            <input id="receipt-number" class="form-control" type="number" aria-describedby="span-receipt-number" name="receipt_number" value="{{$receipt->receipt_number}}">
+                            <input id="receipt-number" class="form-control" type="number" aria-describedby="span-receipt-number" name="receipt_number" value="{{$receiptNumber}}">
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
                             <span id="span-receipt-date" class="input-group-addon">Fecha</span>
-                            <input id="receipt-date" class="form-control" type="text" aria-describedby="span-receipt-date" name="receipt_date" value="{{$receipt->receipt_date}}">
+                            <input id="receipt-date" class="form-control" type="text" aria-describedby="span-receipt-date" name="receipt_date" value="{{$receiptDate}}">
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
                             <span id="span-receipt-license-plate" class="input-group-addon">Matrícula</span>
-                            <input id="receipt-license-plate" class="form-control" type="text" aria-describedby="span-receipt-license-plate" name="receipt_license_plate" value="{{$receipt->receipt_license_plate}}">
+                            <input id="receipt-license-plate" class="form-control" type="text" aria-describedby="span-receipt-license-plate" name="receipt_license_plate">
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="input-group form-table-row">
@@ -47,7 +47,7 @@
                                                 <input id="search-data" class="form-control search-data" type="text" aria-describedby="span-search-data">
                                             </div>
                                             <div class="content-autocomplete-data-list">
-                                                lista
+                                                No existen clientes registrados.
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                             </div>
                                             <div class="content-autocomplete-data-list">
                                                 <div class="list-group">
-                                                    lista
+                                                    No existen productos registrados.
                                                 </div>
                                             </div>
                                         </div>

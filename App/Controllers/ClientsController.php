@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Facades\Messages;
 use App\Models\Clients;
 use App\Models\Receipts;
 use Silver\Core\Controller;
@@ -28,7 +29,11 @@ class ClientsController extends Controller {
         $actionValue = 'Nuevo';
         
         if ($id) {
-            $client      = Clients::find($id);
+            if (!$client = Clients::find($id)) {
+                Messages::addDanger('El cliente no existe.');
+                Redirect::to(URL . '/clients');
+            }
+            
             $isUpdate    = TRUE;
             $actionValue = 'Actualizar';
         }
@@ -53,10 +58,21 @@ class ClientsController extends Controller {
         
         if (empty($id)) {
             $client->client_number_receipts = 0;
-            $client                         = Clients::create($client->data());
+            
+            if ($client = Clients::create($client->data())) {
+                Messages::addSuccess('El cliente ha sido registrado correctamente.');
+                Redirect::to(URL . '/clients/form/' . $client->id);
+            } else {
+                Messages::addDanger('Error al registrar los datos del cliente.');
+            }
         } else {
             $client->id = $id;
-            $client->save();
+            
+            if ($client->save()) {
+                Messages::addSuccess('Cliente actualizado correctamente.');
+            } else {
+                Messages::addDanger('Error al actualizar los datos del cliente.');
+            }
         }
         
         return $this->viewForm(TRUE, 'Actualizar', $client);
@@ -70,9 +86,14 @@ class ClientsController extends Controller {
                                        ->first()->count);
         
         if ($receipt_numbers == 0) {
-            $client     = new Clients();
-            $client->id = $id;
-            $client->delete();
+            if ($client = Clients::find($id)) {
+                $client->delete();
+                Messages::addSuccess('Cliente eliminado correctamente.');
+            } else {
+                Messages::addDanger('El cliente no existe.');
+            }
+        } else {
+            Messages::addDanger('No se puede eliminar un cliente con facturas vinculadas.');
         }
         
         Redirect::to(\URL . '/clients');

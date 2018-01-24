@@ -3,7 +3,7 @@
 #set[content]
 <h1>
     Facturas
-    <a class="btn btn-success" href="#" title="Agregar">
+    <a class="btn btn-success" href="{{ url('/generating') }}" title="Agregar">
         <span class="glyphicon glyphicon-plus"></span>
     </a>
 </h1>
