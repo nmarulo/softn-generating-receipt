@@ -1,142 +1,98 @@
 <?php
+
+namespace App\Controllers;
+
+use App\Facades\Messages;
+use App\Models\Products;
+use App\Models\ReceiptsProducts;
+use Silver\Core\Controller;
+use Silver\Database\Query;
+use Silver\Http\Redirect;
+use Silver\Http\Request;
+use Silver\Http\View;
+
 /**
- * ProductsController.php
+ * products controller
  */
-
-namespace Softn\controllers;
-
-use Softn\models\Product;
-use Softn\models\ProductsManager;
-use Softn\util\Arrays;
-use Softn\util\Messages;
-
-/**
- * Class ProductsController
- * @author Nicolás Marulanda P.
- */
-class ProductsController extends ControllerCRUDAbstract {
-    
-    /**
-     * ProductsController constructor.
-     */
-    public function __construct() {
-        ViewController::setDirectory('products');
-    }
-    
-    public static function init() {
-        parent::method(new ProductsController());
-    }
-    
-    public function insert() {
-        ViewController::sendViewData('product', new Product());
-        ViewController::view('insert');
-    }
-    
-    public function update() {
-        $view           = 'index';
-        $objectsManager = new ProductsManager();
-        $id             = Arrays::get($_GET, 'update');
-        $messages       = FALSE;
-        $typeMessage    = Messages::TYPE_DANGER;
-        
-        if ($id === FALSE) {
-            $object = $this->getViewForm();
-            $id     = $object->getId();
-            
-            if ($id == 0) {
-                $messages = 'No se puede agregar el producto.';
-                
-                if ($objectsManager->insert($object)) {
-                    $messages    = 'El producto se agrego correctamente';
-                    $typeMessage = Messages::TYPE_SUCCESS;
-                    $view        = 'insert';
-                    
-                    $object = $objectsManager->getByID($objectsManager->getLastInsertId());
-                }
-            } else {
-                $messages = 'No se puede actualizar el producto.';
-                
-                if ($objectsManager->update($id, $object)) {
-                    $messages    = 'El producto se actualizo correctamente';
-                    $typeMessage = Messages::TYPE_SUCCESS;
-                    $view        = 'insert';
-                }
-            }
-        } else {
-            $object = $objectsManager->getByID($id);
-            $view   = 'insert';
-            
-            if ($object->getId() === 0) {
-                $messages = 'El cliente no existe.';
-                $view     = 'index';
-                $object   = NULL;
-            }
-        }
-        
-        if (!empty($object)) {
-            ViewController::sendViewData('product', $object);
-        }
-        
-        ViewController::sendViewData('messages', $messages);
-        ViewController::sendViewData('typeMessage', $typeMessage);
-        ViewController::view($view);
-    }
-    
-    protected function getViewForm() {
-        $product = new Product();
-        
-        $priceUnit = Arrays::get($_GET, ProductsManager::PRODUCT_PRICE_UNIT);
-        $priceUnit = filter_var($priceUnit, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        $priceUnit = number_format($priceUnit, 2, '.', '');
-        
-        $product->setId(Arrays::get($_GET, ProductsManager::ID));
-        $product->setProductPriceUnit($priceUnit);
-        $product->setProductReference(Arrays::get($_GET, ProductsManager::PRODUCT_REFERENCE));
-        $product->setProductName(Arrays::get($_GET, ProductsManager::PRODUCT_NAME));
-        
-        
-        return $product;
-    }
-    
-    public function delete() {
-        $messages    = 'El producto no existe.';
-        $typeMessage = Messages::TYPE_DANGER;
-        $id          = Arrays::get($_GET, 'delete');
-        
-        if ($id !== FALSE) {
-            $objectManager = new ProductsManager();
-            $messages      = 'No se puede borrar el producto.';
-            
-            if ($objectManager->delete($id)) {
-                $typeMessage = Messages::TYPE_SUCCESS;
-                $messages    = 'Cliente borrado correctamente.';
-            }
-        }
-        
-        ViewController::sendViewData('messages', $messages);
-        ViewController::sendViewData('typeMessage', $typeMessage);
-        $this->index();
-    }
+class ProductsController extends Controller {
     
     public function index() {
-        ViewController::view('index');
+        return View::make('products.index')
+                   ->with('products', Products::query()
+                                              ->orderBy('id', 'desc')
+                                              ->all());
     }
     
-    public function dataList() {
-        ViewController::sendViewData('viewData', self::getProducts());
-        ViewController::singleView('datalist');
-    }
-    
-    public static function getProducts() {
-        $search        = Arrays::get($_GET, 'search');
-        $objectManager = new ProductsManager();
+    public function form($id = FALSE) {
+        $product     = new Products();
+        $isUpdate    = FALSE;
+        $actionValue = 'Nuevo';
         
-        if ($search === FALSE) {
-            $objects = $objectManager->getAll();
-        } else {
-            $objects = $objectManager->filter($search);
+        if ($id) {
+            if (!$product = Products::find($id)) {
+                Messages::addDanger('El producto no existe.');
+                Redirect::to(URL . '/products');
+            }
+            
+            $isUpdate    = TRUE;
+            $actionValue = 'Actualizar';
         }
         
-        return $objects;
+        return $this->viewForm($isUpdate, $actionValue, $product);
+    }
+    
+    private function viewForm($isUpdate, $actionValue, $product) {
+        return View::make('products.form')
+                   ->with('isUpdate', $isUpdate)
+                   ->with('actionValue', $actionValue)
+                   ->with('product', $product);
+    }
+    
+    public function postForm(Request $request) {
+        $product                     = new Products();
+        $id                          = $request->input('id');
+        $product->product_name       = $request->input('product_name');
+        $product->product_price_unit = $request->input('product_price_unit');
+        $product->product_reference  = $request->input('product_reference');
+        
+        if (empty($id)) {
+            if ($product = Products::create($product->data())) {
+                Messages::addSuccess('El producto ha sido registrado correctamente.');
+                Redirect::to(URL . '/products/form/' . $product->id);
+            } else {
+                Messages::addDanger('Error al registrar los datos del producto.');
+            }
+        } else {
+            $product->id = $id;
+            
+            if ($product->save()) {
+                Messages::addSuccess('Producto actualizado correctamente.');
+            } else {
+                Messages::addDanger('Error al actualizar los datos del producto.');
+            }
+        }
+        
+        return $this->viewForm(TRUE, 'Actualizar', $product);
+    }
+    
+    public function postDelete(Request $request) {
+        $id               = $request->input('id');
+        $receipt_products = intval(Query::count()
+                                        ->from(ReceiptsProducts::tableName())
+                                        ->where('product_id', '=', $id)
+                                        ->first()->count);
+        
+        if ($receipt_products == 0) {
+            if ($products = Products::find($id)) {
+                $products->delete();
+                Messages::addSuccess('Producto eliminado correctamente.');
+            } else {
+                Messages::addDanger('El producto no existe.');
+            }
+        } else {
+            Messages::addDanger('No se puede eliminar un producto con facturas vinculadas.');
+        }
+        
+        Redirect::to(\URL . '/products');
     }
 }

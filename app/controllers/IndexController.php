@@ -1,28 +1,16 @@
 <?php
-/**
- * IndexController.php
- */
 
-namespace Softn\controllers;
+namespace App\Controllers;
+
+use Silver\Core\Controller;
+use Silver\Http\View;
 
 /**
- * Class IndexController
- * @author Nicolás Marulanda P.
+ * index controller
  */
-class IndexController extends ControllerAbstract {
-    
-    /**
-     * IndexController constructor.
-     */
-    public function __construct() {
-        ViewController::setDirectory('index');
-    }
-    
-    public static function init() {
-        parent::method(new IndexController());
-    }
+class IndexController extends Controller {
     
     public function index() {
-        ViewController::view('index');
+        return View::make('index');
     }
 }

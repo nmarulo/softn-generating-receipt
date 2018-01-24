@@ -1,142 +1,102 @@
 <?php
+
+namespace App\Controllers;
+
+use App\Facades\Messages;
+use App\Models\Clients;
+use App\Models\Receipts;
+use Silver\Core\Controller;
+use Silver\Database\Query;
+use Silver\Http\Redirect;
+use Silver\Http\Request;
+use Silver\Http\View;
+
 /**
- * ClientsController.php
+ * clients controller
  */
-
-namespace Softn\controllers;
-
-use Softn\models\Client;
-use Softn\models\ClientsManager;
-use Softn\models\ReceiptsManager;
-use Softn\util\Arrays;
-use Softn\util\Messages;
-
-/**
- * Class ClientsController
- * @author Nicolás Marulanda P.
- */
-class ClientsController extends ControllerCRUDAbstract {
-    
-    /**
-     * ClientsController constructor.
-     */
-    public function __construct() {
-        ViewController::setDirectory('clients');
-    }
-    
-    public static function init() {
-        parent::method(new ClientsController());
-    }
-    
-    public function update() {
-        $view           = 'index';
-        $objectsManager = new ClientsManager();
-        $id             = Arrays::get($_GET, 'update');
-        $messages       = FALSE;
-        $typeMessage    = Messages::TYPE_DANGER;
-        
-        if ($id === FALSE) {
-            $object = $this->getViewForm();
-            $id     = $object->getId();
-            
-            if ($id == 0) {
-                $messages = 'No se puede agregar el cliente.';
-                
-                if ($objectsManager->insert($object)) {
-                    $messages    = 'El cliente se agrego correctamente.';
-                    $typeMessage = Messages::TYPE_SUCCESS;
-                    $view        = 'insert';
-    
-                    $object = $objectsManager->getByID($objectsManager->getLastInsertId());
-                }
-            } else {
-                $messages = 'No se puede actualizar el cliente.';
-                
-                if ($objectsManager->update($id, $object)) {
-                    $messages    = 'El cliente se actualizo correctamente.';
-                    $typeMessage = Messages::TYPE_SUCCESS;
-                    $view        = 'insert';
-                }
-            }
-        } else {
-            $object = $objectsManager->getByID($id);
-            $view   = 'insert';
-            
-            if ($object->getId() === 0) {
-                $messages = 'El cliente no existe.';
-                $view     = 'index';
-                $object   = NULL;
-            }
-        }
-        
-        if (!empty($object)) {
-            ViewController::sendViewData('client', $object);
-        }
-        
-        ViewController::sendViewData('messages', $messages);
-        ViewController::sendViewData('typeMessage', $typeMessage);
-        ViewController::view($view);
-    }
-    
-    /**
-     * @return Client
-     */
-    protected function getViewForm() {
-        $client = new Client();
-        
-        $client->setId(Arrays::get($_GET, ClientsManager::ID));
-        $client->setClientName(Arrays::get($_GET, ClientsManager::CLIENT_NAME));
-        $client->setClientAddress(Arrays::get($_GET, ClientsManager::CLIENT_ADDRESS));
-        $client->setClientCity(Arrays::get($_GET, ClientsManager::CLIENT_CITY));
-        $client->setClientIdentificationDocument(Arrays::get($_GET, ClientsManager::CLIENT_IDENTIFICATION_DOCUMENT));
-        
-        return $client;
-    }
-    
-    public function insert() {
-        ViewController::sendViewData('client', new Client());
-        ViewController::view('insert');
-    }
-    
-    public function delete() {
-        $messages    = 'El cliente no existe.';
-        $typeMessage = Messages::TYPE_DANGER;
-        $id          = Arrays::get($_GET, 'delete');
-        
-        if ($id !== FALSE) {
-            $objectManager = new ClientsManager();
-            $messages      = 'No se puede borrar el cliente.';
-            
-            if ($objectManager->delete($id)) {
-                $typeMessage = Messages::TYPE_SUCCESS;
-                $messages    = 'Cliente borrado correctamente.';
-            }
-        }
-        
-        ViewController::sendViewData('messages', $messages);
-        ViewController::sendViewData('typeMessage', $typeMessage);
-        $this->index();
-    }
+class ClientsController extends Controller {
     
     public function index() {
-        ViewController::view('index');
+        return View::make('clients.index')
+                   ->with('clients', Clients::query()
+                                            ->orderBy('id', 'desc')
+                                            ->all());
     }
     
-    public function dataList() {
-        ViewController::sendViewData('viewData', self::getClients());
-        ViewController::singleView('datalist');
-    }
-    
-    public static function getClients() {
-        $search        = Arrays::get($_GET, 'search');
-        $objectManager = new ClientsManager();
+    public function form($id = FALSE) {
+        $client      = new Clients();
+        $isUpdate    = FALSE;
+        $actionValue = 'Nuevo';
         
-        if ($search === FALSE) {
-            $objects = $objectManager->getAll();
-        } else {
-            $objects = $objectManager->filter($search);
+        if ($id) {
+            if (!$client = Clients::find($id)) {
+                Messages::addDanger('El cliente no existe.');
+                Redirect::to(URL . '/clients');
+            }
+            
+            $isUpdate    = TRUE;
+            $actionValue = 'Actualizar';
         }
         
-        return $objects;
+        return $this->viewForm($isUpdate, $actionValue, $client);
     }
+    
+    private function viewForm($isUpdate, $actionValue, $client) {
+        return View::make('clients.form')
+                   ->with('isUpdate', $isUpdate)
+                   ->with('actionValue', $actionValue)
+                   ->with('client', $client);
+    }
+    
+    public function postForm(Request $request) {
+        $client                                 = new Clients();
+        $id                                     = $request->input('id');
+        $client->client_name                    = $request->input('client_name');
+        $client->client_address                 = $request->input('client_address');
+        $client->client_identification_document = $request->input('client_identification_document');
+        $client->client_city                    = $request->input('client_city');
+        
+        if (empty($id)) {
+            $client->client_number_receipts = 0;
+            
+            if ($client = Clients::create($client->data())) {
+                Messages::addSuccess('El cliente ha sido registrado correctamente.');
+                Redirect::to(URL . '/clients/form/' . $client->id);
+            } else {
+                Messages::addDanger('Error al registrar los datos del cliente.');
+            }
+        } else {
+            $client->id = $id;
+            
+            if ($client->save()) {
+                Messages::addSuccess('Cliente actualizado correctamente.');
+            } else {
+                Messages::addDanger('Error al actualizar los datos del cliente.');
+            }
+        }
+        
+        return $this->viewForm(TRUE, 'Actualizar', $client);
+    }
+    
+    public function postDelete(Request $request) {
+        $id              = $request->input('id');
+        $receipt_numbers = intval(Query::count()
+                                       ->from(Receipts::tableName())
+                                       ->where('client_id', '=', $id)
+                                       ->first()->count);
+        
+        if ($receipt_numbers == 0) {
+            if ($client = Clients::find($id)) {
+                $client->delete();
+                Messages::addSuccess('Cliente eliminado correctamente.');
+            } else {
+                Messages::addDanger('El cliente no existe.');
+            }
+        } else {
+            Messages::addDanger('No se puede eliminar un cliente con facturas vinculadas.');
+        }
+        
+        Redirect::to(\URL . '/clients');
+    }
+    
 }
