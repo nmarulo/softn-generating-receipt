@@ -86,11 +86,12 @@ CREATE INDEX `fk_Receipts_has_Products_Receipt_id` ON `receipts_has_products` (`
 -- Data for table `options`
 -- -----------------------------------------------------
 START TRANSACTION;
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (1, 'option_name', 'Nicolas');
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (2, 'option_identification_document', '55588414J');
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (3, 'option_address', '1261 Aliquam Avenue');
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (4, 'option_phone_number', '1234567890');
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (5, 'option_web_site', 'http://www.softn.red/');
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES (6, 'option_iva', '21');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_name', 'Nicolas');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_identification_document', '55588414J');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_address', '1261 Aliquam Avenue');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_phone_number', '1234567890');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_web_site', 'http://www.softn.red/');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_iva', '21');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('setting_date_format', 'd/m/Y');
 
 COMMIT;
