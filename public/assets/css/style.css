@@ -183,7 +183,7 @@ body {
 }
 
 .content-autocomplete-data-list::-webkit-scrollbar-track {
-    background: #000000;
+    background: #eee;
 }
 
 .content-autocomplete-data-list::-webkit-scrollbar-thumb {

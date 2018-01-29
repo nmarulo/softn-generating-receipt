@@ -34,31 +34,12 @@
                         <div class="input-group form-table-row">
                             <span id="span-receipt-client" class="input-group-addon">Cliente</span>
                             <input id="receipt-client" class="form-control" type="text" aria-describedby="span-receipt-client">
-                            <div class="modal fade content-autocomplete-modal" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <h4 class="modal-title">Lista de clientes</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="form-group input-group">
-                                                <span id="span-search-data" class="input-group-addon">Buscar</span>
-                                                <input id="search-data" class="form-control search-data" type="text" aria-describedby="span-search-data">
-                                            </div>
-                                            <div class="content-autocomplete-data-list">
-                                                No existen clientes registrados.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {{ include('generating.modalclients') }}
                         </div>
                     </div>
                 </div>
                 <input id="receipt-products" type="hidden" name="receipt_products">
                 <input id="receipt-client-id" type="hidden" name="client_id">
-                <input type="hidden" name="method" value="generate">
             </div>
             <div class="col-sm-6">
                 <div class="panel panel-primary">
@@ -67,27 +48,7 @@
                         <div class="form-group input-group">
                             <span id="span-receipt-product" class="input-group-addon">Producto/Servicio</span>
                             <input id="receipt-product" class="form-control" type="text" aria-describedby="span-receipt-product">
-                            <div id="modal-products" class="modal fade content-autocomplete-modal" tabindex="-1" role="dialog">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <h4 class="modal-title">Lista de productos/servicios</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="form-group input-group">
-                                                <span id="span-search-data" class="input-group-addon">Buscar</span>
-                                                <input id="search-data" class="form-control search-data" type="text" aria-describedby="span-search-data">
-                                            </div>
-                                            <div class="content-autocomplete-data-list">
-                                                <div class="list-group">
-                                                    No existen productos registrados.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {{ include('generating.modalproducts') }}
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
