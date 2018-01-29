@@ -18,10 +18,11 @@ class ReceiptsController extends Controller {
     
     public function index() {
         $receipts = Receipts::query()
+                            ->orderBy('receipt_date', 'desc')
                             ->orderBy('receipt_number', 'desc')
                             ->all(NULL, function($row) {
                                 $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
-                                
+            
                                 return $row;
                             });
         
