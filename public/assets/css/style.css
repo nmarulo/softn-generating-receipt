@@ -22,7 +22,11 @@
 .input-group-addon,
 .form-control,
 .list-group-item:first-child,
-.list-group-item:last-child {
+.list-group-item:last-child,
+.pagination > li:first-child > a,
+.pagination > li:first-child > span,
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
     border-radius: 0;
 }
 
@@ -70,6 +74,15 @@ button.list-group-item:focus {
 
 .btn-default {
     border: 1px solid #CCCCCC;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    margin-left: 1px;
+}
+
+nav ul.pagination {
+    margin: 0;
 }
 
 /* GENERAL =================================== */
@@ -183,9 +196,9 @@ body {
 }
 
 .content-autocomplete-data-list::-webkit-scrollbar-track {
-    background: #eee;
+    background: #EEEEEE;
 }
 
 .content-autocomplete-data-list::-webkit-scrollbar-thumb {
-    background: #337ab7;
+    background: #337AB7;
 }
