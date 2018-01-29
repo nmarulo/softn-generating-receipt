@@ -1,6 +1,6 @@
 #
 .idea
-app/vendor
+vendor/
 *.vpp*
 *.mwb*
 demo-*.sql
