@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Facades\Messages;
+use App\Facades\Utils;
 use App\Models\Clients;
 use App\Models\Products;
 use App\Models\Receipts;
@@ -21,7 +22,7 @@ class GeneratingController extends Controller {
     public function index() {
         return View::make('generating')
                    ->with('receiptNumber', $this->getLastReceiptNumber())
-                   ->with('receiptDate', date('Y-m-d', time()));
+                   ->with('receiptDate',  Utils::dateNow($this->getDateFormat()));
     }
     
     private function getLastReceiptNumber() {
@@ -34,6 +35,17 @@ class GeneratingController extends Controller {
         }
         
         return 1;
+    }
+    
+    private function getDateFormat() {
+        $dateFormat = Settings::where('option_key', '=', 'setting_date_format')
+                              ->first();
+        
+        if (!$dateFormat) {
+            return 'Y-m-d';
+        }
+        
+        return $dateFormat->option_value;
     }
     
     public function dataPDF(Request $request) {
@@ -52,10 +64,10 @@ class GeneratingController extends Controller {
         $receiptId = $request->input('receipt_id', FALSE);
         
         if ($receiptId && $receipt = Receipts::find($receiptId)) {
-            $client = Clients::find($receipt->client_id)
-                             ->data();
-            
-            $dataJSON = [
+            $client                = Clients::find($receipt->client_id)
+                                            ->data();
+            $receipt->receipt_date = Utils::stringToDate($receipt->receipt_date, 'Y-m-d', $this->getDateFormat());
+            $dataJSON              = [
                 'client'   => $client,
                 'products' => $this->getDataPDFProducts($receiptId),
                 'receipt'  => $receipt->data(),
@@ -122,7 +134,7 @@ class GeneratingController extends Controller {
         $receipt                        = new Receipts();
         $receipt->receipt_type          = $request->input('receipt_type');
         $receipt->receipt_number        = $request->input('receipt_number');
-        $receipt->receipt_date          = $request->input('receipt_date');
+        $receipt->receipt_date          = Utils::stringToDate($request->input('receipt_date'), $this->getDateFormat());
         $receipt->receipt_license_plate = $request->input('receipt_license_plate');
         $receipt->client_id             = $request->input('client_id');
         
