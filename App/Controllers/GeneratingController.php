@@ -22,7 +22,7 @@ class GeneratingController extends Controller {
     public function index() {
         return View::make('generating')
                    ->with('receiptNumber', $this->getLastReceiptNumber())
-                   ->with('receiptDate',  Utils::dateNow($this->getDateFormat()));
+                   ->with('receiptDate', Utils::dateNow($this->getDateFormat()));
     }
     
     private function getLastReceiptNumber() {
@@ -137,6 +137,11 @@ class GeneratingController extends Controller {
         $receipt->receipt_date          = Utils::stringToDate($request->input('receipt_date'), $this->getDateFormat());
         $receipt->receipt_license_plate = $request->input('receipt_license_plate');
         $receipt->client_id             = $request->input('client_id');
+        
+        //TODO: temporalmente
+        if ($receipt->receipt_type == 'Presupuesto') {
+            $receipt->receipt_number = 0;
+        }
         
         try {
             if (!($receipt = $receipt->save()) || !$this->productsClients($products, $receipt)) {
