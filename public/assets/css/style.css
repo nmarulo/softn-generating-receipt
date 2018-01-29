@@ -172,3 +172,20 @@ body {
 #messages .alert-success {
     border-color: #3C763D;
 }
+
+.content-autocomplete-data-list {
+    height: 300px;
+    overflow-x: auto;
+}
+
+.content-autocomplete-data-list::-webkit-scrollbar {
+    width: 20px;
+}
+
+.content-autocomplete-data-list::-webkit-scrollbar-track {
+    background: #eee;
+}
+
+.content-autocomplete-data-list::-webkit-scrollbar-thumb {
+    background: #337ab7;
+}
