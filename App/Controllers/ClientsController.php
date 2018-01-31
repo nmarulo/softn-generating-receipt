@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Facades\Messages;
+use App\Facades\Pagination;
 use App\Models\Clients;
 use App\Models\Receipts;
 use Silver\Core\Controller;
@@ -16,11 +17,20 @@ use Silver\Http\View;
  */
 class ClientsController extends Controller {
     
-    public function index() {
+    public function index(Request $request) {
+        $currentPage = $request->input('page', 1);
+        $limit       = $request->input('limit', 5);
+        $pagination  = Pagination::instance($currentPage, Query::count()
+                                                               ->from(Clients::tableName())
+                                                               ->single(), $limit);
+        
         return View::make('clients.index')
                    ->with('clients', Clients::query()
                                             ->orderBy('id', 'desc')
-                                            ->all());
+                                            ->limit($limit)
+                                            ->offset($pagination->getBeginRow())
+                                            ->all())
+                   ->withComponent($pagination, 'pagination');
     }
     
     public function form($id = FALSE) {

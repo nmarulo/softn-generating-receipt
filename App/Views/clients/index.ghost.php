@@ -10,6 +10,7 @@
 <div id="content-index" class="panel panel-default">
     <div class="panel-body">
         <h3>Lista de clientes</h3>
+        {{ component('pagination') }}
         <table class="table table-hover table-striped">
         <thead>
             <tr>
