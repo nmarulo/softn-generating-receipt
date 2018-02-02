@@ -6,6 +6,7 @@ use App\Facades\Messages;
 use App\Facades\Pagination;
 use App\Models\Clients;
 use App\Models\Receipts;
+use App\Models\Settings;
 use Silver\Core\Controller;
 use Silver\Database\Query;
 use Silver\Http\Redirect;
@@ -18,11 +19,17 @@ use Silver\Http\View;
 class ClientsController extends Controller {
     
     public function index(Request $request) {
-        $currentPage = $request->input('page', 1);
-        $limit       = $request->input('limit', 5);
-        $pagination  = Pagination::instance($currentPage, Query::count()
-                                                               ->from(Clients::tableName())
-                                                               ->single(), $limit);
+        $currentPage = 1;
+        
+        if ($request->ajax()) {
+            $currentPage = $request->input('page', 1);
+        }
+        
+        $limit      = Settings::where('option_key', '=', 'setting_pagination_number_row_show')
+                              ->first()->option_value;
+        $pagination = Pagination::instance($currentPage, Query::count()
+                                                              ->from(Clients::tableName())
+                                                              ->single(), $limit);
         
         return View::make('clients.index')
                    ->with('clients', Clients::query()
