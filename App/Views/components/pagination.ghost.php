@@ -1,17 +1,19 @@
-#if($component_pagination->isRendered())
+#if(isset($component_pagination) && $component_pagination->isRendered())
 <div class="pagination-container">
     <nav>
         <ul class="pagination clearfix">
-            <li>
-                <a class="{{$component_pagination->getLeftArrow()->getStyleClass()}}" href="#">
+            <li class="{{$component_pagination->getLeftArrow()->getStyleClass()}}">
+                <a href="#" {{$component_pagination->getLeftArrow()->getAttrData()}}>
                     <span>{{html_entity_decode($component_pagination->getLeftArrow()->getValue())}}</span>
                 </a>
             </li>
             #foreach($component_pagination->getPages() as $page)
-            <li class="{{$page->getStyleClass()}}"><a href="#">{{$page->getValue()}}</a></li>
+            <li class="{{$page->getStyleClass()}}">
+                <a href="#" {{$page->getAttrData()}}>{{$page->getValue()}}</a>
+            </li>
             #endforeach
-            <li>
-                <a class="{{$component_pagination->getRightArrow()->getStyleClass()}}" href="#">
+            <li class="{{$component_pagination->getRightArrow()->getStyleClass()}}">
+                <a href="#" {{$component_pagination->getRightArrow()->getAttrData()}}>
                     <span>{{html_entity_decode($component_pagination->getRightArrow()->getValue())}}</span>
                 </a>
             </li>

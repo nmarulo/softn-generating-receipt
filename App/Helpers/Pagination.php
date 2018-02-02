@@ -133,13 +133,17 @@ class Pagination {
         }
         
         for ($i = $startPageNumber; $i <= $endPageNumber; ++$i) {
-            $styleClass = "";
+            $styleClass = '';
+            $attrData   = [
+                'page' => $i
+            ];
             
             if ($this->currentPageValue == $i) {
-                $styleClass = "active";
+                $styleClass = 'active';
+                $attrData = [];
             }
             
-            $this->pages[] = new Page($i, $styleClass);
+            $this->pages[] = new Page($i, $styleClass, $attrData);
         }
         
         $this->initArrows();
@@ -147,19 +151,27 @@ class Pagination {
     
     private function initArrows() {
         $styleClass = "disabled";
+        $attrData   = [];
         
         if ($this->currentPageValue > 1) {
             $styleClass = "";
+            $attrData   = [
+                'page' => $this->currentPageValue - 1,
+            ];
         }
         
-        $this->leftArrow = new Page('&laquo;', $styleClass);
+        $this->leftArrow = new Page('&laquo;', $styleClass, $attrData);
         $styleClass      = "disabled";
+        $attrData        = [];
         
         if ($this->currentPageValue < $this->totalNumberPages) {
             $styleClass = "";
+            $attrData   = [
+                'page' => $this->currentPageValue + 1,
+            ];
         }
         
-        $this->rightArrow = new Page('&raquo;', $styleClass);
+        $this->rightArrow = new Page('&raquo;', $styleClass, $attrData);
     }
     
     /**

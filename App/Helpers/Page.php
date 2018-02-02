@@ -17,9 +17,26 @@ class Page {
     /** @var string */
     private $value;
     
-    public function __construct($value, $styleClass = "") {
+    /** @var array */
+    private $attrData;
+    
+    public function __construct($value, $styleClass = "", $attrData = []) {
         $this->styleClass = $styleClass;
         $this->value      = $value;
+        $this->attrData   = $attrData;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getAttrData() {
+        $strAttrData = "";
+        
+        foreach ($this->attrData as $key => $value) {
+            $strAttrData .= "data-$key='$value' ";
+        }
+        
+        return $strAttrData;
     }
     
     /**
