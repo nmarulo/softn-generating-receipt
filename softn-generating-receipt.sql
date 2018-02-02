@@ -93,5 +93,6 @@ INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_phone_numbe
 INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_web_site', 'http://www.softn.red/');
 INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_iva', '21');
 INSERT INTO `options` (`option_key`, `option_value`) VALUES ('setting_date_format', 'd/m/Y');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('setting_pagination_number_row_show', '5');
 
 COMMIT;

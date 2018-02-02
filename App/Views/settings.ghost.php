@@ -52,6 +52,11 @@
                     <input id="option-name" class="form-control" type="text" aria-describedby="span-setting-date-format" name="setting_date_format" value="{{$valueDateFormat->option_value}}">
                 </div>
                 <span class="form-table-cell-hidden"></span>
+                <div class="form-group input-group">
+                    <span id="span-setting-pagination-number-row-show" class="input-group-addon">Numero de filas a mostrar por pagina:</span>
+                    <input id="option-name" class="form-control" type="text" aria-describedby="span-setting-pagination-number-row-show" name="setting_pagination_number_row_show" value="{{$valuePaginationNumberRowShow->option_value}}">
+                </div>
+                <span class="form-table-cell-hidden"></span>
                 <div class="form-table-row">
                     <button class="btn btn-primary btn-block" type="submit">Guardar</button>
                 </div>
