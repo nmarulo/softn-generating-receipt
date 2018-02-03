@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Facades\Messages;
+use App\Facades\Pagination;
 use App\Models\Products;
 use App\Models\ReceiptsProducts;
 use Silver\Core\Controller;
@@ -16,11 +17,8 @@ use Silver\Http\View;
  */
 class ProductsController extends Controller {
     
-    public function index() {
-        return View::make('products.index')
-                   ->with('products', Products::query()
-                                              ->orderBy('id', 'desc')
-                                              ->all());
+    public function index(Request $request) {
+        return Pagination::viewMake($request, Products::class, 'products', 'products.index', 'products');
     }
     
     public function form($id = FALSE) {

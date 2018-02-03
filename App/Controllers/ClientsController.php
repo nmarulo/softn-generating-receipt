@@ -19,25 +19,7 @@ use Silver\Http\View;
 class ClientsController extends Controller {
     
     public function index(Request $request) {
-        $currentPage = 1;
-        
-        if ($request->ajax()) {
-            $currentPage = $request->input('page', 1);
-        }
-        
-        $limit      = Settings::where('option_key', '=', 'setting_pagination_number_row_show')
-                              ->first()->option_value;
-        $pagination = Pagination::instance($currentPage, Query::count()
-                                                              ->from(Clients::tableName())
-                                                              ->single(), $limit);
-        
-        return View::make('clients.index')
-                   ->with('clients', Clients::query()
-                                            ->orderBy('id', 'desc')
-                                            ->limit($limit)
-                                            ->offset($pagination->getBeginRow())
-                                            ->all())
-                   ->withComponent($pagination, 'pagination');
+        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients');
     }
     
     public function form($id = FALSE) {
