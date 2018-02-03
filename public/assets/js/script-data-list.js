@@ -1,6 +1,7 @@
 var dataTableList = '';
 var idDataTableList = '';
 var classPaginationContainer = '';
+var idDivPanelContent = '';
 
 (function () {
 	setVar();
@@ -11,6 +12,7 @@ function setVar() {
 	classPaginationContainer = '.pagination-container';
 	idDataTableList = '#data-table-list';
 	dataTableList = $(idDataTableList);
+	idDivPanelContent = '#content-index';
 }
 
 function registerEvents() {
@@ -21,17 +23,23 @@ function registerEvents() {
 }
 
 function pagination(element) {
-	if ($(this).parent().hasClass('disabled') || element.data('page') == null) {
+	var page = element.data('page');
+	var url = element.data('url');
+	
+	if ($(this).parent().hasClass('disabled') || page == null || url == null) {
 		return;
 	}
 	
 	var setContentList = function (data) {
 		dataTableList.html($(data).find(idDataTableList).html());
-		dataTableList.parent()
+		dataTableList.closest(idDivPanelContent)
 			.find(classPaginationContainer)
 			.each(function () {
-				$(this).html($(data).find(idDataTableList).parent().find(classPaginationContainer).html());
+				$(this).html($(data).find(idDataTableList)
+					.closest(idDivPanelContent)
+					.find(classPaginationContainer).html());
 			});
 	};
-	callAjax('clients', 'GET', {'page': element.data('page')}, setContentList, false);
+	
+	callAjax(url, 'GET', {'page': page}, setContentList, false);
 }

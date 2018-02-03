@@ -5,6 +5,11 @@
 
 namespace App\Helpers;
 
+use App\Models\Settings;
+use Silver\Database\Query;
+use Silver\Http\Request;
+use Silver\Http\View;
+
 /**
  * Class Pagination
  * @author Nicolás Marulanda P.
@@ -41,7 +46,39 @@ class Pagination {
     /** @var int */
     private $beginRow;
     
-    public function instance($currentPageValue, $totalData, $numberRowShow, $maxNumberPagesShow = 3) {
+    /** @var string */
+    private $rute;
+    
+    public function viewMake(Request $request, $currentModel, $nameModel, $template, $rute, $dataModelClosure = NULL) {
+        $currentPage = 1;
+        
+        if ($request->ajax()) {
+            $currentPage = $request->input('page', 1);
+        }
+        
+        $limit      = Settings::where('option_key', '=', 'setting_pagination_number_row_show')
+                              ->first()->option_value;
+        $pagination = $this->instance($rute, $currentPage, Query::count()
+                                                                ->from($currentModel::tableName())
+                                                                ->single(), $limit);
+        $offset     = $pagination->getBeginRow();
+        
+        if ($dataModelClosure == NULL || !is_callable($dataModelClosure)) {
+            $dataModel = $currentModel::query()
+                                      ->orderBy('id', 'desc')
+                                      ->limit($limit)
+                                      ->offset($pagination->getBeginRow())
+                                      ->all();
+        } else {
+            $dataModel = $dataModelClosure($limit, $offset);
+        }
+        
+        return View::make($template)
+                   ->with($nameModel, $dataModel)
+                   ->withComponent($pagination, 'pagination');
+    }
+    
+    public function instance($rute, $currentPageValue, $totalData, $numberRowShow, $maxNumberPagesShow = 3) {
         $this->numberRowShow      = $numberRowShow <= 0 ? 1 : $numberRowShow;
         $this->currentPageValue   = $currentPageValue;
         $this->totalData          = $totalData;
@@ -50,6 +87,7 @@ class Pagination {
         $this->totalNumberPages   = 0;
         $this->rendered           = FALSE;
         $this->beginRow           = 0;
+        $this->rute               = $rute;
         $this->init();
         
         return $this;
@@ -132,46 +170,57 @@ class Pagination {
             }
         }
         
+        $this->setPages($startPageNumber, $endPageNumber);
+        $this->initArrows();
+    }
+    
+    private function setPages($startPageNumber, $endPageNumber) {
         for ($i = $startPageNumber; $i <= $endPageNumber; ++$i) {
             $styleClass = '';
             $attrData   = [
-                'page' => $i
+                'url'  => $this->rute,
+                'page' => $i,
             ];
             
             if ($this->currentPageValue == $i) {
                 $styleClass = 'active';
-                $attrData = [];
+                unset($attrData['page']);
             }
             
             $this->pages[] = new Page($i, $styleClass, $attrData);
         }
-        
-        $this->initArrows();
     }
     
     private function initArrows() {
         $styleClass = "disabled";
-        $attrData   = [];
-        
+        $attrData   = ['url' => $this->rute];
+        $this->setLeftArrow($styleClass, $attrData);
+        $this->setRightArrow($styleClass, $attrData);
+    }
+    
+    private function setLeftArrow($styleClass, $attrData) {
         if ($this->currentPageValue > 1) {
-            $styleClass = "";
-            $attrData   = [
-                'page' => $this->currentPageValue - 1,
-            ];
+            $styleClass       = "";
+            $attrData['page'] = $this->currentPageValue - 1;
         }
         
         $this->leftArrow = new Page('&laquo;', $styleClass, $attrData);
-        $styleClass      = "disabled";
-        $attrData        = [];
-        
+    }
+    
+    private function setRightArrow($styleClass, $attrData) {
         if ($this->currentPageValue < $this->totalNumberPages) {
-            $styleClass = "";
-            $attrData   = [
-                'page' => $this->currentPageValue + 1,
-            ];
+            $styleClass       = "";
+            $attrData['page'] = $this->currentPageValue + 1;
         }
         
         $this->rightArrow = new Page('&raquo;', $styleClass, $attrData);
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getBeginRow() {
+        return $this->beginRow;
     }
     
     /**
@@ -200,13 +249,6 @@ class Pagination {
      */
     public function isRendered() {
         return $this->rendered;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function getBeginRow() {
-        return $this->beginRow;
     }
     
 }
