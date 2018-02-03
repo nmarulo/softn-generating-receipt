@@ -3,8 +3,10 @@
 namespace App\Controllers;
 
 use App\Facades\Messages;
+use App\Facades\Pagination;
 use App\Models\Clients;
 use App\Models\Receipts;
+use App\Models\Settings;
 use Silver\Core\Controller;
 use Silver\Database\Query;
 use Silver\Http\Redirect;
@@ -16,11 +18,8 @@ use Silver\Http\View;
  */
 class ClientsController extends Controller {
     
-    public function index() {
-        return View::make('clients.index')
-                   ->with('clients', Clients::query()
-                                            ->orderBy('id', 'desc')
-                                            ->all());
+    public function index(Request $request) {
+        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients');
     }
     
     public function form($id = FALSE) {

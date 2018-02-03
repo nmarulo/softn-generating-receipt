@@ -27,7 +27,8 @@ class SettingsController extends Controller {
                     ->with('valuePhoneNumber', $this->getValue('option_phone_number'))
                     ->with('valueWebSite', $this->getValue('option_web_site'))
                     ->with('valueIVA', $this->getValue('option_iva'))
-                    ->with('valueDateFormat', $this->getValue('setting_date_format'));
+                    ->with('valueDateFormat', $this->getValue('setting_date_format'))
+                    ->with('valuePaginationNumberRowShow', $this->getValue('setting_pagination_number_row_show'));
     }
     
     private function getValue($value) {
@@ -46,6 +47,7 @@ class SettingsController extends Controller {
         $this->saveSetting($request, $settings, 'option_web_site');
         $this->saveSetting($request, $settings, 'option_iva');
         $this->saveSetting($request, $settings, 'setting_date_format');
+        $this->saveSetting($request, $settings, 'setting_pagination_number_row_show');
         
         if ($this->error) {
             Messages::addDanger('Error al actualizar.');

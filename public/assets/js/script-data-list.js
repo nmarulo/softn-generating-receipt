@@ -1,55 +1,45 @@
-var btnSearch = '';
-var btnClearSearch = '';
-var contentDataList = '';
-var inputSearchData = '';
+var dataTableList = '';
+var idDataTableList = '';
+var classPaginationContainer = '';
+var idDivPanelContent = '';
 
 (function () {
 	setVar();
 	registerEvents();
-	setContentList();
 })();
 
 function setVar() {
-	btnSearch = $('#btn-search');
-	btnClearSearch = $('#btn-clear-search');
-	contentDataList = $('#content-data-list');
-	inputSearchData = $('#search-data');
+	classPaginationContainer = '.pagination-container';
+	idDataTableList = '#data-table-list';
+	dataTableList = $(idDataTableList);
+	idDivPanelContent = '#content-index';
 }
 
 function registerEvents() {
-	btnSearch.on('click', function () {
-		setContentList();
-	});
-	
-	btnClearSearch.on('click', function () {
-		inputSearchData.val('');
-		setContentList();
+	$(document).on('click', '.pagination-container .pagination li > a', function (event) {
+		event.preventDefault();
+		pagination($(this));
 	});
 }
 
-function setContentList() {
-	var pageName = btnSearch.closest('div').data('page-name');
-	var url = '.php';
+function pagination(element) {
+	var page = element.data('page');
+	var url = element.data('url');
 	
-	if(pageName === undefined || pageName.length === 0){
-		return false;
+	if ($(this).parent().hasClass('disabled') || page == null || url == null) {
+		return;
 	}
-	
-	url = pageName + url;
-	var search = inputSearchData.val();
 	
 	var setContentList = function (data) {
-		contentDataList.html(data);
+		dataTableList.html($(data).find(idDataTableList).html());
+		dataTableList.closest(idDivPanelContent)
+			.find(classPaginationContainer)
+			.each(function () {
+				$(this).html($(data).find(idDataTableList)
+					.closest(idDivPanelContent)
+					.find(classPaginationContainer).html());
+			});
 	};
 	
-	var data = {
-		method: 'dataList'
-	};
-	
-	if (search.length > 0) {
-		data['search'] = search;
-	}
-	
-	callAjax(url, data, setContentList, false);
+	callAjax(url, 'GET', {'page': page}, setContentList, false);
 }
-

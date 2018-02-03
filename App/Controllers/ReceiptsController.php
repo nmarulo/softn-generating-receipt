@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Facades\Messages;
+use App\Facades\Pagination;
 use App\Facades\Utils;
 use App\Models\Clients;
 use App\Models\Receipts;
@@ -16,18 +17,21 @@ use Silver\Http\View;
  */
 class ReceiptsController extends Controller {
     
-    public function index() {
-        $receipts = Receipts::query()
-                            ->orderBy('receipt_date', 'desc')
-                            ->orderBy('receipt_number', 'desc')
-                            ->all(NULL, function($row) {
-                                $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
-            
-                                return $row;
-                            });
+    public function index(Request $request) {
+        $receipts = function($limit, $offset) {
+            return Receipts::query()
+                           ->orderBy('receipt_date', 'desc')
+                           ->orderBy('receipt_number', 'desc')
+                           ->limit($limit)
+                           ->offset($offset)
+                           ->all(NULL, function($row) {
+                               $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
+                
+                               return $row;
+                           });
+        };
         
-        return View::make('receipts')
-                   ->with('receipts', $receipts);
+        return Pagination::viewMake($request, Receipts::class, 'receipts', 'receipts', 'receipts', $receipts);
     }
     
     public function postDelete(Request $request) {
