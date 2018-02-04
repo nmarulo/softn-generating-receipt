@@ -33,8 +33,7 @@
                         <span class="form-table-cell-hidden"></span>
                         <div class="input-group form-table-row">
                             <span id="span-receipt-client" class="input-group-addon">Cliente</span>
-                            <input id="receipt-client" class="form-control" type="text" aria-describedby="span-receipt-client">
-                            {{ include('generating.modalclients') }}
+                            <input id="receipt-client" class="form-control" type="text" aria-describedby="span-receipt-client" data-modal="clients">
                         </div>
                     </div>
                 </div>
@@ -47,8 +46,7 @@
                     <div class="panel-body form-table">
                         <div class="form-group input-group">
                             <span id="span-receipt-product" class="input-group-addon">Producto/Servicio</span>
-                            <input id="receipt-product" class="form-control" type="text" aria-describedby="span-receipt-product">
-                            {{ include('generating.modalproducts') }}
+                            <input id="receipt-product" class="form-control" type="text" aria-describedby="span-receipt-product" data-modal="products">
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-group input-group">
@@ -75,6 +73,8 @@
     <div id="list-selected-products" class="form-group">
         No hay productos seleccionados
     </div>
+    {{ include('generating.modalproducts') }}
+    {{ include('generating.modalclients') }}
 </div>
 #end
 #set[scripts]
