@@ -234,38 +234,54 @@ class GeneratingController extends Controller {
             return "";
         }
         
-        $objects = [];
-        $search  = $request->input('search', '');
+        $objects    = [];
+        $search     = $request->input('search-data-value', '');
+        $columnName = $request->input('search-data-column', '');
         
-        switch ($request->input('methodGetData')) {
+        switch ($request->input('search-data-model')) {
             case 'clients':
-                $objects = $this->searchClients($search);
+                $objects = $this->searchClients($search, $columnName);
                 break;
             case 'products':
-                $objects = $this->searchProducts($search);
+                $objects = $this->searchProducts($search, $columnName);
                 break;
         }
         
         return View::make('generating.datamodal')
-                   ->with('objects', $objects)
-                   ->with('name', $request->input('methodGetName'));
+                   ->with('objects', $objects);
     }
     
-    private function searchClients($search = '') {
+    private function searchClients($search, $columnName) {
+        if (empty($search) || empty($columnName)) {
+            return [];
+        }
+        
         return Clients::query()
-                      ->where('client_name', 'LIKE', "%$search%")
-                      ->orderBy('client_name')
+                      ->where($columnName, 'LIKE', "%$search%")
+                      ->orderBy($columnName)
                       ->all(NULL, function($row) {
-                          return $row->data();
+                          $row          = $row->data();
+                          $row['value'] = $row['client_name'];
+                          $row['badge'] = $row['client_identification_document'];
+            
+                          return $row;
                       });
     }
     
-    private function searchProducts($search = '') {
+    private function searchProducts($search, $columnName) {
+        if (empty($search) || empty($columnName)) {
+            return [];
+        }
+        
         return Products::query()
-                       ->where('product_name', 'LIKE', "%$search%")
-                       ->orderBy('product_name')
+                       ->where($columnName, 'LIKE', "%$search%")
+                       ->orderBy($columnName)
                        ->all(NULL, function($row) {
-                           return $row->data();
+                           $row          = $row->data();
+                           $row['value'] = $row['product_name'];
+                           $row['badge'] = $row['product_reference'];
+            
+                           return $row;
                        });
     }
     
