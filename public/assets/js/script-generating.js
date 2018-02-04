@@ -1,3 +1,4 @@
+var inputSearchDataMinLetter = 0;
 var inputSearchData = '';
 var formGenerateReceipt = '';
 var btnGenerateReceipt = '';
@@ -19,6 +20,10 @@ var setProductInput = '';
 var setClientInput = '';
 //Lista de productos
 var listProductsIdAndUnits = [];
+var modalFormSearchData = null;
+var classModalFormSearchData = '';
+var modalProducts = '';
+var modalClients = '';
 
 (function () {
 	setVars();
@@ -26,6 +31,7 @@ var listProductsIdAndUnits = [];
 })();
 
 function setVars() {
+	inputSearchDataMinLetter = 2;
 	formGenerateReceipt = $('#form-generate-receipt');
 	btnGenerateReceipt = $('#btn-generate-receipt');
 	divContentAutocompleteModal = $('.content-autocomplete-modal');
@@ -36,6 +42,10 @@ function setVars() {
 	inputReceiptProductUnit = $('#receipt-product-unit');
 	contentSelectedProducts = $('#list-selected-products');
 	btnAddProduct = $('#btn-add-product');
+	classModalFormSearchData = '.modal-form-search';
+	modalFormSearchData = $(classModalFormSearchData);
+	modalClients = $('#modal-clients');
+	modalProducts = $('#modal-products');
 	
 	//Establece la información del producto seleccionado.
 	setProductInput = function (element) {
@@ -59,15 +69,13 @@ function registerEvents() {
 	inputReceiptClient.on('click', function () {
 		setContentAutocompleteModalElements($(this));
 		divContentAutocompleteModal.modal('show');
-		setDataContentListGroupAndRegisterEvents('clients', 'client_name', '');
-		registerEventContentListGroup(setClientInput, 'clients', 'client_name');
+		registerEventContentListGroup(setClientInput);
 	});
 	
 	inputReceiptProduct.on('click', function () {
 		setContentAutocompleteModalElements($(this));
 		divContentAutocompleteModal.modal('show');
-		setDataContentListGroupAndRegisterEvents('products', 'product_name', '');
-		registerEventContentListGroup(setProductInput, 'products', 'product_name');
+		registerEventContentListGroup(setProductInput);
 	});
 	
 	inputReceiptProduct.on('focus', function () {
@@ -141,10 +149,23 @@ function registerEvents() {
 	
 	divContentAutocompleteModal.on('hide.bs.modal', function () {
 		inputSearchData.val('');
-	})
+	});
+	
+	modalFormSearchData.on('submit', function (event) {
+		event.preventDefault();
+		var setContentList = function (data) {
+			if ($(data).children().length < 1) {
+				data = 'No se encontraron resultados.'
+			}
+			
+			divContentAutocompleteListGroup.html(data);
+		};
+		
+		callAjax('generating/datamodal', 'POST', $(this).serialize(), setContentList, false);
+	});
 }
 
-function registerEventContentListGroup(callbackSetDataInput, methodGetData, methodGetName) {
+function registerEventContentListGroup(callbackSetDataInput) {
 	divContentAutocompleteListGroup.on('click', 'button', function () {
 		callbackSetDataInput($(this));
 		divContentAutocompleteModal.modal('hide');
@@ -153,41 +174,31 @@ function registerEventContentListGroup(callbackSetDataInput, methodGetData, meth
 	inputSearchData.on('keyup', function () {
 		var inputText = $(this).val();
 		
-		if (inputText.length < 3 && isNaN(inputText)) {
-			inputText = '';
+		if (inputText.length < inputSearchDataMinLetter) {
+			divContentAutocompleteListGroup.html('Realize una búsqueda con mínimo 2 letras.');
+		} else {
+			$(this).closest(classModalFormSearchData).submit();
 		}
-		
-		setDataContentListGroupAndRegisterEvents(methodGetData, methodGetName, inputText);
 	});
 }
 
 function setContentAutocompleteModalElements(element) {
-	divContentAutocompleteModal = element.closest('div').find('.content-autocomplete-modal');
-	divContentAutocompleteListGroup = divContentAutocompleteModal.find('.content-autocomplete-data-list');
-	inputSearchData = divContentAutocompleteModal.find('.search-data');
-}
-
-/**
- *
- * @param methodGetData
- * @param methodGetName
- * @param search
- */
-function setDataContentListGroupAndRegisterEvents(methodGetData, methodGetName, search) {
-	var setContentList = function (data) {
-		divContentAutocompleteListGroup.html(data);
-	};
-	
-	var data = {
-		methodGetName: methodGetName,
-		methodGetData: methodGetData
-	};
-	
-	if (search.length > 0) {
-		data['search'] = search;
+	switch (element.data('modal')) {
+		case 'clients':
+			divContentAutocompleteModal = modalClients;
+			break;
+		case 'products':
+			divContentAutocompleteModal = modalProducts;
+			break;
 	}
 	
-	callAjax('generating/datamodal', 'POST', data, setContentList, false);
+	divContentAutocompleteListGroup = divContentAutocompleteModal.find('.content-autocomplete-data-list');
+	inputSearchData = divContentAutocompleteModal.find('.search-data');
+	divContentAutocompleteListGroup.html('Realize una búsqueda con mínimo 2 letras.');
+	divContentAutocompleteModal.find(classModalFormSearchData)
+		.on('change', '[type=radio]', function () {
+			inputSearchData.trigger('keyup');
+		});
 }
 
 function setInputHiddenReceiptProducts(listProducts) {
