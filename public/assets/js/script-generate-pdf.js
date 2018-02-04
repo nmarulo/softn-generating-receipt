@@ -22,54 +22,32 @@
 	
 })(jsPDF.API);
 
-function getBase64Image(img) {
-	
-	var canvas = document.createElement("canvas");
-	
-	canvas.width = img.width;
-	canvas.height = img.height;
-	var ctx = canvas.getContext("2d");
-	
-	ctx.drawImage(img, 0, 0);
-	
-	var dataURL = canvas.toDataURL("image/jpeg");
-	
-	return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-	
-}
-
-var img = new Image();
-img.onload = function () {
-	var dataURI = getBase64Image(img);
-	return dataURI;
-};
-img.src = "assets/images/facturaFondo.png";
-
 /**
  *
+ * @param url
  * @param receiptID
- * @param isPageGenerating bool True si estoy en la pagina generating.php
+ * @param isPageGenerating bool True si estoy en la pagina generating
  */
-function generatePDF(receiptID, isPageGenerating) {
+function generatePDF(url, receiptID, isPageGenerating) {
 	var dataPDF = function (data) {
 		var client = data['client'];
 		var products = data['products'];
 		var receipt = data['receipt'];
 		var options = data['options'];
-		var dataUrlString = createPDF(client, products, receipt, options, isPageGenerating);
+		var doc = createPDF(client, products, receipt, options, isPageGenerating);
 		
 		if (isPageGenerating) {
 			$('#btn-generate-pdf').on('click', function (event) {
 				event.preventDefault();
-				window.open(dataUrlString, '_blank');
+				savePDF(doc, receipt['receipt_number'], receipt['receipt_type'], client['client_identification_document'], receipt['receipt_date']);
 			});
 		}
 	};
 	
-	callAjax('generating/datapdf', 'POST', {'receipt_id': receiptID}, dataPDF, true);
+	callAjax(url, 'POST', {'receipt_id': receiptID}, dataPDF, true);
 }
 
-function createPDF(client, products, receipt, options, dataUrlString) {
+function createPDF(client, products, receipt, options, isPageGenerating) {
 	var doc = new jsPDF();
 	var marginX = 18;//Margen inicial izquierdo
 	var marginXMax = 192;//Margen final derecho
@@ -118,7 +96,7 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	total = Math.round(total * 100) / 100;
 	
 	//Imágenes -------------------------------------
-	doc.addImage(img.onload(), 'jpeg', marginX, marginY + 70, sizeTableWidth, 80);//facturaFondo
+	doc.addImage(options['setting_invoice_background_image'], 'png', marginX, marginY + 70, sizeTableWidth, 80);//facturaFondo
 	doc.setTextColor(220, 0, 0);
 	doc.setFontSize(fontSize);
 	doc.setFontType('bold');
@@ -300,11 +278,20 @@ function createPDF(client, products, receipt, options, dataUrlString) {
 	total = number_format(total, 2, decPoint, thousandsSep).toString();
 	doc.textAlignRight(marginXBase, marginYBase + (rowSize * 3), total + ' €');
 	
-	if (dataUrlString) {
-		return doc.output('dataurlstring');
+	if (isPageGenerating) {
+		return doc;
 	} else {
-		doc.output('dataurlnewwindow');
+		savePDF(doc, receipt['receipt_number'], receipt['receipt_type'], client['client_identification_document'], receipt['receipt_date']);
 	}
+}
+
+function savePDF(doc, receiptNumber, receiptType, clientIdentificationDocument, receiptDate) {
+	var invoiceName = receiptNumber;
+	invoiceName += '_' + receiptType;
+	invoiceName += '_' + clientIdentificationDocument;
+	invoiceName += '_' + receiptDate;
+	
+	doc.output('save', invoiceName);
 }
 
 /**

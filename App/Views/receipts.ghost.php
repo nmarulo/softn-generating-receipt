@@ -26,7 +26,7 @@
                     #foreach($receipts as $receipt)
                     <tr>
                         <td class="btn-actions">
-                            <a class="btn btn-warning btn-generate-pdf" data-receipt-id="{{$receipt->id}}" href="#">
+                            <a class="btn btn-warning btn-generate-pdf" data-receipt-id="{{$receipt->id}}" href="{{url('/generating/datapdf')}}">
                                 <span class="glyphicon glyphicon-open-file"></span>
                             </a>
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete" data-element-id="{{$receipt->id}}" data-form-action="{{url('/receipts/delete')}}">

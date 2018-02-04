@@ -101,6 +101,8 @@ class GeneratingController extends Controller {
         array_walk($settingsQuery, function($setting) use (&$settings) {
             $settings[$setting->option_key] = $setting->option_value;
         });
+        $image                                        = $settings['setting_invoice_background_image'];
+        $settings['setting_invoice_background_image'] = sprintf('data:image/%1$s;base64,%2$s', pathinfo($image, PATHINFO_EXTENSION), base64_encode(file_get_contents($image)));
         
         return $settings;
     }

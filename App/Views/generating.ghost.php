@@ -66,7 +66,7 @@
         </div>
     </form>
     <div id="btn-group-actions-generate" class="hidden">
-        <button id="btn-generate-pdf" class="btn btn-success" type="button">Generar PDF</button>
+        <button id="btn-generate-pdf" class="btn btn-success" type="button">Descargar PDF</button>
         <a class="btn btn-primary" href="{{url('/receipts')}}">Ver lista de facturas</a>
         <a class="btn btn-warning" href="{{url('/generating')}}">Nueva factura</a>
     </div>

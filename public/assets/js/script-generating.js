@@ -243,7 +243,7 @@ function generatingReceipt() {
 		
 		btnGenerateReceipt.closest('div').addClass('hidden');
 		$('#btn-group-actions-generate').removeClass('hidden');
-		generatePDF(data['receipt_id'], true);
+		generatePDF('generating/datapdf', data['receipt_id'], true);
 	};
 	
 	callAjax('generating', 'POST', data, generateAndGetLastReceipt, true);
