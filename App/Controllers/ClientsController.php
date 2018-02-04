@@ -4,9 +4,9 @@ namespace App\Controllers;
 
 use App\Facades\Messages;
 use App\Facades\Pagination;
+use App\Facades\Utils;
 use App\Models\Clients;
 use App\Models\Receipts;
-use App\Models\Settings;
 use Silver\Core\Controller;
 use Silver\Database\Query;
 use Silver\Http\Redirect;
@@ -22,7 +22,7 @@ class ClientsController extends Controller {
         return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients');
     }
     
-    public function form($id = FALSE) {
+    public function form(Request $request, $id = FALSE) {
         $client      = new Clients();
         $isUpdate    = FALSE;
         $actionValue = 'Nuevo';
@@ -37,14 +37,46 @@ class ClientsController extends Controller {
             $actionValue = 'Actualizar';
         }
         
-        return $this->viewForm($isUpdate, $actionValue, $client);
+        return $this->viewForm($request, $isUpdate, $actionValue, $client, $id);
     }
     
-    private function viewForm($isUpdate, $actionValue, $client) {
-        return View::make('clients.form')
-                   ->with('isUpdate', $isUpdate)
-                   ->with('actionValue', $actionValue)
-                   ->with('client', $client);
+    private function getReceipts($clientId, $limit, $offset) {
+        return Receipts::query()
+                       ->where('client_id', '=', $clientId)
+                       ->orderBy('receipt_date', 'desc')
+                       ->orderBy('receipt_number', 'desc')
+                       ->limit($limit)
+                       ->offset($offset)
+                       ->all(NULL, function($row) {
+                           $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
+            
+                           return $row;
+                       });
+    }
+    
+    private function viewForm(Request $request, $isUpdate, $actionValue, $client, $clientId) {
+        if (empty($clientId)) {
+            return View::make('clients.form')
+                       ->with('isUpdate', $isUpdate)
+                       ->with('actionValue', $actionValue)
+                       ->with('client', $client)
+                       ->with('receipts', []);
+        }
+        
+        $currentModel = function() use ($clientId) {
+            return Query::count()
+                        ->from(Receipts::tableName())
+                        ->where('client_id', '=', $clientId)
+                        ->single();
+        };
+        $dataModel    = function($limit, $offset) use ($clientId) {
+            return $this->getReceipts($clientId, $limit, $offset);
+        };
+        
+        return Pagination::viewMake($request, $currentModel, 'receipts', 'clients.form', "$clientId", $dataModel)
+                         ->with('isUpdate', $isUpdate)
+                         ->with('actionValue', $actionValue)
+                         ->with('client', $client);
     }
     
     public function postForm(Request $request) {
@@ -74,7 +106,7 @@ class ClientsController extends Controller {
             }
         }
         
-        return $this->viewForm(TRUE, 'Actualizar', $client);
+        return $this->viewForm($request, TRUE, 'Actualizar', $client, $id);
     }
     
     public function postDelete(Request $request) {

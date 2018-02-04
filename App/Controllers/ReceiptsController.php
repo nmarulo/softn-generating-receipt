@@ -46,7 +46,9 @@ class ReceiptsController extends Controller {
             Messages::addDanger('El factura no existe.');
         }
         
-        Redirect::to(\URL . '/receipts');
+        if (empty($request->input('reload', ''))) {
+            Redirect::to(\URL . '/receipts');
+        }
     }
     
     private function delete(Receipts $receipt, Clients $client) {

@@ -17,7 +17,7 @@
                     <i class="fa fa-home" aria-hidden="true"></i> Inicio</a>
                 <a class="list-group-item" href="{{ url('/generating') }}">Generar</a>
                 <a class="list-group-item" href="{{ url('/clients') }}">Clientes</a>
-                <a class="list-group-item" href="{{ url('/products') }}">Productos/Servicios</a>
+                <a class="list-group-item" href="{{ url('/products') }}">Productos / Servicios</a>
                 <a class="list-group-item" href="{{ url('/receipts') }}">Facturas</a>
                 <a class="list-group-item" href="{{ url('/settings') }}">Opciones</a>
             </div>

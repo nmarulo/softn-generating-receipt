@@ -56,30 +56,32 @@ class Pagination {
             $currentPage = $request->input('page', 1);
         }
         
-        $limit      = Settings::where('option_key', '=', 'setting_pagination_number_row_show')
-                              ->first()->option_value;
-        $pagination = $this->instance($rute, $currentPage, Query::count()
-                                                                ->from($currentModel::tableName())
-                                                                ->single(), $limit);
-        $offset     = $pagination->getBeginRow();
+        if(is_callable($currentModel)){
+            $totalData = $currentModel();
+        }else{
+            $totalData = Query::count()
+                              ->from($currentModel::tableName())
+                              ->single();
+        }
+        
+        $this->instance($rute, $currentPage, $totalData);
         
         if ($dataModelClosure == NULL || !is_callable($dataModelClosure)) {
             $dataModel = $currentModel::query()
                                       ->orderBy('id', 'desc')
-                                      ->limit($limit)
-                                      ->offset($pagination->getBeginRow())
+                                      ->limit($this->numberRowShow)
+                                      ->offset($this->beginRow)
                                       ->all();
         } else {
-            $dataModel = $dataModelClosure($limit, $offset);
+            $dataModel = $dataModelClosure($this->numberRowShow, $this->beginRow);
         }
         
         return View::make($template)
                    ->with($nameModel, $dataModel)
-                   ->withComponent($pagination, 'pagination');
+                   ->withComponent($this, 'pagination');
     }
     
-    public function instance($rute, $currentPageValue, $totalData, $numberRowShow, $maxNumberPagesShow = 3) {
-        $this->numberRowShow      = $numberRowShow <= 0 ? 1 : $numberRowShow;
+    public function instance($rute, $currentPageValue, $totalData, $maxNumberPagesShow = 3) {
         $this->currentPageValue   = $currentPageValue;
         $this->totalData          = $totalData;
         $this->maxNumberPagesShow = $maxNumberPagesShow;
@@ -88,9 +90,22 @@ class Pagination {
         $this->rendered           = FALSE;
         $this->beginRow           = 0;
         $this->rute               = $rute;
+        $this->setNumberRowShow(Settings::where('option_key', '=', 'setting_pagination_number_row_show')
+                                        ->first()->option_value);
         $this->init();
         
         return $this;
+    }
+    
+    /**
+     * @param int $numberRowShow
+     */
+    private function setNumberRowShow($numberRowShow) {
+        if ($numberRowShow <= 0) {
+            $numberRowShow = 1;
+        }
+        
+        $this->numberRowShow = $numberRowShow;
     }
     
     private function init() {

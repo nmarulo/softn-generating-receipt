@@ -11,7 +11,8 @@
                     </div>
                     <div class="col-sm-6">
                         <form id="modal-delete-form" method="post" action="">
-                            <input id="modal-delete-input-hidden" type="hidden" name="id" value=""/>
+                            <input id="modal-delete-input-id" type="hidden" name="id" value=""/>
+                            <input id="modal-delete-input-reload" type="hidden" name="reload" value=""/>
                             <button type="submit" class="btn btn-default btn-block">Borrar</button>
                         </form>
                     </div>

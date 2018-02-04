@@ -72,7 +72,7 @@ function callAjax(url, method, data, callback, parseJSON) {
 }
 
 function callBack(data, callback, parseJSON) {
-	if (callback !== undefined) {
+	if (callback !== undefined || callback != null) {
 		var parseData = data;
 		
 		if (parseJSON) {
