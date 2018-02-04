@@ -94,5 +94,6 @@ INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_web_site', 
 INSERT INTO `options` (`option_key`, `option_value`) VALUES ('option_iva', '21');
 INSERT INTO `options` (`option_key`, `option_value`) VALUES ('setting_date_format', 'd/m/Y');
 INSERT INTO `options` (`option_key`, `option_value`) VALUES ('setting_pagination_number_row_show', '5');
+INSERT INTO `options` (`option_key`, `option_value`) VALUES ('setting_invoice_background_image', 'http://localhost/softn-generating-receipt/public/assets/images/facturaFondo.png');
 
 COMMIT;

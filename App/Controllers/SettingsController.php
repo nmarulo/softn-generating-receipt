@@ -28,7 +28,8 @@ class SettingsController extends Controller {
                     ->with('valueWebSite', $this->getValue('option_web_site'))
                     ->with('valueIVA', $this->getValue('option_iva'))
                     ->with('valueDateFormat', $this->getValue('setting_date_format'))
-                    ->with('valuePaginationNumberRowShow', $this->getValue('setting_pagination_number_row_show'));
+                    ->with('valuePaginationNumberRowShow', $this->getValue('setting_pagination_number_row_show'))
+                    ->with('valueInvoiceBackgroundImage', $this->getValue('setting_invoice_background_image'));
     }
     
     private function getValue($value) {
@@ -48,6 +49,7 @@ class SettingsController extends Controller {
         $this->saveSetting($request, $settings, 'option_iva');
         $this->saveSetting($request, $settings, 'setting_date_format');
         $this->saveSetting($request, $settings, 'setting_pagination_number_row_show');
+        $this->saveSetting($request, $settings, 'setting_invoice_background_image');
         
         if ($this->error) {
             Messages::addDanger('Error al actualizar.');

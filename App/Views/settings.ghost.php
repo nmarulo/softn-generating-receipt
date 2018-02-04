@@ -37,6 +37,11 @@
                     <input id="option-iva" class="form-control" type="number" aria-describedby="span-option-iva" name="option_iva" value="{{$valueIVA->option_value}}">
                 </div>
                 <span class="form-table-cell-hidden"></span>
+                <div class="form-group input-group">
+                    <span id="span-setting-pagination-number-row-show" class="input-group-addon">Fondo de la factura:</span>
+                    <input id="option-name" class="form-control" type="text" aria-describedby="span-setting-invoice-background-image" name="setting_invoice_background_image" value="{{$valueInvoiceBackgroundImage->option_value}}">
+                </div>
+                <span class="form-table-cell-hidden"></span>
                 <div class="form-table-row">
                     <button class="btn btn-primary btn-block" type="submit">Guardar</button>
                 </div>
