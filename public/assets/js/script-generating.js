@@ -175,7 +175,7 @@ function registerEventContentListGroup(callbackSetDataInput) {
 		var inputText = $(this).val();
 		
 		if (inputText.length < inputSearchDataMinLetter) {
-			divContentAutocompleteListGroup.html('Realize una búsqueda con mínimo 2 letras.');
+			divContentAutocompleteListGroup.html('Realize una búsqueda con mínimo 2 caracteres.');
 		} else {
 			$(this).closest(classModalFormSearchData).submit();
 		}
@@ -194,7 +194,7 @@ function setContentAutocompleteModalElements(element) {
 	
 	divContentAutocompleteListGroup = divContentAutocompleteModal.find('.content-autocomplete-data-list');
 	inputSearchData = divContentAutocompleteModal.find('.search-data');
-	divContentAutocompleteListGroup.html('Realize una búsqueda con mínimo 2 letras.');
+	divContentAutocompleteListGroup.html('Realize una búsqueda con mínimo 2 caracteres.');
 	divContentAutocompleteModal.find(classModalFormSearchData)
 		.on('change', '[type=radio]', function () {
 			inputSearchData.trigger('keyup');
