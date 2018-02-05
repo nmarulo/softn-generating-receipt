@@ -55,7 +55,7 @@ class GeneratingController extends Controller {
         if ($receiptId && $receipt = Receipts::find($receiptId)) {
             $client                = Clients::find($receipt->client_id)
                                             ->data();
-            $receipt->receipt_date = Utils::stringToDate($receipt->receipt_date, 'Y-m-d', $this->getDateFormat());
+            $receipt->receipt_date = Utils::stringToDate($receipt->receipt_date, 'Y-m-d', Utils::getDateFormat());
             $dataJSON              = [
                 'client'   => $client,
                 'products' => $this->getDataPDFProducts($receiptId),
@@ -125,7 +125,7 @@ class GeneratingController extends Controller {
         $receipt                        = new Receipts();
         $receipt->receipt_type          = $request->input('receipt_type');
         $receipt->receipt_number        = $request->input('receipt_number');
-        $receipt->receipt_date          = Utils::stringToDate($request->input('receipt_date'), $this->getDateFormat());
+        $receipt->receipt_date          = Utils::stringToDate($request->input('receipt_date'), Utils::getDateFormat());
         $receipt->receipt_license_plate = $request->input('receipt_license_plate');
         $receipt->client_id             = $request->input('client_id');
         
