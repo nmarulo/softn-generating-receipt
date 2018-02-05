@@ -16,11 +16,11 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Nombre</th>
-                        <th>Documento de identificación</th>
-                        <th>Dirección</th>
-                        <th>Ciudad</th>
-                        <th>Facturas</th>
+                        <th data-column="client_name">Nombre</th>
+                        <th data-column="client_identification_document">Documento de identificación</th>
+                        <th data-column="client_address">Dirección</th>
+                        <th data-column="client_city">Ciudad</th>
+                        <th data-column="client_number_receipts">Facturas</th>
                     </tr>
                 </thead>
                 <tbody id="content-data-list">

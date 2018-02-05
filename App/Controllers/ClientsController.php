@@ -19,7 +19,20 @@ use Silver\Http\View;
 class ClientsController extends Controller {
     
     public function index(Request $request) {
-        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients');
+        $dataModel = NULL;
+        
+        if ($column = $request->param('order_by', FALSE)) {
+            $sort      = $request->param('sort', 'desc');
+            $dataModel = function($limit, $offset) use ($column, $sort) {
+                return Clients::query()
+                              ->orderBy($column, $sort)
+                              ->limit($limit)
+                              ->offset($offset)
+                              ->all();
+            };
+        }
+        
+        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients', $dataModel);
     }
     
     public function form(Request $request, $id = FALSE) {
@@ -38,20 +51,6 @@ class ClientsController extends Controller {
         }
         
         return $this->viewForm($request, $isUpdate, $actionValue, $client, $id);
-    }
-    
-    private function getReceipts($clientId, $limit, $offset) {
-        return Receipts::query()
-                       ->where('client_id', '=', $clientId)
-                       ->orderBy('receipt_date', 'desc')
-                       ->orderBy('receipt_number', 'desc')
-                       ->limit($limit)
-                       ->offset($offset)
-                       ->all(NULL, function($row) {
-                           $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
-            
-                           return $row;
-                       });
     }
     
     private function viewForm(Request $request, $isUpdate, $actionValue, $client, $clientId) {
@@ -73,10 +72,24 @@ class ClientsController extends Controller {
             return $this->getReceipts($clientId, $limit, $offset);
         };
         
-        return Pagination::viewMake($request, $currentModel, 'receipts', 'clients.form', "$clientId", $dataModel)
+        return Pagination::viewMake($request, $currentModel, 'receipts', 'clients.form', $clientId, $dataModel)
                          ->with('isUpdate', $isUpdate)
                          ->with('actionValue', $actionValue)
                          ->with('client', $client);
+    }
+    
+    private function getReceipts($clientId, $limit, $offset) {
+        return Receipts::query()
+                       ->where('client_id', '=', $clientId)
+                       ->orderBy('receipt_date', 'desc')
+                       ->orderBy('receipt_number', 'desc')
+                       ->limit($limit)
+                       ->offset($offset)
+                       ->all(NULL, function($row) {
+                           $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
+            
+                           return $row;
+                       });
     }
     
     public function postForm(Request $request) {
