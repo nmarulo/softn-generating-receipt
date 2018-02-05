@@ -47,9 +47,9 @@ class Pagination {
     private $beginRow;
     
     /** @var string */
-    private $rute;
+    private $route;
     
-    public function viewMake(Request $request, $currentModel, $nameModel, $template, $rute, $dataModelClosure = NULL) {
+    public function viewMake(Request $request, $currentModel, $nameModel, $template, $route, $dataModelClosure = NULL) {
         $currentPage = 1;
         
         if ($request->ajax()) {
@@ -64,7 +64,7 @@ class Pagination {
                               ->single();
         }
         
-        $this->instance($rute, $currentPage, $totalData);
+        $this->instance($route, $currentPage, $totalData);
         
         if ($dataModelClosure == NULL || !is_callable($dataModelClosure)) {
             $dataModel = $currentModel::query()
@@ -81,7 +81,7 @@ class Pagination {
                    ->withComponent($this, 'pagination');
     }
     
-    public function instance($rute, $currentPageValue, $totalData, $maxNumberPagesShow = 3) {
+    public function instance($route, $currentPageValue, $totalData, $maxNumberPagesShow = 3) {
         $this->currentPageValue   = $currentPageValue;
         $this->totalData          = $totalData;
         $this->maxNumberPagesShow = $maxNumberPagesShow;
@@ -89,7 +89,7 @@ class Pagination {
         $this->totalNumberPages   = 0;
         $this->rendered           = FALSE;
         $this->beginRow           = 0;
-        $this->rute               = $rute;
+        $this->route              = $route;
         $this->setNumberRowShow(Settings::where('option_key', '=', 'setting_pagination_number_row_show')
                                         ->first()->option_value);
         $this->init();
@@ -193,7 +193,7 @@ class Pagination {
         for ($i = $startPageNumber; $i <= $endPageNumber; ++$i) {
             $styleClass = '';
             $attrData   = [
-                'url'  => $this->rute,
+                'url'  => $this->route,
                 'page' => $i,
             ];
             
@@ -208,7 +208,7 @@ class Pagination {
     
     private function initArrows() {
         $styleClass = "disabled";
-        $attrData   = ['url' => $this->rute];
+        $attrData   = ['url' => $this->route];
         $this->setLeftArrow($styleClass, $attrData);
         $this->setRightArrow($styleClass, $attrData);
     }
