@@ -22,7 +22,7 @@ class GeneratingController extends Controller {
     public function index() {
         return View::make('generating')
                    ->with('receiptNumber', $this->getLastReceiptNumber())
-                   ->with('receiptDate', Utils::dateNow($this->getDateFormat()));
+                   ->with('receiptDate', Utils::dateNow(Utils::getDateFormat()));
     }
     
     private function getLastReceiptNumber() {
@@ -35,17 +35,6 @@ class GeneratingController extends Controller {
         }
         
         return 1;
-    }
-    
-    private function getDateFormat() {
-        $dateFormat = Settings::where('option_key', '=', 'setting_date_format')
-                              ->first();
-        
-        if (!$dateFormat) {
-            return 'Y-m-d';
-        }
-        
-        return $dateFormat->option_value;
     }
     
     public function dataPDF(Request $request) {

@@ -16,10 +16,10 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Numero</th>
-                        <th>Tipo</th>
-                        <th>Fecha</th>
-                        <th>Cliente</th>
+                        <th data-column="receipt_number">Numero</th>
+                        <th data-column="receipt_type">Tipo</th>
+                        <th data-column="receipt_date">Fecha</th>
+                        <th data-column="client_id">Cliente</th>
                     </tr>
                 </thead>
                 <tbody id="content-data-list">

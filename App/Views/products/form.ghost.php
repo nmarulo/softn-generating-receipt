@@ -1,16 +1,14 @@
 {{ extends('layouts.master') }}
 
 #set[content]
-<div>
-    <h1>
-        {{$actionValue}} producto/servicio
-        #if ($isUpdate)
-            <a class="btn btn-success" href="#" title="Agregar">
-            <span class="glyphicon glyphicon-plus"></span>
-        </a>
-        #endif
-    </h1>
-</div>
+<h1>
+    {{$actionValue}} producto/servicio
+    #if ($isUpdate)
+    <a class="btn btn-success" href="{{url('/products/form')}}" title="Agregar">
+        <span class="glyphicon glyphicon-plus"></span>
+    </a>
+    #endif
+</h1>
 <div class="panel panel-default">
     <div class="panel-body">
         <form class="form-table" method="post">

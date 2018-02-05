@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Facades\DataTableHTML;
 use App\Facades\Messages;
 use App\Facades\Pagination;
 use App\Facades\Utils;
@@ -19,20 +20,7 @@ use Silver\Http\View;
 class ClientsController extends Controller {
     
     public function index(Request $request) {
-        $dataModel = NULL;
-        
-        if ($column = $request->param('order_by', FALSE)) {
-            $sort      = $request->param('sort', 'desc');
-            $dataModel = function($limit, $offset) use ($column, $sort) {
-                return Clients::query()
-                              ->orderBy($column, $sort)
-                              ->limit($limit)
-                              ->offset($offset)
-                              ->all();
-            };
-        }
-        
-        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients', $dataModel);
+        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients', DataTableHTML::orderBy($request, Clients::class));
     }
     
     public function form(Request $request, $id = FALSE) {
@@ -86,7 +74,7 @@ class ClientsController extends Controller {
                        ->limit($limit)
                        ->offset($offset)
                        ->all(NULL, function($row) {
-                           $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', 'd/m/Y');
+                           $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', Utils::getDateFormat());
             
                            return $row;
                        });
