@@ -1,7 +1,7 @@
-SoftN Generating Receipt
+SoftN Generating Invoice
 ===================
 
-SoftN Generating Receipt, aplicación web para generar facturas en pdf.
+SoftN Generating Invoice, aplicación web para generar facturas en pdf.
 
 > **Versión 0.2 Alfa **
 
