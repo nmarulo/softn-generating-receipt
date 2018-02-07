@@ -24,6 +24,8 @@ var modalFormSearchData = null;
 var classModalFormSearchData = '';
 var modalProducts = '';
 var modalClients = '';
+var btnGeneratingNewInvoice = null;
+var btnGroupActionsGenerate = null;
 
 (function () {
 	setVars();
@@ -46,6 +48,8 @@ function setVars() {
 	modalFormSearchData = $(classModalFormSearchData);
 	modalClients = $('#modal-clients');
 	modalProducts = $('#modal-products');
+	btnGeneratingNewInvoice = $('#btn-generate-new-invoice');
+	btnGroupActionsGenerate = $('#btn-group-actions-generate');
 	
 	//Establece la información del producto seleccionado.
 	setProductInput = function (element) {
@@ -218,9 +222,8 @@ function setListSelectedProducts(listProductsIdAndUnits) {
 }
 
 function generatingReceipt() {
-	var data = formGenerateReceipt.serialize();
-	
 	var generateAndGetLastReceipt = function (data) {
+		btnGenerateReceipt.remove();
 		includeMessages();
 		contentSelectedProducts.text('');
 		listProductsIdAndUnits = [];
@@ -238,13 +241,14 @@ function generatingReceipt() {
 		});
 		
 		if (typeof data === 'boolean') {
+			btnGeneratingNewInvoice.removeClass('hidden');
+			
 			return false;
 		}
 		
-		btnGenerateReceipt.closest('div').addClass('hidden');
-		$('#btn-group-actions-generate').removeClass('hidden');
+		btnGroupActionsGenerate.removeClass('hidden');
 		generatePDF('generating/datapdf', data['receipt_id'], true);
 	};
 	
-	callAjax('generating', 'POST', data, generateAndGetLastReceipt, true);
+	callAjax('generating', 'POST', formGenerateReceipt.serialize(), generateAndGetLastReceipt, true);
 }

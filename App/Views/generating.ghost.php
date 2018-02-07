@@ -63,6 +63,7 @@
         </div>
         <div class="form-group">
             <button id="btn-generate-receipt" class="btn btn-success" type="submit">Generar</button>
+            <a id="btn-generate-new-invoice" class="btn btn-warning hidden" href="{{url('/generating')}}">Generar nueva factura</a>
         </div>
     </form>
     <div id="btn-group-actions-generate" class="hidden">
