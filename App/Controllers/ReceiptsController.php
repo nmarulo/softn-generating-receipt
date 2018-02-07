@@ -21,6 +21,7 @@ class ReceiptsController extends Controller {
         $receipts   = NULL;
         $allClosure = function($row) {
             $row->receipt_date = Utils::stringToDate($row->receipt_date, 'Y-m-d', Utils::getDateFormat());
+            $row->client = Clients::find($row->client_id);
             
             return $row;
         };

@@ -36,7 +36,12 @@
                         <td>{{$receipt->receipt_number}}</td>
                         <td>{{$receipt->receipt_type}}</td>
                         <td>{{$receipt->receipt_date}}</td>
-                        <td>{{$receipt->client_id}}</td>
+                        <td>
+                            <a href="{{url('/clients/form/'.$receipt->client_id)}}">
+                                <span class="glyphicon glyphicon-link"></span>
+                                {{$receipt->client->client_name}}
+                            </a>
+                        </td>
                     </tr>
                     #endforeach
                 </tbody>
