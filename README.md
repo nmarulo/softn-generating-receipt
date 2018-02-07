@@ -1,13 +1,17 @@
-SoftN Generating Receipt
+SoftN Generating Invoice
 ===================
 
-SoftN Generating Receipt, aplicación web para generar facturas en pdf.
+SoftN Generating Invoice, aplicación web para generar facturas en pdf.
 
-> **Versión 0.1 Alfa **
+> **Versión 0.2 Alfa **
 
 ----------
 
-Steaming https://www.liveedu.tv/marulo/ZBK93-softn-generating-receipt/
+Framework: https://github.com/SilverEngine/Framework
+
+----------
+
+Steaming: https://www.twitch.tv/nmarulo
 
 ----------
 
@@ -19,7 +23,7 @@ Licencia (MIT https://opensource.org/licenses/MIT)
 --------------------
 
 
-Copyright (c) 2016 Nicolás Marulanda P.
+Copyright (c) 2018 Nicolás Marulanda P.
 
 Por la presente se autoriza, de forma gratuita, a cualquier persona que haya obtenido una copia de este software y archivos de documentación asociados (el "Software"), a utilizar el Software sin restricción, incluyendo sin limitación los derechos de usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar, y/o vender copias de este Software, y permitir lo mismo a las personas a las que se les proporcione el Software, de acuerdo con las siguientes condiciones:
 

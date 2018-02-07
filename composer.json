@@ -8,11 +8,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Softn\\": "app"
+            "App\\": "App/",
+            "Silver\\": "System/",
+            "Database\\": "Database/"
         }
     },
     "config": {
-        "vendor-dir": "app/vendor",
         "optimize-autoloader": true
     },
     "license": "MIT",
