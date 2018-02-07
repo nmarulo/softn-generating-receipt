@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Facades\DataTableHTML;
 use App\Facades\Messages;
 use App\Facades\Pagination;
 use App\Models\Products;
@@ -18,7 +19,7 @@ use Silver\Http\View;
 class ProductsController extends Controller {
     
     public function index(Request $request) {
-        return Pagination::viewMake($request, Products::class, 'products', 'products.index', 'products');
+        return Pagination::viewMake($request, Products::class, 'products', 'products.index', 'products', DataTableHTML::orderBy($request, Products::class));
     }
     
     public function form($id = FALSE) {

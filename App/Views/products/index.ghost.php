@@ -16,9 +16,9 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Referencia</th>
-                    <th>Nombre</th>
-                    <th>Precio unidad</th>
+                    <th data-column="product_reference">Referencia</th>
+                    <th data-column="product_name">Nombre</th>
+                    <th data-column="product_price_unit">Precio unidad</th>
                 </tr>
                 </thead>
                 <tbody id="content-data-list">

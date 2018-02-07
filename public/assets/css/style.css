@@ -85,6 +85,13 @@ nav ul.pagination {
     margin: 0;
 }
 
+.table > thead > tr > th.active:hover,
+.table > thead > tr > th.active {
+    color: #FFFFFF !important;
+    background-color: #337AB7 !important;
+    border-color: #306DA2 !important;
+}
+
 /* GENERAL =================================== */
 body {
     background-color: #F5F5F5;
@@ -201,4 +208,14 @@ body {
 
 .content-autocomplete-data-list::-webkit-scrollbar-thumb {
     background: #337AB7;
+}
+
+.table > thead > tr > th[data-column] {
+    cursor: pointer;
+}
+
+.table > thead > tr > th[data-column]:hover {
+    color: #444444;
+    background-color: #EEEEEE;
+    border-color: #DDDDDD;
 }
