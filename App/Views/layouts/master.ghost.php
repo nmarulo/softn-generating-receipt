@@ -11,27 +11,25 @@
     <title>Generador de facturas</title>
 </head>
 <body>
-    <header></header>
-    <hr/>
-    <div class="container-fluid">
-        <div class="row clearfix">
-            <div class="col-sm-2">
-            {{ include('includes.navbar') }}
+    <header>
+        {{ include('includes.navbar') }}
+    </header>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col-sm-12">
+                    <main>
+                    #block(content)
+                    </main>
+                </div>
             </div>
-            <div class="col-sm-10">
-                <main>
-                #block(content)
-                </main>
-            </div>
+            <footer class="clearfix">
+                <hr/>
+                <p class="pull-left">SoftN | Generador de facturas</p>
+                <p class="pull-right">Versión 0.2.1</p>
+            </footer>
         </div>
     </div>
-    <footer>
-        <div class="container-fluid">
-            <hr/>
-            <p class="pull-left">SoftN | Generador de facturas</p>
-            <p class="pull-right">Versión 0.2</p>
-        </div>
-    </footer>
     {{ component('messages') }}
     <script src="{{ asset('js/jquery-3.2.1.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/bootstrap.js') }}" type="text/javascript"></script>

@@ -55,14 +55,18 @@
                         </div>
                         <span class="form-table-cell-hidden"></span>
                         <div class="form-table-row">
-                            <button id="btn-add-product" class="btn btn-primary" type="button" disabled="disabled">Agregar producto</button>
+                            <button id="btn-add-product" class="btn btn-primary" type="button" disabled="disabled">
+                                <span class="glyphicon glyphicon-plus"></span> Agregar producto
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <button id="btn-generate-receipt" class="btn btn-success" type="submit">Generar</button>
+            <button id="btn-generate-receipt" class="btn btn-success" type="submit">
+                <span class="glyphicon glyphicon-plus"></span> Generar factura
+            </button>
             <a id="btn-generate-new-invoice" class="btn btn-warning hidden" href="{{url('/generating')}}">Generar nueva factura</a>
         </div>
     </form>

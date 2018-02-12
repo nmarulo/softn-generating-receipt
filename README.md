@@ -3,7 +3,7 @@ SoftN Generating Invoice
 
 SoftN Generating Invoice, aplicación web para generar facturas en pdf.
 
-> **Versión 0.2 Alfa **
+> **Versión 0.2.1 Alfa **
 
 ----------
 
