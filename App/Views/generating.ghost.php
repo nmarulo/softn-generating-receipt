@@ -67,13 +67,13 @@
             <button id="btn-generate-receipt" class="btn btn-success" type="submit">
                 <span class="glyphicon glyphicon-plus"></span> Generar factura
             </button>
-            <a id="btn-generate-new-invoice" class="btn btn-warning hidden" href="{{url('/generating')}}">Generar nueva factura</a>
+            <a id="btn-generate-new-invoice" class="btn btn-warning hidden" href="{{ url('/generating') }}">Generar nueva factura</a>
         </div>
     </form>
     <div id="btn-group-actions-generate" class="hidden">
         <button id="btn-generate-pdf" class="btn btn-success" type="button">Descargar PDF</button>
-        <a class="btn btn-primary" href="{{url('/receipts')}}">Ver lista de facturas</a>
-        <a class="btn btn-warning" href="{{url('/generating')}}">Nueva factura</a>
+        <a class="btn btn-primary" href="{{ url('/receipts') }}">Ver lista de facturas</a>
+        <a class="btn btn-warning" href="{{ url('/generating') }}">Nueva factura</a>
     </div>
     <div id="list-selected-products" class="form-group">
         No hay productos seleccionados
