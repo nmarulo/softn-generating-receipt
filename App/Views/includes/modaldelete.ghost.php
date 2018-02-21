@@ -6,10 +6,10 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-xs-6">
                         <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Cancelar</button>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-xs-6">
                         <form id="modal-delete-form" method="post" action="">
                             <input id="modal-delete-input-id" type="hidden" name="id" value=""/>
                             <input id="modal-delete-input-reload" type="hidden" name="reload" value=""/>

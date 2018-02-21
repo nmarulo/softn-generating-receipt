@@ -4,7 +4,7 @@
 <h1>
     {{$actionValue}} producto/servicio
     #if ($isUpdate)
-    <a class="btn btn-success" href="{{url('/products/form')}}" title="Agregar">
+    <a class="btn btn-success" href="{{ url('/products/form') }}" title="Agregar">
         <span class="glyphicon glyphicon-plus"></span>
     </a>
     #endif

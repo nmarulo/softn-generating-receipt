@@ -3,7 +3,7 @@
 #set[content]
 <h1>
     Clientes
-    <a class="btn btn-success" href="{{url('/clients/form')}}" title="Agregar">
+    <a class="btn btn-success" href="{{ url('/clients/form') }}" title="Agregar">
         <span class="glyphicon glyphicon-plus"></span>
     </a>
 </h1>
@@ -27,10 +27,10 @@
                     #foreach($clients as $client)
                     <tr>
                         <td class="btn-actions">
-                            <a class="btn btn-primary" href="{{url('/clients/form/')}}{{$client->id}}">
+                            <a class="btn btn-primary" href="{{ url('/clients/form/') }}{{$client->id}}">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </a>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete" data-element-id="{{$client->id}}" data-form-action="{{url('/clients/delete')}}">
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete" data-element-id="{{$client->id}}" data-form-action="{{ url('/clients/delete') }}">
                                     <span class="glyphicon glyphicon-remove"></span>
                             </button>
                         </td>
