@@ -11,10 +11,10 @@
     <div class="panel-body">
         <h3>Lista de clientes</h3>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-md-6">
                 {{ component('pagination') }}
             </div>
-            <div class="col-sm-6">
+            <div class="col-md-6">
                 <form class="form-data-table-list">
                     <div class="form-group input-group">
                         <span id="span-search-data" class="input-group-addon">Buscar</span>

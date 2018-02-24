@@ -19,7 +19,7 @@ use Silver\Http\View;
 class ProductsController extends Controller {
     
     public function index(Request $request) {
-        return Pagination::viewMake($request, Products::class, 'products', 'products.index', 'products', DataTableHTML::orderBy($request, Products::class));
+        return Pagination::viewMake($request, Products::class, 'products', 'products.index', 'products', DataTableHTML::filter($request, Products::class), DataTableHTML::count($request, Products::class));
     }
     
     public function form($id = FALSE) {

@@ -26,7 +26,7 @@ class ReceiptsController extends Controller {
             return $row;
         };
         
-        if (empty($receipts = DataTableHTML::orderBy($request, Receipts::class, $allClosure))) {
+        if (empty($receipts = DataTableHTML::filter($request, Receipts::class, $allClosure))) {
             $receipts = function($limit, $offset) use ($allClosure) {
                 return Receipts::query()
                                ->orderBy('receipt_date', 'desc')
