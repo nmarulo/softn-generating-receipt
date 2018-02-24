@@ -8,6 +8,7 @@ var currentTHeadTHElement = null;
 var inputSearchDataValue = null;
 var formDataTableList = null;
 var formCanSearch = false;
+var spanTH = '';
 
 (function () {
     setVar();
@@ -23,6 +24,7 @@ function setVar() {
     dataTableSortDefault = 'desc';
     formDataTableList = $('.form-data-table-list');
     inputSearchDataValue = formDataTableList.find('.search-data');
+    spanTH = $('<span class="glyphicon glyphicon-triangle-top"></span>');
 }
 
 function registerEvents() {
@@ -41,7 +43,7 @@ function registerEvents() {
         if (element.hasClass('active')) {
             dataTableSort = getSort();
         } else {
-            dataTableSort = dataTableSortDefault;
+            resetDataTableSort();
             
             if (currentTHeadTHElement != null) {
                 currentTHeadTHElement.classList.remove('active');
@@ -71,7 +73,7 @@ function registerEvents() {
         }
     });
     
-    formDataTableList.on('change', '[type=radio]', function(){
+    formDataTableList.on('change', '[type=radio]', function () {
         inputSearchDataValue.trigger('keyup');
     });
 }
@@ -100,6 +102,7 @@ function updateDataTablePagination(dataToSend) {
         dataTableList.find('thead tr th[data-column]').each(function () {
             if (currentTHeadTHElement != null && $(this).text() === currentTHeadTHElement.innerText) {
                 $(this).addClass('active');
+                $(this).prepend(spanTH);
             }
         });
     };
@@ -114,11 +117,26 @@ function updateDataTablePagination(dataToSend) {
 function getSort() {
     if (dataTableSort === 'desc') {
         dataTableSort = 'asc';
+        toggleSpanTH('glyphicon-triangle-bottom', 'glyphicon-triangle-top');
     } else {
         dataTableSort = 'desc';
+        toggleSpanTH('glyphicon-triangle-top', 'glyphicon-triangle-bottom');
     }
     
     return dataTableSort;
+}
+
+function resetDataTableSort() {
+    dataTableSort = dataTableSortDefault;
+    
+    if (spanTH.hasClass('glyphicon-triangle-bottom')) {
+        toggleSpanTH('glyphicon-triangle-top', 'glyphicon-triangle-bottom');
+    }
+}
+
+function toggleSpanTH(add, remove) {
+    spanTH.removeClass(remove);
+    spanTH.addClass(add);
 }
 
 function getDataTableToSend(page) {
