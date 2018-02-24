@@ -54,16 +54,26 @@ function setVars() {
 	//Establece la información del producto seleccionado.
 	setProductInput = function (element) {
 		btnDisabled(btnAddProduct, false);
-		inputReceiptProduct.val(element.text());
+		inputReceiptProduct.val(getModalSelectValue(element));
 		
 		selectedProductId = element.data('element-id');
 	};
 	
 	//Establece la información del cliente seleccionado.
 	setClientInput = function (element) {
-		inputReceiptClient.val(element.text());
+		inputReceiptClient.val(getModalSelectValue(element));
 		inputHiddenReceiptClientId.val(element.data('element-id'));
 	};
+}
+
+function getModalSelectValue(element){
+	var value = element.find('.item-value');
+	
+	if(value.length === 0){
+		return element.text();
+	}
+	
+	return value.text();
 }
 
 /**

@@ -270,7 +270,10 @@ class GeneratingController extends Controller {
                        ->all(NULL, function($row) {
                            $row          = $row->data();
                            $row['value'] = $row['product_name'];
-                           $row['badge'] = $row['product_reference'];
+                           $row['badge'] = [
+                               $row['product_price_unit'],
+                               $row['product_reference'],
+                           ];
             
                            return $row;
                        });
