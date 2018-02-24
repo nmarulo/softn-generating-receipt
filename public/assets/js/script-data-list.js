@@ -70,6 +70,10 @@ function registerEvents() {
             element.closest('form').submit();
         }
     });
+    
+    formDataTableList.on('change', '[type=radio]', function(){
+        inputSearchDataValue.trigger('keyup');
+    });
 }
 
 function pagination(element) {
