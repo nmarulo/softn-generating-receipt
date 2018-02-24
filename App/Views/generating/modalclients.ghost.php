@@ -12,7 +12,7 @@
                         <div class="col-sm-8">
                             <div class="form-group input-group">
                                 <span id="span-search-data" class="input-group-addon">Buscar</span>
-                                <input id="search-data" class="form-control search-data" type="text" name="search-data-value" aria-describedby="span-search-data">
+                                <input class="form-control search-data" type="text" name="search-data-value" aria-describedby="span-search-data">
                             </div>
                         </div>
                         <div class="col-sm-4">
