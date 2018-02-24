@@ -220,6 +220,10 @@ body {
     border-color: #DDDDDD;
 }
 
+.table > thead > tr > th > span.glyphicon {
+    padding-right: 5px;
+}
+
 .wrapper > div {
     margin-top: 50px;
 }

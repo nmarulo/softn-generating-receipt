@@ -10,7 +10,25 @@
 <div id="content-index" class="panel panel-default">
     <div class="panel-body">
         <h3>Lista de productos/servicios</h3>
-        {{ component('pagination') }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ component('pagination') }}
+            </div>
+            <div class="col-md-6">
+                <form class="form-data-table-list">
+                    <div class="form-group input-group">
+                        <span id="span-search-data" class="input-group-addon">Buscar</span>
+                        <input class="form-control search-data" type="text" name="search-data-value" aria-describedby="span-search-data">
+                        <span class="input-group-addon">
+                            <input type="radio" name="search-data-column" value="product_name" checked> Nombre
+                        </span>
+                        <span class="input-group-addon">
+                            <input type="radio" name="search-data-column" value="product_reference"> Referencia
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="table-responsive">
             <table id="data-table-list" class="table table-hover table-striped">
                 <thead>

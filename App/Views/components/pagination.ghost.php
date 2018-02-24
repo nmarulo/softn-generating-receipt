@@ -1,5 +1,5 @@
-#if(isset($component_pagination) && $component_pagination->isRendered())
 <div class="pagination-container">
+    #if(isset($component_pagination) && $component_pagination->isRendered())
     <nav>
         <ul class="pagination clearfix">
             <li class="{{$component_pagination->getLeftArrow()->getStyleClass()}}">
@@ -19,5 +19,5 @@
             </li>
         </ul>
     </nav>
+    #endif
 </div>
-#endif

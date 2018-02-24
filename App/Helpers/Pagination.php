@@ -49,19 +49,19 @@ class Pagination {
     /** @var string */
     private $route;
     
-    public function viewMake(Request $request, $currentModel, $nameModel, $template, $route, $dataModelClosure = NULL) {
+    public function viewMake(Request $request, $currentModel, $nameModel, $template, $route, $dataModelClosure = NULL, $count = null) {
         $currentPage = 1;
         
         if ($request->ajax()) {
             $currentPage = $request->input('page', 1);
         }
         
-        if(is_callable($currentModel)){
-            $totalData = $currentModel();
-        }else{
+        if($count == null){
             $totalData = Query::count()
                               ->from($currentModel::tableName())
                               ->single();
+        }else{
+            $totalData = $count;
         }
         
         $this->instance($route, $currentPage, $totalData);
@@ -83,7 +83,7 @@ class Pagination {
     
     public function instance($route, $currentPageValue, $totalData, $maxNumberPagesShow = 3) {
         $this->currentPageValue   = $currentPageValue;
-        $this->totalData          = $totalData;
+        $this->totalData          = intval($totalData);
         $this->maxNumberPagesShow = $maxNumberPagesShow;
         $this->pages              = [];
         $this->totalNumberPages   = 0;
