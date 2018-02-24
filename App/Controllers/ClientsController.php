@@ -20,7 +20,7 @@ use Silver\Http\View;
 class ClientsController extends Controller {
     
     public function index(Request $request) {
-        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients', DataTableHTML::orderBy($request, Clients::class));
+        return Pagination::viewMake($request, Clients::class, 'clients', 'clients.index', 'clients', DataTableHTML::filter($request, Clients::class), DataTableHTML::count($request, Clients::class));
     }
     
     public function form(Request $request, $id = FALSE) {
@@ -50,17 +50,15 @@ class ClientsController extends Controller {
                        ->with('receipts', []);
         }
         
-        $currentModel = function() use ($clientId) {
-            return Query::count()
-                        ->from(Receipts::tableName())
-                        ->where('client_id', '=', $clientId)
-                        ->single();
-        };
-        $dataModel    = function($limit, $offset) use ($clientId) {
+        $count     = Query::count()
+                          ->from(Receipts::tableName())
+                          ->where('client_id', '=', $clientId)
+                          ->single();
+        $dataModel = function($limit, $offset) use ($clientId) {
             return $this->getReceipts($clientId, $limit, $offset);
         };
         
-        return Pagination::viewMake($request, $currentModel, 'receipts', 'clients.form', $clientId, $dataModel)
+        return Pagination::viewMake($request, Clients::class, 'receipts', 'clients.form', $clientId, $dataModel, $count)
                          ->with('isUpdate', $isUpdate)
                          ->with('actionValue', $actionValue)
                          ->with('client', $client);
